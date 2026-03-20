@@ -473,16 +473,22 @@
         .bottom-tabs {
             display: none;
             position: fixed;
-            bottom: 0; left: 0; right: 0;
-            height: 56px;
-            background: white;
-            border-top: 1px solid var(--tue-light-border);
-            box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+            bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 400px;
+            height: 52px;
+            background: rgba(255, 255, 255, 0.82);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            backdrop-filter: saturate(180%) blur(20px);
+            border: 1px solid rgba(200, 200, 210, 0.35);
+            border-radius: 26px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.06);
             z-index: 150;
             justify-content: space-around;
             align-items: center;
-            padding: 0 4px;
-            padding-bottom: env(safe-area-inset-bottom, 0px);
+            padding: 0 8px;
         }
         .tab-item {
             display: flex; flex-direction: column; align-items: center;
@@ -528,9 +534,9 @@
             .content { margin-left: 0; }
             .nav-toggle { display: none !important; }
             .bottom-tabs { display: flex; }
-            body { padding-bottom: 56px; }
+            body { padding-bottom: 76px; }
             /* Push detail panel above tab bar */
-            .detail-panel { bottom: 56px; }
+            .detail-panel { bottom: 76px; }
             section { padding: 2.5rem 1.25rem; min-height: auto; }
             h2 { font-size: 2rem !important; }
             .landing-title { font-size: 2.2rem; }
@@ -1359,15 +1365,20 @@
                 const href = tab.getAttribute('href').slice(1);
                 const target = document.getElementById(href);
                 if (target) target.scrollIntoView({ behavior: 'smooth' });
+                // Immediately highlight the clicked tab
+                tabItems.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
             });
         });
 
         // Update active tab on scroll
         function updateActiveTab() {
-            if (window.innerWidth > 768) return;
+            // Find the section currently most visible
             let currentSection = 'landing';
-            for (const section of sections) {
-                if (section.getBoundingClientRect().top < window.innerHeight / 2) {
+            const allSections = document.querySelectorAll('section');
+            for (const section of allSections) {
+                const rect = section.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.5) {
                     currentSection = section.id;
                 } else {
                     break;
@@ -1375,17 +1386,17 @@
             }
             // Find which tab owns this section
             let activeTab = 'landing';
-            for (const [tab, owned] of Object.entries(tabSections)) {
-                if (owned.includes(currentSection)) { activeTab = tab; break; }
+            for (const [tabKey, owned] of Object.entries(tabSections)) {
+                if (owned.includes(currentSection)) { activeTab = tabKey; break; }
             }
             tabItems.forEach(t => {
                 t.classList.toggle('active', t.dataset.tab === activeTab);
             });
         }
 
-        // Hook into existing scroll listener
-        const origScroll = window.onscroll;
-        window.addEventListener('scroll', updateActiveTab);
+        // Run on scroll and on initial load
+        window.addEventListener('scroll', updateActiveTab, { passive: true });
+        updateActiveTab();
     </script>
 
     <!-- Bottom tab bar (mobile) -->
