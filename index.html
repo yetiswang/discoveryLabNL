@@ -1099,6 +1099,30 @@
         <p>March 2026 &middot; ICMS / TU/e &middot; TU/e Flagship: Advanced Materials</p>
     </footer>
 
+    <!-- Bottom tab bar (mobile) — must be before <script> so JS can find .tab-item elements -->
+    <nav class="bottom-tabs" id="bottomTabs">
+        <a href="#landing" class="tab-item active" data-tab="landing">
+            <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="#pillars" class="tab-item" data-tab="pillars">
+            <svg viewBox="0 0 24 24"><rect x="3" y="10" width="4" height="11" rx="0.5"/><rect x="10" y="5" width="4" height="16" rx="0.5"/><rect x="17" y="8" width="4" height="13" rx="0.5"/><line x1="2" y1="3" x2="22" y2="3" stroke-dasharray="2,2" opacity="0.4"/></svg>
+            <span>Pillars</span>
+        </a>
+        <a href="#roadmap" class="tab-item" data-tab="roadmap">
+            <svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="18" r="2"/><line x1="7" y1="6" x2="10" y2="12"/><line x1="14" y1="12" x2="17" y2="18"/></svg>
+            <span>Roadmap</span>
+        </a>
+        <a href="#team" class="tab-item" data-tab="team">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/><circle cx="19" cy="9" r="2" opacity="0.5"/><path d="M21 21a4 4 0 0 0-4-4" opacity="0.5"/></svg>
+            <span>Team</span>
+        </a>
+        <a href="#stakeholders" class="tab-item" data-tab="stakeholders">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
+            <span>Map</span>
+        </a>
+    </nav>
+
     <script>
         // ==========================================
         //  Stakeholder data
@@ -1398,29 +1422,5 @@
         window.addEventListener('scroll', updateActiveTab, { passive: true });
         updateActiveTab();
     </script>
-
-    <!-- Bottom tab bar (mobile) -->
-    <nav class="bottom-tabs" id="bottomTabs">
-        <a href="#landing" class="tab-item active" data-tab="landing">
-            <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <span>Home</span>
-        </a>
-        <a href="#pillars" class="tab-item" data-tab="pillars">
-            <svg viewBox="0 0 24 24"><rect x="3" y="10" width="4" height="11" rx="0.5"/><rect x="10" y="5" width="4" height="16" rx="0.5"/><rect x="17" y="8" width="4" height="13" rx="0.5"/><line x1="2" y1="3" x2="22" y2="3" stroke-dasharray="2,2" opacity="0.4"/></svg>
-            <span>Pillars</span>
-        </a>
-        <a href="#roadmap" class="tab-item" data-tab="roadmap">
-            <svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="18" r="2"/><line x1="7" y1="6" x2="10" y2="12"/><line x1="14" y1="12" x2="17" y2="18"/></svg>
-            <span>Roadmap</span>
-        </a>
-        <a href="#team" class="tab-item" data-tab="team">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/><circle cx="19" cy="9" r="2" opacity="0.5"/><path d="M21 21a4 4 0 0 0-4-4" opacity="0.5"/></svg>
-            <span>Team</span>
-        </a>
-        <a href="#stakeholders" class="tab-item" data-tab="stakeholders">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
-            <span>Map</span>
-        </a>
-    </nav>
 </body>
 </html>
