@@ -113,14 +113,27 @@
             background: linear-gradient(135deg, var(--tue-dark) 0%, #0a0a12 60%, #12060a 100%);
             color: white; position: relative; overflow: hidden;
             padding: 6rem 4rem; min-height: 100vh;
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: flex-start;
         }
 
+        /* === Ring container — centered on screen, large & immersive === */
         .landing-ring-container {
             position: absolute;
-            top: 50%; right: 12%;
-            transform: translateY(-50%);
-            width: 520px; height: 520px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 620px; height: 620px;
             pointer-events: none;
+            opacity: 0;
+            animation: ringFadeIn 1.8s ease-out 0.2s forwards;
+        }
+        @keyframes ringFadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.88); }
+            to   { opacity: 0.85; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes ringFadeInMobile {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.88); }
+            to   { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
         }
 
         .landing-ring-container svg {
@@ -205,15 +218,27 @@
         .landing-meta {
             font-size: 0.9rem; color: rgba(255, 255, 255, 0.5); font-weight: 400;
         }
+
+        /* Scroll indicator — entrance + bounce combined in one keyframe */
         .landing-scroll {
             position: absolute; bottom: 2rem; left: 50%;
             transform: translateX(-50%);
             font-size: 0.9rem; color: rgba(255, 255, 255, 0.4);
-            animation: bounce 2s infinite;
+            opacity: 0;
+            animation: scrollEnterThenBounce 3s ease-out 1.2s forwards;
         }
         @keyframes bounce {
             0%, 100% { transform: translateX(-50%) translateY(0); }
             50% { transform: translateX(-50%) translateY(8px); }
+        }
+        @keyframes scrollEnterThenBounce {
+            0%   { opacity: 0; transform: translateX(-50%) translateY(16px); }
+            15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+            /* Then bounce indefinitely via iteration count on JS — or just a few gentle bobs */
+            40%, 100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            55%  { opacity: 1; transform: translateX(-50%) translateY(6px); }
+            70%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85%  { opacity: 1; transform: translateX(-50%) translateY(6px); }
         }
 
         /* Challenge */
@@ -525,18 +550,18 @@
         /*  ENTRANCE ANIMATIONS (staggered fade/slide)  */
         /* ============================================ */
         @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(28px); }
+            from { opacity: 0; transform: translateY(48px); }
             to   { opacity: 1; transform: translateY(0); }
         }
         .anim-entrance {
             opacity: 0;
-            animation: fadeSlideUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            animation: fadeSlideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        .anim-entrance.delay-1 { animation-delay: 0.12s; }
-        .anim-entrance.delay-2 { animation-delay: 0.28s; }
-        .anim-entrance.delay-3 { animation-delay: 0.44s; }
-        .anim-entrance.delay-4 { animation-delay: 0.58s; }
-        .anim-entrance.delay-5 { animation-delay: 0.72s; }
+        .anim-entrance.delay-1 { animation-delay: 0.3s; }
+        .anim-entrance.delay-2 { animation-delay: 0.55s; }
+        .anim-entrance.delay-3 { animation-delay: 0.8s; }
+        .anim-entrance.delay-4 { animation-delay: 1.05s; }
+        .anim-entrance.delay-5 { animation-delay: 1.3s; }
 
         /* Section-level reveal (triggered by IntersectionObserver) */
         .reveal {
@@ -599,7 +624,7 @@
             .sidebar { width: 200px; }
             .content { margin-left: 200px; }
             section { padding: 4rem 2.5rem; }
-            .landing-ring-container { width: 400px; height: 400px; right: 5%; }
+            .landing-ring-container { width: 500px; height: 500px; }
         }
 
         /* Responsive — small tablet / large phone */
@@ -617,12 +642,10 @@
             .landing-subtitle { font-size: 1rem; }
             #landing { padding: 3rem 1.25rem; }
             .landing-ring-container {
-                position: absolute;
                 width: 90vw; height: 90vw;
                 max-width: 500px; max-height: 500px;
-                right: 50%; top: 50%;
-                transform: translate(50%, -50%);
-                opacity: 0.5;
+                /* Keep center positioning from base, just adjust final opacity */
+                animation: ringFadeInMobile 1.8s ease-out 0.2s forwards;
             }
             .landing-content { max-width: 100%; position: relative; z-index: 3; }
             .pillars-grid, .consortium-grid, .positioning-grid { grid-template-columns: 1fr; }
@@ -672,9 +695,7 @@
             .landing-ring-container {
                 width: 100vw; height: 100vw;
                 max-width: none; max-height: none;
-                right: 50%; top: 50%;
-                transform: translate(50%, -50%);
-                opacity: 0.45;
+                animation: ringFadeInMobile 1.8s ease-out 0.2s forwards;
             }
             .pillar-card { padding: 1.25rem; }
             .pillar-card h3 { font-size: 1.1rem; }
@@ -745,7 +766,7 @@
 
             <!-- 1. LANDING - Enhanced ring design with keywords and pulsation -->
             <section id="landing">
-                <div class="landing-ring-container anim-entrance delay-1" style="animation-duration:1.2s">
+                <div class="landing-ring-container">
                     <svg viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <!-- Text paths offset outward from ring strokes so text does not overlap lines -->
@@ -833,7 +854,7 @@
                     <p class="landing-meta anim-entrance delay-4">Dutch Large-Scale Research Infrastructure &middot; ICMS / TU/e &middot; TU/e Flagship: Advanced Materials</p>
                 </div>
 
-                <div class="landing-scroll anim-entrance delay-5">&darr; Scroll to explore</div>
+                <div class="landing-scroll">&darr; Scroll to explore</div>
             </section>
 
             <!-- 2. The Challenge -->
@@ -1485,6 +1506,21 @@
         } else {
             // Fallback: show all immediately
             reveals.forEach(el => el.classList.add('visible'));
+        }
+    })();
+
+    // Switch scroll indicator to persistent bounce after entrance finishes
+    (function() {
+        const scrollEl = document.querySelector('.landing-scroll');
+        if (scrollEl) {
+            scrollEl.addEventListener('animationend', function() {
+                scrollEl.style.animation = 'none';
+                scrollEl.style.opacity = '1';
+                scrollEl.style.transform = 'translateX(-50%)';
+                // Trigger reflow then apply bounce
+                void scrollEl.offsetWidth;
+                scrollEl.style.animation = 'bounce 2s ease-in-out infinite';
+            }, { once: true });
         }
     })();
 
