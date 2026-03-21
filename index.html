@@ -680,12 +680,27 @@
         }
         .tab-item.active {
             color: rgba(255, 255, 255, 0.95);
-            background: rgba(200, 16, 46, 0.14);
         }
         .tab-item.active svg {
             stroke: var(--tue-red);
             filter: drop-shadow(0 0 4px rgba(200, 16, 46, 0.35));
         }
+        /* Sliding pill indicator */
+        .tab-pill {
+            position: absolute;
+            top: 6px;
+            height: calc(100% - 12px);
+            border-radius: 14px;
+            background: rgba(200, 16, 46, 0.14);
+            pointer-events: none;
+            z-index: 0;
+            transition: transform 0.18s cubic-bezier(0.25, 1, 0.5, 1), width 0.18s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: transform, width;
+        }
+        .tab-pill.dragging {
+            transition: transform 0.08s ease-out, width 0.08s ease-out;
+        }
+        .tab-item { z-index: 1; }
 
         /* ============================================ */
         /*  ENTRANCE ANIMATIONS (staggered fade/slide)  */
@@ -1355,6 +1370,7 @@
 
     <!-- Bottom tab bar (mobile) — must be before <script> so JS can find .tab-item elements -->
     <nav class="bottom-tabs" id="bottomTabs">
+        <div class="tab-pill" id="tabPill"></div>
         <a href="#landing" class="tab-item active" data-tab="landing">
             <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span>Home</span>
@@ -1809,6 +1825,137 @@
         // Run on scroll and on initial load
         window.addEventListener('scroll', updateActiveTab, { passive: true });
         updateActiveTab();
+
+        // ==========================================
+        //  Sliding pill indicator + touch drag
+        // ==========================================
+        const tabPill = document.getElementById('tabPill');
+        const bottomTabs = document.getElementById('bottomTabs');
+        const tabArr = Array.from(tabItems);
+
+        function positionPill(tab, instant) {
+            if (!tabPill || !tab) return;
+            const navRect = bottomTabs.getBoundingClientRect();
+            const tabRect = tab.getBoundingClientRect();
+            const offsetX = tabRect.left - navRect.left;
+            if (instant) {
+                tabPill.style.transition = 'none';
+                tabPill.offsetHeight; // force reflow
+            }
+            tabPill.style.width = tabRect.width + 'px';
+            tabPill.style.transform = 'translateX(' + offsetX + 'px)';
+            if (instant) {
+                requestAnimationFrame(() => {
+                    tabPill.style.transition = '';
+                });
+            }
+        }
+
+        // Position pill on the currently active tab
+        function syncPill(instant) {
+            const active = bottomTabs.querySelector('.tab-item.active');
+            if (active) positionPill(active, instant);
+        }
+
+        // Override updateActiveTab to also move pill
+        const origUpdateActiveTab = updateActiveTab;
+        function updateActiveTabWithPill() {
+            origUpdateActiveTab();
+            syncPill(false);
+        }
+        window.removeEventListener('scroll', origUpdateActiveTab);
+        window.addEventListener('scroll', updateActiveTabWithPill, { passive: true });
+
+        // Also move pill on tab click
+        tabItems.forEach(tab => {
+            tab.addEventListener('click', () => {
+                requestAnimationFrame(() => syncPill(false));
+            });
+        });
+
+        // Initial position (instant, no animation)
+        requestAnimationFrame(() => syncPill(true));
+        // Reposition on resize
+        window.addEventListener('resize', () => syncPill(true));
+
+        // --- Touch drag interaction (mobile only) ---
+        let dragActive = false;
+        let dragPrevTab = null;
+        let dragStartTab = null;
+
+        function getTabUnderTouch(touchX, touchY) {
+            for (const tab of tabArr) {
+                const r = tab.getBoundingClientRect();
+                if (touchX >= r.left && touchX <= r.right && touchY >= r.top - 20 && touchY <= r.bottom + 20) {
+                    return tab;
+                }
+            }
+            return null;
+        }
+
+        bottomTabs.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            const tab = getTabUnderTouch(touch.clientX, touch.clientY);
+            if (!tab) return;
+            dragActive = true;
+            dragStartTab = bottomTabs.querySelector('.tab-item.active');
+            dragPrevTab = tab;
+            tabPill.classList.add('dragging');
+            // Highlight the touched tab immediately
+            tabArr.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            positionPill(tab, false);
+        }, { passive: true });
+
+        bottomTabs.addEventListener('touchmove', (e) => {
+            if (!dragActive) return;
+            e.preventDefault(); // prevent scroll while dragging on the bar
+            const touch = e.touches[0];
+            const hovered = getTabUnderTouch(touch.clientX, touch.clientY);
+            if (hovered && hovered !== dragPrevTab) {
+                dragPrevTab = hovered;
+                tabArr.forEach(t => t.classList.remove('active'));
+                hovered.classList.add('active');
+                positionPill(hovered, false);
+            }
+            // If finger moves off the bar entirely, keep last hovered
+        }, { passive: false });
+
+        bottomTabs.addEventListener('touchend', (e) => {
+            if (!dragActive) return;
+            dragActive = false;
+            tabPill.classList.remove('dragging');
+            const active = bottomTabs.querySelector('.tab-item.active');
+            if (active) {
+                // Navigate to section
+                const href = active.getAttribute('href');
+                if (href) {
+                    const target = document.getElementById(href.slice(1));
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                }
+                positionPill(active, false);
+            } else if (dragStartTab) {
+                // Snap back if somehow no tab active
+                dragStartTab.classList.add('active');
+                positionPill(dragStartTab, false);
+            }
+            dragStartTab = null;
+            dragPrevTab = null;
+        });
+
+        // Cancel drag if touches leave entirely
+        bottomTabs.addEventListener('touchcancel', () => {
+            if (!dragActive) return;
+            dragActive = false;
+            tabPill.classList.remove('dragging');
+            if (dragStartTab) {
+                tabArr.forEach(t => t.classList.remove('active'));
+                dragStartTab.classList.add('active');
+                positionPill(dragStartTab, false);
+            }
+            dragStartTab = null;
+            dragPrevTab = null;
+        });
 
         // ==========================================
         //  Header transparency — blend into landing
