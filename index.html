@@ -619,6 +619,86 @@
             color: var(--tue-red); font-size: 1.2rem; font-weight: bold;
         }
 
+        /* Stakeholder PIN gate */
+        #stakeholders { position: relative; }
+        .stake-gate {
+            position: absolute; inset: 0; z-index: 50;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(20, 20, 30, 0.35);
+            backdrop-filter: blur(18px) saturate(120%);
+            -webkit-backdrop-filter: blur(18px) saturate(120%);
+            border-radius: 8px;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .stake-gate.unlocked {
+            opacity: 0; visibility: hidden; pointer-events: none;
+        }
+        .gate-card {
+            background: rgba(30, 30, 42, 0.92);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 2.5rem 2.25rem;
+            text-align: center;
+            max-width: 320px; width: 90%;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.04) inset;
+        }
+        .gate-icon {
+            font-size: 2rem; margin-bottom: 0.75rem;
+            opacity: 0.7;
+        }
+        .gate-title {
+            font-size: 1.1rem; font-weight: 600; color: #fff;
+            margin-bottom: 0.35rem;
+        }
+        .gate-sub {
+            font-size: 0.82rem; color: rgba(255,255,255,0.45);
+            margin-bottom: 1.5rem;
+        }
+        .gate-input-row {
+            display: flex; gap: 0.5rem;
+            justify-content: center;
+        }
+        .gate-pin {
+            width: 140px; padding: 0.65rem 0.9rem;
+            border: 1.5px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.06);
+            color: #fff; font-size: 1.1rem;
+            text-align: center; letter-spacing: 4px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        .gate-pin:focus {
+            border-color: var(--tue-red);
+        }
+        .gate-pin::placeholder {
+            color: rgba(255,255,255,0.2); letter-spacing: 2px; font-size: 0.85rem;
+        }
+        .gate-btn {
+            padding: 0.65rem 1.2rem;
+            background: var(--tue-red); color: #fff;
+            border: none; border-radius: 10px;
+            font-size: 0.9rem; font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+        .gate-btn:hover { background: #a00d28; }
+        .gate-btn:active { transform: scale(0.96); }
+        @keyframes gateShake {
+            0%, 100% { transform: translateX(0); }
+            15%, 45%, 75% { transform: translateX(-6px); }
+            30%, 60%, 90% { transform: translateX(6px); }
+        }
+        .gate-pin.shake {
+            animation: gateShake 0.45s ease;
+            border-color: var(--tue-red);
+        }
+        @media (max-width: 768px) {
+            .gate-card { padding: 2rem 1.5rem; }
+            .gate-pin { width: 120px; font-size: 1rem; padding: 0.75rem; }
+            .gate-btn { padding: 0.75rem 1.1rem; }
+        }
+
         /* Footer */
         footer {
             background-color: var(--tue-dark); color: rgba(255,255,255,0.6);
@@ -1165,6 +1245,18 @@
 
             <!-- 8. Stakeholders - Full overhaul with responsive SVG, zoom/pan, sliding panel -->
             <section id="stakeholders">
+                <!-- PIN gate overlay -->
+                <div class="stake-gate" id="stakeGate">
+                    <div class="gate-card">
+                        <div class="gate-icon">&#128274;</div>
+                        <div class="gate-title">Internal access only</div>
+                        <div class="gate-sub">Enter PIN to view stakeholder details</div>
+                        <div class="gate-input-row">
+                            <input type="password" class="gate-pin" id="gatePin" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="PIN" autocomplete="off">
+                            <button class="gate-btn" id="gateBtn">Unlock</button>
+                        </div>
+                    </div>
+                </div>
                 <h2 class="reveal">Stakeholder Momentum</h2>
                 <p class="stakeholder-intro reveal">Strong institutional anchors, real momentum, active engagement. The concentric rings below show stakeholder commitment levels across the national materials discovery ecosystem. Click any name for details.</p>
 
@@ -2082,6 +2174,44 @@
                 scrollEl.style.animation = 'bounce 2s ease-in-out infinite';
             }, { once: true });
         }
+    })();
+
+    // ==========================================
+    // Stakeholder PIN gate
+    // ==========================================
+    (function() {
+        const gate = document.getElementById('stakeGate');
+        const pinInput = document.getElementById('gatePin');
+        const btn = document.getElementById('gateBtn');
+        if (!gate || !pinInput) return;
+
+        // Check sessionStorage for unlocked state
+        if (sessionStorage.getItem('stakeUnlocked') === '1') {
+            gate.classList.add('unlocked');
+            return;
+        }
+
+        function tryUnlock() {
+            if (pinInput.value === '2025') {
+                sessionStorage.setItem('stakeUnlocked', '1');
+                gate.classList.add('unlocked');
+            } else {
+                pinInput.classList.remove('shake');
+                void pinInput.offsetWidth; // reflow to restart animation
+                pinInput.classList.add('shake');
+                pinInput.value = '';
+                pinInput.focus();
+            }
+        }
+
+        btn.addEventListener('click', tryUnlock);
+        pinInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') tryUnlock();
+        });
+        // Remove shake class after animation ends
+        pinInput.addEventListener('animationend', function() {
+            pinInput.classList.remove('shake');
+        });
     })();
 
     </script>
