@@ -566,13 +566,34 @@
         .reveal {
             opacity: 0;
             transform: translateY(24px);
-            transition: opacity 0.65s cubic-bezier(0.23, 1, 0.32, 1),
-                        transform 0.65s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+                        transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
         .reveal.visible {
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Staggered group reveal — parent observed, children animate */
+        .reveal-group > * {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.55s cubic-bezier(0.23, 1, 0.32, 1),
+                        transform 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .reveal-group.visible > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Stagger delays via nth-child — up to 8 children */
+        .reveal-group.visible > :nth-child(1) { transition-delay: 0s; }
+        .reveal-group.visible > :nth-child(2) { transition-delay: 0.1s; }
+        .reveal-group.visible > :nth-child(3) { transition-delay: 0.2s; }
+        .reveal-group.visible > :nth-child(4) { transition-delay: 0.3s; }
+        .reveal-group.visible > :nth-child(5) { transition-delay: 0.4s; }
+        .reveal-group.visible > :nth-child(6) { transition-delay: 0.5s; }
+        .reveal-group.visible > :nth-child(7) { transition-delay: 0.6s; }
+        .reveal-group.visible > :nth-child(8) { transition-delay: 0.7s; }
 
         /* Responsive — tablet */
         @media (max-width: 1024px) {
@@ -817,7 +838,7 @@
                 <h2 class="reveal">The Challenge</h2>
                 <p class="challenge-text">Artificial intelligence and high-throughput laboratory automation have the potential to fundamentally transform materials and molecular research, accelerating the optimisation of desired properties, uncovering unique parameter sets, and enabling the design of materials with unprecedented features.</p>
                 <p class="challenge-text">This potential is widely recognised across the broader materials community, yet has also produced fragmentation: parallel, disconnected efforts that fall short of the systemic integration needed to realise AI's full scientific impact.</p>
-                <div class="challenge-callout">
+                <div class="challenge-callout reveal">
                     <p>DiscoveryLabNL is TU/e's answer: a coherent, shared infrastructure bringing together Self-Driving Laboratories, advanced multimodal characterisation, and an AI Core facility into a unified discovery platform.</p>
                 </div>
                 <p class="challenge-text">TU/e's ICMS has built nationally recognised SDL foundations through the NWO Gravitation Programme Interactive Polymer Materials (IPM) and the National Growth Fund programme Big Chemistry, establishing a proven platform for this next step.</p>
@@ -826,7 +847,7 @@
             <!-- 3. Three Pillars -->
             <section id="pillars">
                 <h2 class="reveal">Three Pillars</h2>
-                <div class="pillars-grid">
+                <div class="pillars-grid reveal-group">
                     <div class="pillar-card">
                         <h3>Self-Driving Laboratories</h3>
                         <p>Robotic synthesis and processing platforms, automated sample handling, in-line sensing and feedback systems. AI-guided closed-loop experimentation across a hub-and-spoke network of SDL nodes.</p>
@@ -857,8 +878,8 @@
             <!-- 4. Campus Consortium -->
             <section id="campus">
                 <h2 class="reveal">Campus Consortium</h2>
-                <p class="campus-intro">Four partner institutes cover the full spectrum of materials research as equal governance partners. DIFFER is an NWO institute; ICMS, EIRES, and Casimir are TU/e institutes.</p>
-                <div class="consortium-grid">
+                <p class="campus-intro reveal">Four partner institutes cover the full spectrum of materials research as equal governance partners. DIFFER is an NWO institute; ICMS, EIRES, and Casimir are TU/e institutes.</p>
+                <div class="consortium-grid reveal-group">
                     <div class="consortium-card">
                         <h3>ICMS</h3>
                         <p><strong>Institute for Complex Molecular Systems.</strong> Soft Matter, Supramolecular Chemistry, Synthetic Biology.</p>
@@ -881,7 +902,7 @@
             <!-- 5. Positioning -->
             <section id="positioning">
                 <h2 class="reveal">Positioning</h2>
-                <div class="positioning-grid">
+                <div class="positioning-grid reveal-group">
                     <div class="position-card position-dark">
                         <h3>Within TU/e</h3>
                         <p>Available for materials research across all TU/e departments, serving as foundational infrastructure for the 'Intelligent Materials Labs' 10-year vision of the TU/e Flagship: Advanced Materials.</p>
@@ -902,7 +923,7 @@
                 <h2 class="reveal">Roadmap</h2>
                 <div class="roadmap-timeline">
                     <div class="roadmap-line"></div>
-                    <div class="roadmap-phases">
+                    <div class="roadmap-phases reveal-group">
                         <div class="roadmap-phase active">
                             <div class="phase-dot"></div>
                             <div class="phase-marker">Mar 2026</div>
@@ -941,7 +962,7 @@
             <!-- 7. Team -->
             <section id="team">
                 <h2 class="reveal">Team</h2>
-                <div class="team-group">
+                <div class="team-group reveal-group">
                     <h3>Core Leadership</h3>
                     <div class="team-member">
                         <span class="team-member-name">Jan van Hest</span>
@@ -956,7 +977,7 @@
                         <span class="team-member-role">Initiative Co-lead, ICMS / TU/e</span>
                     </div>
                 </div>
-                <div class="team-group">
+                <div class="team-group reveal-group">
                     <h3>Flagship Contributing Partners</h3>
                     <div class="team-bracket">
                         <div class="team-member">
@@ -974,7 +995,7 @@
             <!-- 8. Stakeholders - Full overhaul with responsive SVG, zoom/pan, sliding panel -->
             <section id="stakeholders">
                 <h2 class="reveal">Stakeholder Momentum</h2>
-                <p class="stakeholder-intro">Strong institutional anchors, real momentum, active engagement. The concentric rings below show stakeholder commitment levels across the national materials discovery ecosystem. Click any name for details.</p>
+                <p class="stakeholder-intro reveal">Strong institutional anchors, real momentum, active engagement. The concentric rings below show stakeholder commitment levels across the national materials discovery ecosystem. Click any name for details.</p>
 
                 <div class="map-container" id="mapContainer">
                     <svg id="stakeholderMap" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
@@ -1118,7 +1139,7 @@
                     </div>
                 </div>
 
-                <div class="stakeholder-stats">
+                <div class="stakeholder-stats reveal">
                     <p>3 core &middot; 5 committed &middot; 6 in dialogue &middot; 3 planned</p>
                 </div>
             </section>
@@ -1126,12 +1147,12 @@
             <!-- 9. Contact -->
             <section id="contact">
                 <h2 class="reveal">Contact and Next Steps</h2>
-                <div class="contact-info">
+                <div class="contact-info reveal">
                     <p><strong>Initiative Leads:</strong> y.wang8@tue.nl, j.c.m.v.hest@tue.nl</p>
                     <p><strong>Organisation:</strong> ICMS / TU/e</p>
                     <p><strong>NWO Contact Point:</strong> Mark van Assem</p>
                 </div>
-                <div class="next-steps">
+                <div class="next-steps reveal">
                     <h3>Key Milestones</h3>
                     <ul>
                         <li>April 2026: Executive Board alignment meeting</li>
@@ -1478,7 +1499,7 @@
     //  IntersectionObserver — reveal on scroll
     // ==========================================
     (function() {
-        const reveals = document.querySelectorAll('.reveal');
+        const targets = document.querySelectorAll('.reveal, .reveal-group');
         if ('IntersectionObserver' in window) {
             const obs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
@@ -1487,11 +1508,10 @@
                         obs.unobserve(e.target);
                     }
                 });
-            }, { threshold: 0.15 });
-            reveals.forEach(el => obs.observe(el));
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+            targets.forEach(el => obs.observe(el));
         } else {
-            // Fallback: show all immediately
-            reveals.forEach(el => el.classList.add('visible'));
+            targets.forEach(el => el.classList.add('visible'));
         }
     })();
 
