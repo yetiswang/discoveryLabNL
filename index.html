@@ -59,13 +59,20 @@
         /* Header */
         header {
             position: sticky; top: 0; z-index: 100;
-            background: rgba(30, 30, 40, 0.92);
-            backdrop-filter: saturate(180%) blur(16px);
-            -webkit-backdrop-filter: saturate(180%) blur(16px);
+            background: rgba(30, 30, 40, 0);
+            backdrop-filter: saturate(100%) blur(0px);
+            -webkit-backdrop-filter: saturate(100%) blur(0px);
             color: white;
             padding: 0.85rem 1.75rem;
             display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 1px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: none;
+            transition: background 0.4s ease, backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+        }
+        header.header-solid {
+            background: rgba(30, 30, 40, 0.88);
+            backdrop-filter: saturate(180%) blur(16px);
+            -webkit-backdrop-filter: saturate(180%) blur(16px);
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15);
         }
         .header-content { display: flex; align-items: center; gap: 1.1rem; }
         .header-logo { height: 36px; width: auto; filter: brightness(0) invert(1); opacity: 0.92; }
@@ -1693,6 +1700,23 @@
         // Run on scroll and on initial load
         window.addEventListener('scroll', updateActiveTab, { passive: true });
         updateActiveTab();
+
+        // ==========================================
+        //  Header transparency — blend into landing
+        // ==========================================
+        const headerEl = document.querySelector('header');
+        const landingEl = document.getElementById('landing');
+        function updateHeaderBg() {
+            if (!landingEl || !headerEl) return;
+            const landingBottom = landingEl.getBoundingClientRect().bottom;
+            if (landingBottom <= headerEl.offsetHeight + 20) {
+                headerEl.classList.add('header-solid');
+            } else {
+                headerEl.classList.remove('header-solid');
+            }
+        }
+        window.addEventListener('scroll', updateHeaderBg, { passive: true });
+        updateHeaderBg();
     </script>
 
     <script>
