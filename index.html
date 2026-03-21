@@ -404,6 +404,30 @@
         }
         .map-btn:hover { background: rgba(255,255,255,0.2); color: white; }
 
+        .map-zoom-hint {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: rgba(255,255,255,0.85);
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 20px;
+            pointer-events: none;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: none;
+        }
+        .map-zoom-hint.visible { opacity: 1; }
+
+        @media (min-width: 769px) {
+            .map-zoom-hint { display: none !important; }
+        }
+
         /* Stakeholder nodes */
         .s-node {
             cursor: pointer;
@@ -818,8 +842,8 @@
             .team-bracket { padding-left: 1rem; margin-left: 0.75rem; }
             .map-container { min-height: 300px; }
             .detail-panel { padding: 1.25rem 1.25rem 1.75rem; max-height: 55vh; }
-            .map-controls { bottom: 10px; right: 10px; }
-            .map-btn { width: 32px; height: 32px; font-size: 1rem; }
+            .map-controls { bottom: 12px; right: 12px; gap: 8px; }
+            .map-btn { width: 40px; height: 40px; font-size: 1.2rem; border-radius: 8px; }
             .stakeholder-stats p { font-size: 0.9rem; }
             .stakeholder-intro { font-size: 0.95rem; margin-bottom: 1.5rem; }
             .contact-info p { font-size: 0.9rem; }
@@ -1291,6 +1315,9 @@
                         </div>
                     </div>
 
+                    <!-- Zoom hint (mobile only) -->
+                    <div class="map-zoom-hint" id="mapZoomHint">Pinch to zoom &middot; tap a name for details</div>
+
                     <!-- Map controls -->
                     <div class="map-controls">
                         <button class="map-btn" id="zoomIn" title="Zoom in">+</button>
@@ -1485,6 +1512,18 @@
                     if (e.isIntersecting) {
                         mapEl.classList.add('map-entered');
                         mapObs.unobserve(e.target);
+                        // Show zoom hint on mobile (once only)
+                        if (window.innerWidth <= 768) {
+                            const hint = document.getElementById('mapZoomHint');
+                            if (hint) {
+                                hint.style.display = 'block';
+                                requestAnimationFrame(() => hint.classList.add('visible'));
+                                setTimeout(() => {
+                                    hint.classList.remove('visible');
+                                    setTimeout(() => { hint.style.display = 'none'; }, 500);
+                                }, 3000);
+                            }
+                        }
                     }
                 });
             }, { threshold: 0.15 });
@@ -1560,40 +1599,97 @@
             mapContainer.style.cursor = 'grab';
         });
 
-        // Touch support
+        // Touch support — pinch-to-zoom + conditional pan/scroll
         let lastTouchDist = 0;
+        let touchPanStart = null;
+        let isPinching = false;
+        let pinchMidpoint = null;
+
+        function isZoomedIn() {
+            return viewBox.w < VB_INIT.w * 0.95 || viewBox.h < VB_INIT.h * 0.95;
+        }
+
+        function getTouchMidpoint(t0, t1) {
+            return { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 };
+        }
+
+        function screenToSvg(clientX, clientY) {
+            const rect = mapContainer.getBoundingClientRect();
+            return {
+                x: viewBox.x + (clientX - rect.left) / rect.width * viewBox.w,
+                y: viewBox.y + (clientY - rect.top) / rect.height * viewBox.h
+            };
+        }
+
         mapContainer.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                isPanning = true;
-                panStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-            } else if (e.touches.length === 2) {
+            if (e.touches.length === 2) {
+                isPinching = true;
+                isPanning = false;
                 lastTouchDist = Math.hypot(
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
+                pinchMidpoint = getTouchMidpoint(e.touches[0], e.touches[1]);
+            } else if (e.touches.length === 1) {
+                touchPanStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                isPanning = false; // don't start pan immediately — wait for move to confirm
             }
         }, { passive: true });
 
         mapContainer.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 1 && isPanning) {
-                const dx = e.touches[0].clientX - panStart.x;
-                const dy = e.touches[0].clientY - panStart.y;
-                const rect = mapContainer.getBoundingClientRect();
-                viewBox.x -= dx * (viewBox.w / rect.width);
-                viewBox.y -= dy * (viewBox.h / rect.height);
-                panStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-                applyViewBox();
-            } else if (e.touches.length === 2) {
+            if (e.touches.length === 2) {
+                // Pinch-to-zoom around midpoint
+                e.preventDefault();
                 const dist = Math.hypot(
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
-                if (lastTouchDist > 0) zoom(lastTouchDist / dist);
+                if (lastTouchDist > 0 && dist > 0) {
+                    const mid = getTouchMidpoint(e.touches[0], e.touches[1]);
+                    const focal = screenToSvg(mid.x, mid.y);
+                    const factor = lastTouchDist / dist;
+                    const newW = Math.max(200, Math.min(2000, viewBox.w * factor));
+                    const newH = Math.max(200, Math.min(2000, viewBox.h * factor));
+                    // Keep focal point stationary
+                    viewBox.x = focal.x - (focal.x - viewBox.x) * (newW / viewBox.w);
+                    viewBox.y = focal.y - (focal.y - viewBox.y) * (newH / viewBox.h);
+                    viewBox.w = newW;
+                    viewBox.h = newH;
+                    applyViewBox();
+                }
                 lastTouchDist = dist;
+                pinchMidpoint = getTouchMidpoint(e.touches[0], e.touches[1]);
+                return;
             }
-        }, { passive: true });
 
-        mapContainer.addEventListener('touchend', () => { isPanning = false; lastTouchDist = 0; });
+            if (e.touches.length === 1 && touchPanStart && !isPinching) {
+                const dx = e.touches[0].clientX - touchPanStart.x;
+                const dy = e.touches[0].clientY - touchPanStart.y;
+
+                // Only pan the map if zoomed in; otherwise let page scroll
+                if (!isZoomedIn()) return;
+
+                e.preventDefault();
+                isPanning = true;
+                const rect = mapContainer.getBoundingClientRect();
+                viewBox.x -= dx * (viewBox.w / rect.width);
+                viewBox.y -= dy * (viewBox.h / rect.height);
+                touchPanStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                applyViewBox();
+            }
+        }, { passive: false });
+
+        mapContainer.addEventListener('touchend', (e) => {
+            if (e.touches.length < 2) {
+                isPinching = false;
+                lastTouchDist = 0;
+                pinchMidpoint = null;
+            }
+            if (e.touches.length === 0) {
+                isPanning = false;
+                touchPanStart = null;
+            }
+        });
 
         // ==========================================
         //  Responsive map container height
