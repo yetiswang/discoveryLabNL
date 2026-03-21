@@ -685,22 +685,26 @@
             stroke: var(--tue-red);
             filter: drop-shadow(0 0 4px rgba(200, 16, 46, 0.35));
         }
-        /* Sliding pill indicator */
+        /* Sliding pill indicator — taken out of flex flow */
+        .bottom-tabs { position: fixed; /* already set, ensures positioning context */ }
         .tab-pill {
             position: absolute;
             top: 6px;
+            left: 0;
             height: calc(100% - 12px);
             border-radius: 14px;
             background: rgba(200, 16, 46, 0.14);
             pointer-events: none;
             z-index: 0;
+            width: 0;
+            transform: translateX(0);
             transition: transform 0.18s cubic-bezier(0.25, 1, 0.5, 1), width 0.18s cubic-bezier(0.25, 1, 0.5, 1);
             will-change: transform, width;
         }
         .tab-pill.dragging {
             transition: transform 0.08s ease-out, width 0.08s ease-out;
         }
-        .tab-item { z-index: 1; }
+        .tab-item { z-index: 1; position: relative; }
 
         /* ============================================ */
         /*  ENTRANCE ANIMATIONS (staggered fade/slide)  */
@@ -1833,17 +1837,20 @@
         const bottomTabs = document.getElementById('bottomTabs');
         const tabArr = Array.from(tabItems);
 
+        // Use offsetLeft/offsetWidth — stable layout-relative values
+        // that don't depend on scroll position or viewport offset
         function positionPill(tab, instant) {
             if (!tabPill || !tab) return;
-            const navRect = bottomTabs.getBoundingClientRect();
-            const tabRect = tab.getBoundingClientRect();
-            const offsetX = tabRect.left - navRect.left;
+            // Skip if nav is hidden (display:none → offsetWidth is 0)
+            if (!bottomTabs.offsetWidth) return;
+            const x = tab.offsetLeft;
+            const w = tab.offsetWidth;
             if (instant) {
                 tabPill.style.transition = 'none';
                 tabPill.offsetHeight; // force reflow
             }
-            tabPill.style.width = tabRect.width + 'px';
-            tabPill.style.transform = 'translateX(' + offsetX + 'px)';
+            tabPill.style.width = w + 'px';
+            tabPill.style.transform = 'translateX(' + x + 'px)';
             if (instant) {
                 requestAnimationFrame(() => {
                     tabPill.style.transition = '';
@@ -1851,20 +1858,20 @@
             }
         }
 
-        // Position pill on the currently active tab
         function syncPill(instant) {
             const active = bottomTabs.querySelector('.tab-item.active');
             if (active) positionPill(active, instant);
         }
 
-        // Override updateActiveTab to also move pill
-        const origUpdateActiveTab = updateActiveTab;
-        function updateActiveTabWithPill() {
-            origUpdateActiveTab();
+        // Patch updateActiveTab to also move pill
+        const _origUpdateActive = updateActiveTab;
+        updateActiveTab = function() {
+            _origUpdateActive();
             syncPill(false);
-        }
-        window.removeEventListener('scroll', origUpdateActiveTab);
-        window.addEventListener('scroll', updateActiveTabWithPill, { passive: true });
+        };
+        // Replace the scroll listener
+        window.removeEventListener('scroll', _origUpdateActive);
+        window.addEventListener('scroll', updateActiveTab, { passive: true });
 
         // Also move pill on tab click
         tabItems.forEach(tab => {
@@ -1873,9 +1880,28 @@
             });
         });
 
-        // Initial position (instant, no animation)
-        requestAnimationFrame(() => syncPill(true));
-        // Reposition on resize
+        // Defer initial position until nav is actually visible
+        // Use ResizeObserver to detect when bottom-tabs becomes visible
+        if ('ResizeObserver' in window) {
+            const pillInitObs = new ResizeObserver(() => {
+                if (bottomTabs.offsetWidth > 0) {
+                    syncPill(true);
+                    pillInitObs.disconnect();
+                }
+            });
+            pillInitObs.observe(bottomTabs);
+        } else {
+            // Fallback: retry a few times
+            let tries = 0;
+            const initInterval = setInterval(() => {
+                if (bottomTabs.offsetWidth > 0 || tries++ > 20) {
+                    syncPill(true);
+                    clearInterval(initInterval);
+                }
+            }, 100);
+        }
+
+        // Reposition on resize (instant, no animation)
         window.addEventListener('resize', () => syncPill(true));
 
         // --- Touch drag interaction (mobile only) ---
@@ -1883,25 +1909,24 @@
         let dragPrevTab = null;
         let dragStartTab = null;
 
-        function getTabUnderTouch(touchX, touchY) {
+        function getTabUnderTouch(touchX) {
+            // Use horizontal position only — much more reliable for a horizontal bar
             for (const tab of tabArr) {
                 const r = tab.getBoundingClientRect();
-                if (touchX >= r.left && touchX <= r.right && touchY >= r.top - 20 && touchY <= r.bottom + 20) {
-                    return tab;
-                }
+                if (touchX >= r.left && touchX <= r.right) return tab;
             }
             return null;
         }
 
         bottomTabs.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.tab-pill')) return; // ignore pill itself
             const touch = e.touches[0];
-            const tab = getTabUnderTouch(touch.clientX, touch.clientY);
+            const tab = getTabUnderTouch(touch.clientX);
             if (!tab) return;
             dragActive = true;
             dragStartTab = bottomTabs.querySelector('.tab-item.active');
             dragPrevTab = tab;
             tabPill.classList.add('dragging');
-            // Highlight the touched tab immediately
             tabArr.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             positionPill(tab, false);
@@ -1909,25 +1934,23 @@
 
         bottomTabs.addEventListener('touchmove', (e) => {
             if (!dragActive) return;
-            e.preventDefault(); // prevent scroll while dragging on the bar
+            e.preventDefault();
             const touch = e.touches[0];
-            const hovered = getTabUnderTouch(touch.clientX, touch.clientY);
+            const hovered = getTabUnderTouch(touch.clientX);
             if (hovered && hovered !== dragPrevTab) {
                 dragPrevTab = hovered;
                 tabArr.forEach(t => t.classList.remove('active'));
                 hovered.classList.add('active');
                 positionPill(hovered, false);
             }
-            // If finger moves off the bar entirely, keep last hovered
         }, { passive: false });
 
-        bottomTabs.addEventListener('touchend', (e) => {
+        bottomTabs.addEventListener('touchend', () => {
             if (!dragActive) return;
             dragActive = false;
             tabPill.classList.remove('dragging');
             const active = bottomTabs.querySelector('.tab-item.active');
             if (active) {
-                // Navigate to section
                 const href = active.getAttribute('href');
                 if (href) {
                     const target = document.getElementById(href.slice(1));
@@ -1935,7 +1958,6 @@
                 }
                 positionPill(active, false);
             } else if (dragStartTab) {
-                // Snap back if somehow no tab active
                 dragStartTab.classList.add('active');
                 positionPill(dragStartTab, false);
             }
@@ -1943,7 +1965,6 @@
             dragPrevTab = null;
         });
 
-        // Cancel drag if touches leave entirely
         bottomTabs.addEventListener('touchcancel', () => {
             if (!dragActive) return;
             dragActive = false;
