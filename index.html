@@ -59,9 +59,7 @@
         /* Header */
         header {
             position: sticky; top: 0; z-index: 100;
-            background: rgba(30, 30, 40, 0);
-            backdrop-filter: saturate(100%) blur(0px);
-            -webkit-backdrop-filter: saturate(100%) blur(0px);
+            background: var(--tue-dark);
             color: white;
             padding: 0.85rem 1.75rem;
             display: flex; align-items: center; justify-content: space-between;
@@ -69,7 +67,7 @@
             transition: background 0.4s ease, backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease, box-shadow 0.4s ease;
         }
         header.header-solid {
-            background: rgba(30, 30, 40, 0.88);
+            background: rgba(30, 30, 40, 0.92);
             backdrop-filter: saturate(180%) blur(16px);
             -webkit-backdrop-filter: saturate(180%) blur(16px);
             box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15);
