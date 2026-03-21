@@ -297,7 +297,6 @@
         .position-dark p { color: rgba(255,255,255,0.85); }
 
         /* Roadmap */
-        #roadmap { min-height: auto; }
         #roadmap h2 { font-size: 2.5rem; margin-bottom: 3rem; color: var(--tue-dark); }
         .roadmap-timeline { display: flex; justify-content: space-between; align-items: flex-start; position: relative; padding: 2rem 0; }
         .roadmap-line { position: absolute; top: 60px; left: 0; right: 0; height: 2px; background-color: var(--tue-light-border); z-index: 0; }
@@ -573,50 +572,6 @@
         .reveal.visible {
             opacity: 1;
             transform: translateY(0);
-        }
-
-        /* ============================================ */
-        /*  D3 TIMELINE (roadmap)                       */
-        /* ============================================ */
-        .d3-timeline-container {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        .d3-timeline-container svg {
-            display: block;
-        }
-        .d3-timeline-container .phase-bar {
-            rx: 4; ry: 4;
-            cursor: pointer;
-            transition: filter 0.2s ease;
-        }
-        .d3-timeline-container .phase-bar:hover {
-            filter: brightness(1.08) drop-shadow(0 2px 8px rgba(200,16,46,0.25));
-        }
-        .timeline-tooltip {
-            position: fixed;
-            pointer-events: none;
-            background: var(--tue-dark);
-            color: white;
-            padding: 10px 14px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            max-width: 260px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-            z-index: 300;
-            opacity: 0;
-            transition: opacity 0.15s;
-        }
-        .timeline-tooltip.show { opacity: 1; }
-        .timeline-tooltip strong { color: var(--tue-red); font-weight: 700; }
-        .timeline-now-badge {
-            font-size: 0.7rem;
-            fill: var(--tue-red);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         /* Responsive — tablet */
@@ -942,13 +897,46 @@
                 </div>
             </section>
 
-            <!-- 6. Roadmap — D3 Interactive Timeline -->
+            <!-- 6. Roadmap -->
             <section id="roadmap">
                 <h2 class="reveal">Roadmap</h2>
-                <div class="d3-timeline-container reveal" id="d3Timeline"></div>
+                <div class="roadmap-timeline">
+                    <div class="roadmap-line"></div>
+                    <div class="roadmap-phases">
+                        <div class="roadmap-phase active">
+                            <div class="phase-dot"></div>
+                            <div class="phase-marker">Mar 2026</div>
+                            <div class="phase-title">Initiation &amp; Alignment</div>
+                            <div class="phase-desc">Project mandate, governance, EB buy-in</div>
+                            <div class="phase-here">We are here</div>
+                        </div>
+                        <div class="roadmap-phase">
+                            <div class="phase-dot"></div>
+                            <div class="phase-marker">Q2-Q3 2026</div>
+                            <div class="phase-title">Concept &amp; Architecture</div>
+                            <div class="phase-desc">Three-pillar design, consortium formation</div>
+                        </div>
+                        <div class="roadmap-phase">
+                            <div class="phase-dot"></div>
+                            <div class="phase-marker">Q3 2026</div>
+                            <div class="phase-title">Stakeholder Validation</div>
+                            <div class="phase-desc">Institute and Flagship alignment</div>
+                        </div>
+                        <div class="roadmap-phase">
+                            <div class="phase-dot"></div>
+                            <div class="phase-marker">Q4 2026</div>
+                            <div class="phase-title">Pilot &amp; Investment</div>
+                            <div class="phase-desc">Pilot portfolio, LSRI proposal</div>
+                        </div>
+                        <div class="roadmap-phase">
+                            <div class="phase-dot"></div>
+                            <div class="phase-marker">2027</div>
+                            <div class="phase-title">NWO LSRI Submission</div>
+                            <div class="phase-desc">Full proposal to NWO</div>
+                        </div>
+                    </div>
+                </div>
             </section>
-            <!-- Tooltip element for D3 timeline -->
-            <div class="timeline-tooltip" id="timelineTooltip"></div>
 
             <!-- 7. Team -->
             <section id="team">
@@ -1485,8 +1473,6 @@
         updateActiveTab();
     </script>
 
-    <!-- D3.js for interactive timeline -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script>
     // ==========================================
     //  IntersectionObserver — reveal on scroll
@@ -1524,253 +1510,6 @@
         }
     })();
 
-    // ==========================================
-    //  D3 Interactive Timeline / Gantt
-    // ==========================================
-    (function() {
-        const phases = [
-            {
-                id: 'initiation',
-                title: 'Initiation & Alignment',
-                start: new Date(2026, 0, 1),   // Jan 2026
-                end: new Date(2026, 4, 1),      // May 2026
-                desc: 'Project mandate, governance structure, Executive Board buy-in',
-                milestones: ['Project Charter v1.0', 'EB endorsement meeting'],
-                active: true
-            },
-            {
-                id: 'concept',
-                title: 'Concept & Architecture',
-                start: new Date(2026, 3, 1),    // Apr 2026
-                end: new Date(2026, 8, 1),      // Sep 2026
-                desc: 'Three-pillar technical design, consortium formation, MoU drafting',
-                milestones: ['Architecture document', 'Consortium MoU signed']
-            },
-            {
-                id: 'validation',
-                title: 'Stakeholder Validation',
-                start: new Date(2026, 6, 1),    // Jul 2026
-                end: new Date(2026, 10, 1),     // Nov 2026
-                desc: 'Institute and Flagship alignment, national partner engagement',
-                milestones: ['Flagship alignment confirmed', 'NWO pre-consultation']
-            },
-            {
-                id: 'pilot',
-                title: 'Pilot & Investment Case',
-                start: new Date(2026, 9, 1),    // Oct 2026
-                end: new Date(2027, 2, 1),      // Mar 2027
-                desc: 'Pilot portfolio, investment case, LSRI proposal drafting',
-                milestones: ['Pilot results report', 'Investment case approved']
-            },
-            {
-                id: 'submission',
-                title: 'NWO LSRI Submission',
-                start: new Date(2027, 2, 1),    // Mar 2027
-                end: new Date(2027, 9, 1),      // Oct 2027
-                desc: 'Full proposal writing, review cycles, formal submission to NWO',
-                milestones: ['Draft proposal review', 'NWO submission deadline']
-            }
-        ];
-
-        const container = document.getElementById('d3Timeline');
-        if (!container) return;
-
-        const tooltip = document.getElementById('timelineTooltip');
-        const isMobile = () => window.innerWidth <= 768;
-
-        function drawTimeline() {
-            // Clear previous
-            container.innerHTML = '';
-
-            const mobile = isMobile();
-            const margin = mobile
-                ? { top: 36, right: 16, bottom: 30, left: 16 }
-                : { top: 48, right: 32, bottom: 36, left: 32 };
-
-            const containerWidth = container.clientWidth || 600;
-            const width = containerWidth - margin.left - margin.right;
-            const barHeight = mobile ? 36 : 44;
-            const barGap = mobile ? 8 : 12;
-            const height = phases.length * (barHeight + barGap) + margin.top + margin.bottom;
-
-            const svg = d3.select(container)
-                .append('svg')
-                .attr('width', containerWidth)
-                .attr('height', height)
-                .attr('viewBox', `0 0 ${containerWidth} ${height}`)
-                .attr('preserveAspectRatio', 'xMidYMid meet');
-
-            const g = svg.append('g')
-                .attr('transform', `translate(${margin.left},${margin.top})`);
-
-            // Time scale
-            const timeExtent = [
-                d3.min(phases, d => d.start),
-                d3.max(phases, d => d.end)
-            ];
-            const x = d3.scaleTime().domain(timeExtent).range([0, width]);
-
-            // Axis
-            const tickCount = mobile ? 4 : 8;
-            const xAxis = d3.axisTop(x)
-                .ticks(tickCount)
-                .tickFormat(d3.timeFormat('%b %Y'))
-                .tickSize(-height + margin.top + margin.bottom)
-                .tickPadding(10);
-
-            const axisG = g.append('g')
-                .attr('class', 'timeline-axis')
-                .call(xAxis);
-
-            // Style axis
-            axisG.select('.domain').attr('stroke', '#E8E8ED');
-            axisG.selectAll('.tick line')
-                .attr('stroke', '#E8E8ED')
-                .attr('stroke-dasharray', '3,3')
-                .attr('opacity', 0.6);
-            axisG.selectAll('.tick text')
-                .attr('fill', '#64646E')
-                .attr('font-size', mobile ? '10px' : '12px')
-                .attr('font-family', "'Avenir Next LT Pro', system-ui, sans-serif");
-
-            // Color scale
-            const colors = ['#C8102E', '#E04460', '#64646E', '#8B8B96', '#1E1E28'];
-
-            // Phase bars
-            phases.forEach((phase, i) => {
-                const y = i * (barHeight + barGap);
-                const barX = x(phase.start);
-                const barW = Math.max(x(phase.end) - x(phase.start), 4);
-
-                // Bar background (full row)
-                g.append('rect')
-                    .attr('x', 0).attr('y', y)
-                    .attr('width', width).attr('height', barHeight)
-                    .attr('fill', i % 2 === 0 ? 'rgba(245,245,248,0.5)' : 'transparent')
-                    .attr('rx', 2);
-
-                // Phase bar
-                const bar = g.append('rect')
-                    .attr('class', 'phase-bar')
-                    .attr('x', barX).attr('y', y + 2)
-                    .attr('width', barW).attr('height', barHeight - 4)
-                    .attr('fill', colors[i])
-                    .attr('rx', 4).attr('ry', 4)
-                    .attr('opacity', phase.active ? 1 : 0.75);
-
-                // Active phase pulse outline
-                if (phase.active) {
-                    g.append('rect')
-                        .attr('x', barX - 2).attr('y', y)
-                        .attr('width', barW + 4).attr('height', barHeight)
-                        .attr('fill', 'none')
-                        .attr('stroke', '#C8102E')
-                        .attr('stroke-width', 2)
-                        .attr('rx', 6).attr('ry', 6)
-                        .attr('opacity', 0.5)
-                        .attr('stroke-dasharray', '6,3');
-                }
-
-                // Phase title (inside bar if it fits, else to the right)
-                const labelText = mobile && phase.title.length > 18
-                    ? phase.title.split(' ').slice(0, 2).join(' ') + '…'
-                    : phase.title;
-                const fontSize = mobile ? 11 : 13;
-                const textFits = barW > labelText.length * fontSize * 0.6;
-
-                g.append('text')
-                    .attr('x', textFits ? barX + 8 : barX + barW + 8)
-                    .attr('y', y + barHeight / 2 + 1)
-                    .attr('dy', '0.35em')
-                    .attr('fill', textFits ? 'white' : '#1E1E28')
-                    .attr('font-size', fontSize + 'px')
-                    .attr('font-weight', 600)
-                    .attr('font-family', "'Avenir Next LT Pro', system-ui, sans-serif")
-                    .text(labelText)
-                    .style('pointer-events', 'none');
-
-                // "We are here" marker for active phase
-                if (phase.active) {
-                    const now = new Date();
-                    const nowX = x(now);
-                    if (nowX >= barX && nowX <= barX + barW) {
-                        g.append('line')
-                            .attr('x1', nowX).attr('x2', nowX)
-                            .attr('y1', y - 4).attr('y2', y + barHeight + 4)
-                            .attr('stroke', '#C8102E')
-                            .attr('stroke-width', 2.5)
-                            .attr('stroke-linecap', 'round');
-                        g.append('text')
-                            .attr('class', 'timeline-now-badge')
-                            .attr('x', nowX).attr('y', y - 8)
-                            .attr('text-anchor', 'middle')
-                            .attr('font-family', "'Avenir Next LT Pro', system-ui, sans-serif")
-                            .text('NOW');
-                    }
-                }
-
-                // Milestone diamonds
-                if (!mobile) {
-                    phase.milestones.forEach((ms, mi) => {
-                        const msDate = new Date(
-                            phase.start.getTime() +
-                            ((mi + 1) / (phase.milestones.length + 1)) *
-                            (phase.end.getTime() - phase.start.getTime())
-                        );
-                        const msX = x(msDate);
-                        if (msX >= barX && msX <= barX + barW) {
-                            g.append('polygon')
-                                .attr('points', `${msX},${y+6} ${msX+5},${y+barHeight/2} ${msX},${y+barHeight-6} ${msX-5},${y+barHeight/2}`)
-                                .attr('fill', 'white')
-                                .attr('opacity', 0.85)
-                                .style('pointer-events', 'none');
-                        }
-                    });
-                }
-
-                // Hover interactions
-                bar.on('mouseenter', function(event) {
-                    const milestonesHtml = phase.milestones
-                        .map(m => '<br>&diamondsuit; ' + m).join('');
-                    tooltip.innerHTML =
-                        '<strong>' + phase.title + '</strong><br>' +
-                        phase.desc + milestonesHtml;
-                    tooltip.classList.add('show');
-                })
-                .on('mousemove', function(event) {
-                    const tx = event.clientX + 14;
-                    const ty = event.clientY - 14;
-                    tooltip.style.left = tx + 'px';
-                    tooltip.style.top = ty + 'px';
-                })
-                .on('mouseleave', function() {
-                    tooltip.classList.remove('show');
-                });
-
-                // Touch for mobile
-                bar.on('touchstart', function(event) {
-                    event.preventDefault();
-                    const milestonesHtml = phase.milestones
-                        .map(m => '<br>&diamondsuit; ' + m).join('');
-                    tooltip.innerHTML =
-                        '<strong>' + phase.title + '</strong><br>' +
-                        phase.desc + milestonesHtml;
-                    tooltip.classList.add('show');
-                    const touch = event.touches[0];
-                    tooltip.style.left = (touch.clientX - 80) + 'px';
-                    tooltip.style.top = (touch.clientY - 90) + 'px';
-                    setTimeout(() => tooltip.classList.remove('show'), 2500);
-                }, { passive: false });
-            });
-        }
-
-        drawTimeline();
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(drawTimeline, 200);
-        });
-    })();
     </script>
 </body>
 </html>
