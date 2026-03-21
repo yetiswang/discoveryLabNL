@@ -1875,31 +1875,40 @@
             if (active) movePill(active, animate);
         }
 
-        // --- Scroll spy pill sync (debounced to avoid rapid restarts) ---
-        let pillScrollRaf = null;
+        // --- Navigation lock: after explicit nav (click/touchend),
+        //     ignore scroll spy pill updates for 600ms to prevent
+        //     ghost snap-back during scrollIntoView deceleration ---
+        let navLockUntil = 0;
+        function lockNavigation() {
+            navLockUntil = Date.now() + 600;
+        }
+        function isNavLocked() {
+            return Date.now() < navLockUntil;
+        }
+
+        // --- Scroll spy pill sync ---
         let lastScrollActiveTab = null;
         const _origUpdateActive = updateActiveTab;
         updateActiveTab = function() {
             _origUpdateActive();
-            // Only move pill if the active tab actually changed
+            // Skip pill update if nav-locked, dragging, or same tab
+            if (isNavLocked() || dragActive) return;
             const active = bottomTabs.querySelector('.tab-item.active');
             if (active && active !== lastScrollActiveTab) {
                 lastScrollActiveTab = active;
-                if (pillScrollRaf) cancelAnimationFrame(pillScrollRaf);
-                pillScrollRaf = requestAnimationFrame(() => {
-                    if (!dragActive) movePill(active, true);
-                    pillScrollRaf = null;
-                });
+                movePill(active, true);
             }
         };
         window.removeEventListener('scroll', _origUpdateActive);
         window.addEventListener('scroll', updateActiveTab, { passive: true });
 
-        // --- Click handler: move pill immediately, skip if dragging ---
+        // --- Click handler: move pill immediately, lock nav ---
         tabItems.forEach(tab => {
             tab.addEventListener('click', () => {
                 if (!dragActive) {
-                    lastScrollActiveTab = tab; // prevent scroll spy from re-triggering
+                    lockNavigation();
+                    lastScrollActiveTab = tab;
+                    pillCurrentTab = null; // force move even if same tab
                     movePill(tab, true);
                 }
             });
@@ -1986,13 +1995,13 @@
             dragActive = false;
             const active = bottomTabs.querySelector('.tab-item.active');
             if (active) {
+                lockNavigation(); // lock pill for 600ms during scrollIntoView
                 lastScrollActiveTab = active;
                 const href = active.getAttribute('href');
                 if (href) {
                     const target = document.getElementById(href.slice(1));
                     if (target) target.scrollIntoView({ behavior: 'smooth' });
                 }
-                // No need to re-move pill — it's already there from touchmove
             } else if (dragStartTab) {
                 dragStartTab.classList.add('active');
                 pillCurrentTab = null;
