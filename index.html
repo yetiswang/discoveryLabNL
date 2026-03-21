@@ -337,7 +337,7 @@
         }
 
         /* ============================================ */
-        /*  STAKEHOLDER SECTION - Full overhaul         */
+        /*  STAKEHOLDER SECTION - Dark map overhaul     */
         /* ============================================ */
         #stakeholders {
             background-color: var(--tue-light);
@@ -348,13 +348,12 @@
         .stakeholder-intro { font-size: 1.1rem; color: var(--tue-gray); margin-bottom: 2.5rem; line-height: 1.7; }
 
         .map-container {
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            background: #14141E;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
             position: relative;
             overflow: hidden;
             width: 100%;
-            /* Aspect ratio trick: height set by JS for responsiveness */
             min-height: 500px;
             cursor: grab;
         }
@@ -375,44 +374,135 @@
         }
         .map-btn {
             width: 36px; height: 36px;
-            background: white; border: 1px solid var(--tue-light-border);
-            border-radius: 4px; cursor: pointer;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; color: var(--tue-dark);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            font-size: 1.2rem; color: rgba(255,255,255,0.7);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
             transition: background 0.15s;
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
         }
-        .map-btn:hover { background: var(--tue-light); }
+        .map-btn:hover { background: rgba(255,255,255,0.2); color: white; }
 
         /* Stakeholder nodes */
-        .s-node { cursor: pointer; transition: transform 0.15s ease; }
-        .s-node:hover .s-dot { filter: drop-shadow(0 2px 8px rgba(200,16,46,0.4)); }
-        .s-node:hover .s-name { font-weight: 700; }
-        .s-dot { transition: all 0.15s ease; }
+        .s-node {
+            cursor: pointer;
+            transition: opacity 0.35s ease;
+        }
+        .s-node:hover .s-dot { filter: drop-shadow(0 0 10px rgba(200,16,46,0.6)); }
+        .s-node:hover .s-name { fill: white !important; }
+        .s-dot { transition: all 0.2s ease; }
         .s-name {
             font-family: 'Avenir Next LT Pro', system-ui, sans-serif;
-            font-size: 14px; fill: var(--tue-dark);
+            font-size: 16px; fill: rgba(255,255,255,0.85);
             pointer-events: none; font-weight: 500;
         }
-        .s-ring-label {
-            font-family: 'Avenir Next LT Pro', system-ui, sans-serif;
-            font-size: 13px; fill: var(--tue-gray);
-            font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
-            opacity: 0.45;
+        /* Core team names slightly larger and brighter */
+        .s-node[data-tier="core"] .s-name {
+            font-size: 17px; fill: rgba(255,255,255,0.95); font-weight: 700;
+        }
+
+        /* Node entrance animation (triggered by JS adding .map-entered to container) */
+        .s-node {
+            opacity: 0;
+            transform: scale(0.7);
+            transform-origin: var(--cx, 500px) var(--cy, 500px);
+        }
+        .map-entered .s-node {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        /* Stagger by tier */
+        .map-entered .s-node[data-tier="core"]      { transition-delay: 0.1s; }
+        .map-entered .s-node[data-tier="committed"]  { transition-delay: 0.35s; }
+        .map-entered .s-node[data-tier="dialogue"]   { transition-delay: 0.6s; }
+        .map-entered .s-node[data-tier="planned"]    { transition-delay: 0.9s; }
+
+        /* Dim state when legend is hovered */
+        .map-container.tier-focus .s-node {
+            opacity: 0.12 !important;
+            transition: opacity 0.25s ease;
+        }
+        .map-container.tier-focus .s-node.tier-highlight {
+            opacity: 1 !important;
+        }
+        .map-container.tier-focus .s-node.tier-highlight .s-dot {
+            filter: drop-shadow(0 0 8px rgba(200,16,46,0.5));
+        }
+
+        /* Core team pulse — scale-based for cross-browser support */
+        @keyframes corePulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(200,16,46,0.3)); }
+            50% { transform: scale(1.25); filter: drop-shadow(0 0 10px rgba(200,16,46,0.6)); }
+        }
+        .map-entered .s-node[data-tier="core"] .s-dot {
+            animation: corePulse 2.5s ease-in-out infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        /* Inner ring glow */
+        @keyframes ringGlow {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(200,16,46,0.3)); }
+            50% { filter: drop-shadow(0 0 14px rgba(200,16,46,0.6)); }
+        }
+        .map-entered .ring-core {
+            animation: ringGlow 3s ease-in-out infinite;
+        }
+
+        /* Floating legend overlay */
+        .map-legend {
+            position: absolute;
+            bottom: 16px; left: 16px;
+            display: flex; flex-direction: column; gap: 6px;
+            background: rgba(20, 20, 30, 0.82);
+            -webkit-backdrop-filter: saturate(180%) blur(16px);
+            backdrop-filter: saturate(180%) blur(16px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 12px 16px;
+            z-index: 10;
+        }
+        .map-legend-item {
+            display: flex; align-items: center; gap: 10px;
+            cursor: pointer;
+            padding: 3px 4px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+        .map-legend-item:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        .map-legend-item .legend-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .map-legend-item .legend-label {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .map-legend-item:hover .legend-label {
+            color: white;
         }
 
         /* Sliding detail panel */
         .detail-panel {
             position: absolute; top: 0; right: 0;
             width: 320px; height: 100%;
-            background: white;
+            background: #1a1a26;
             border-left: 4px solid var(--tue-red);
-            box-shadow: -4px 0 16px rgba(0,0,0,0.1);
+            box-shadow: -4px 0 16px rgba(0,0,0,0.3);
             transform: translateX(100%);
             transition: transform 0.3s ease;
             z-index: 20;
             padding: 2rem;
             overflow-y: auto;
+            color: rgba(255,255,255,0.85);
         }
         .detail-panel.open { transform: translateX(0); }
         .detail-panel-handle {
@@ -425,24 +515,24 @@
         .detail-panel-close {
             position: absolute; top: 1rem; right: 1rem;
             background: none; border: none;
-            font-size: 1.5rem; color: var(--tue-gray);
+            font-size: 1.5rem; color: rgba(255,255,255,0.5);
             cursor: pointer; line-height: 1;
         }
-        .detail-panel-close:hover { color: var(--tue-dark); }
+        .detail-panel-close:hover { color: white; }
         .detail-panel h4 {
-            font-size: 1.15rem; color: var(--tue-dark);
+            font-size: 1.15rem; color: white;
             margin-bottom: 0.75rem; font-weight: 700; padding-right: 2rem;
         }
         .detail-panel .dp-field {
             margin-bottom: 0.75rem;
         }
         .detail-panel .dp-label {
-            font-size: 0.75rem; color: var(--tue-gray);
+            font-size: 0.75rem; color: rgba(255,255,255,0.45);
             text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;
             margin-bottom: 0.25rem;
         }
         .detail-panel .dp-value {
-            font-size: 0.95rem; color: var(--tue-dark); line-height: 1.5;
+            font-size: 0.95rem; color: rgba(255,255,255,0.85); line-height: 1.5;
         }
         .status-badge {
             display: inline-block; padding: 0.2rem 0.65rem;
@@ -1000,110 +1090,112 @@
                 <div class="map-container" id="mapContainer">
                     <svg id="stakeholderMap" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
                         <g id="mapGroup">
-                            <!-- Background -->
-                            <rect x="0" y="0" width="1000" height="1000" fill="white"/>
+                            <!-- Background — dark -->
+                            <rect x="0" y="0" width="1000" height="1000" fill="#14141E"/>
 
-                            <!-- Rings -->
-                            <circle cx="500" cy="500" r="420" stroke="#E8E8ED" stroke-width="1" stroke-dasharray="6,4" fill="none"/>
-                            <circle cx="500" cy="500" r="310" stroke="#64646E" stroke-width="1.2" fill="none" opacity="0.4"/>
-                            <circle cx="500" cy="500" r="200" stroke="#C8102E" stroke-width="1.8" fill="none" opacity="0.3"/>
-                            <circle cx="500" cy="500" r="90" stroke="#C8102E" stroke-width="2.5" fill="none" opacity="0.6"/>
-
-                            <!-- Ring labels: positioned in upper-right arc gaps between rings -->
-                            <text x="855" y="260" text-anchor="start" class="s-ring-label" fill="#64646E">PLANNED</text>
-                            <text x="755" y="240" text-anchor="start" class="s-ring-label" fill="#64646E">IN DIALOGUE</text>
-                            <text x="650" y="220" text-anchor="start" class="s-ring-label" fill="#C8102E">COMMITTED</text>
-                            <text x="540" y="440" text-anchor="start" class="s-ring-label" fill="#C8102E">CORE TEAM</text>
+                            <!-- Rings — luminous on dark -->
+                            <circle cx="500" cy="500" r="420" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="6,4" fill="none"/>
+                            <circle cx="500" cy="500" r="310" stroke="rgba(255,255,255,0.12)" stroke-width="1.2" fill="none"/>
+                            <circle cx="500" cy="500" r="200" stroke="rgba(200,16,46,0.3)" stroke-width="1.8" fill="none"/>
+                            <circle cx="500" cy="500" r="90" stroke="rgba(200,16,46,0.6)" stroke-width="2.5" fill="none" class="ring-core"/>
 
                             <!-- CORE TEAM (r~90) -->
-                            <g class="s-node" data-id="jh">
+                            <g class="s-node" data-id="jh" data-tier="core">
                                 <circle cx="500" cy="415" r="10" fill="#C8102E" class="s-dot"/>
-                                <text x="500" y="402" text-anchor="middle" class="s-name" font-weight="700">Jan van Hest</text>
+                                <text x="500" y="400" text-anchor="middle" class="s-name">Jan van Hest</text>
                             </g>
-                            <g class="s-node" data-id="yw">
+                            <g class="s-node" data-id="yw" data-tier="core">
                                 <circle cx="575" cy="530" r="10" fill="#C8102E" class="s-dot"/>
-                                <text x="592" y="534" text-anchor="start" class="s-name" font-weight="700">Yuyang Wang</text>
+                                <text x="592" y="534" text-anchor="start" class="s-name">Yuyang Wang</text>
                             </g>
-                            <g class="s-node" data-id="mb">
+                            <g class="s-node" data-id="mb" data-tier="core">
                                 <circle cx="425" cy="530" r="10" fill="#C8102E" class="s-dot"/>
-                                <text x="408" y="534" text-anchor="end" class="s-name" font-weight="700">Monique Bruining</text>
+                                <text x="408" y="534" text-anchor="end" class="s-name">Monique Bruining</text>
                             </g>
 
                             <!-- COMMITTED (r~200) -->
-                            <g class="s-node" data-id="nt">
-                                <circle cx="370" cy="340" r="9" fill="white" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
-                                <text x="350" y="330" text-anchor="end" class="s-name">Nicholas Tito</text>
+                            <g class="s-node" data-id="nt" data-tier="committed">
+                                <circle cx="370" cy="340" r="9" fill="none" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
+                                <text x="350" y="328" text-anchor="end" class="s-name">Nicholas Tito</text>
                             </g>
-                            <g class="s-node" data-id="mg">
-                                <circle cx="320" cy="460" r="9" fill="white" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
-                                <text x="300" y="454" text-anchor="end" class="s-name">Marc Geers</text>
+                            <g class="s-node" data-id="mg" data-tier="committed">
+                                <circle cx="320" cy="460" r="9" fill="none" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
+                                <text x="300" y="452" text-anchor="end" class="s-name">Marc Geers</text>
                             </g>
-                            <g class="s-node" data-id="kj">
-                                <circle cx="500" cy="300" r="9" fill="white" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
-                                <text x="520" y="294" text-anchor="start" class="s-name">Koen Janssen</text>
+                            <g class="s-node" data-id="kj" data-tier="committed">
+                                <circle cx="500" cy="300" r="9" fill="none" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
+                                <text x="520" y="292" text-anchor="start" class="s-name">Koen Janssen</text>
                             </g>
-                            <g class="s-node" data-id="tg">
-                                <circle cx="660" cy="390" r="9" fill="white" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
-                                <text x="678" y="394" text-anchor="start" class="s-name">Tom de Greef</text>
+                            <g class="s-node" data-id="tg" data-tier="committed">
+                                <circle cx="660" cy="390" r="9" fill="none" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
+                                <text x="678" y="392" text-anchor="start" class="s-name">Tom de Greef</text>
                             </g>
-                            <g class="s-node" data-id="iv">
-                                <circle cx="670" cy="560" r="9" fill="white" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
-                                <text x="688" y="564" text-anchor="start" class="s-name">Ilja Voets</text>
+                            <g class="s-node" data-id="iv" data-tier="committed">
+                                <circle cx="670" cy="560" r="9" fill="none" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
+                                <text x="688" y="562" text-anchor="start" class="s-name">Ilja Voets</text>
                             </g>
 
                             <!-- IN DIALOGUE (r~310) -->
-                            <g class="s-node" data-id="rw">
-                                <circle cx="500" cy="190" r="8" fill="white" stroke="#64646E" stroke-width="2" class="s-dot"/>
-                                <text x="520" y="184" text-anchor="start" class="s-name">Ren&#233;e Westenbrink</text>
+                            <g class="s-node" data-id="rw" data-tier="dialogue">
+                                <circle cx="500" cy="190" r="8" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" class="s-dot"/>
+                                <text x="520" y="182" text-anchor="start" class="s-name">Ren&#233;e Westenbrink</text>
                             </g>
-                            <g class="s-node" data-id="mkb">
-                                <circle cx="760" cy="330" r="8" fill="white" stroke="#64646E" stroke-width="2" class="s-dot"/>
-                                <text x="778" y="334" text-anchor="start" class="s-name">Mark Boneschanscher</text>
+                            <g class="s-node" data-id="mkb" data-tier="dialogue">
+                                <circle cx="760" cy="330" r="8" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" class="s-dot"/>
+                                <text x="778" y="332" text-anchor="start" class="s-name">Mark Boneschanscher</text>
                             </g>
-                            <g class="s-node" data-id="mva">
-                                <circle cx="810" cy="500" r="8" fill="white" stroke="#64646E" stroke-width="2" class="s-dot"/>
-                                <text x="828" y="504" text-anchor="start" class="s-name">Mark van Assem</text>
+                            <g class="s-node" data-id="mva" data-tier="dialogue">
+                                <circle cx="810" cy="500" r="8" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" class="s-dot"/>
+                                <text x="828" y="502" text-anchor="start" class="s-name">Mark van Assem</text>
                             </g>
-                            <g class="s-node" data-id="se">
-                                <circle cx="720" cy="680" r="8" fill="white" stroke="#64646E" stroke-width="2" class="s-dot"/>
-                                <text x="738" y="684" text-anchor="start" class="s-name">S&#252;leyman Er</text>
+                            <g class="s-node" data-id="se" data-tier="dialogue">
+                                <circle cx="720" cy="680" r="8" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" class="s-dot"/>
+                                <text x="738" y="682" text-anchor="start" class="s-name">S&#252;leyman Er</text>
                             </g>
-                            <g class="s-node" data-id="st">
-                                <circle cx="560" cy="780" r="8" fill="white" stroke="#64646E" stroke-width="2" class="s-dot"/>
-                                <text x="578" y="784" text-anchor="start" class="s-name">Shuxia Tao</text>
+                            <g class="s-node" data-id="st" data-tier="dialogue">
+                                <circle cx="560" cy="780" r="8" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" class="s-dot"/>
+                                <text x="578" y="782" text-anchor="start" class="s-name">Shuxia Tao</text>
                             </g>
-                            <g class="s-node" data-id="eb">
-                                <circle cx="240" cy="650" r="8" fill="white" stroke="#64646E" stroke-width="2" class="s-dot"/>
-                                <text x="222" y="654" text-anchor="end" class="s-name">Erik Bakkers</text>
+                            <g class="s-node" data-id="eb" data-tier="dialogue">
+                                <circle cx="240" cy="650" r="8" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" class="s-dot"/>
+                                <text x="222" y="652" text-anchor="end" class="s-name">Erik Bakkers</text>
                             </g>
 
                             <!-- PLANNED (r~420) -->
-                            <g class="s-node" data-id="lb">
-                                <circle cx="340" cy="130" r="7" fill="white" stroke="#64646E" stroke-width="1.5" stroke-dasharray="3,3" class="s-dot"/>
-                                <text x="320" y="124" text-anchor="end" class="s-name">Luc Brunsveld</text>
+                            <g class="s-node" data-id="lb" data-tier="planned">
+                                <circle cx="340" cy="130" r="7" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-dasharray="3,3" class="s-dot"/>
+                                <text x="320" y="122" text-anchor="end" class="s-name">Luc Brunsveld</text>
                             </g>
-                            <g class="s-node" data-id="tn">
-                                <circle cx="200" cy="800" r="7" fill="white" stroke="#64646E" stroke-width="1.5" stroke-dasharray="3,3" class="s-dot"/>
-                                <text x="182" y="804" text-anchor="end" class="s-name">Timothy No&#235;l</text>
+                            <g class="s-node" data-id="tn" data-tier="planned">
+                                <circle cx="200" cy="800" r="7" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-dasharray="3,3" class="s-dot"/>
+                                <text x="182" y="802" text-anchor="end" class="s-name">Timothy No&#235;l</text>
                             </g>
-                            <g class="s-node" data-id="fs">
-                                <circle cx="800" cy="800" r="7" fill="white" stroke="#64646E" stroke-width="1.5" stroke-dasharray="3,3" class="s-dot"/>
-                                <text x="818" y="804" text-anchor="start" class="s-name">Francesco Staps</text>
-                            </g>
-
-                            <!-- Legend -->
-                            <g transform="translate(50, 955)">
-                                <circle cx="8" cy="0" r="7" fill="#C8102E"/>
-                                <text x="24" y="5" style="font-size:13px; fill:#1E1E28; font-weight:500;">Core Team</text>
-                                <circle cx="155" cy="0" r="7" fill="white" stroke="#C8102E" stroke-width="2.5"/>
-                                <text x="171" y="5" style="font-size:13px; fill:#1E1E28; font-weight:500;">Committed</text>
-                                <circle cx="305" cy="0" r="7" fill="white" stroke="#64646E" stroke-width="2"/>
-                                <text x="321" y="5" style="font-size:13px; fill:#1E1E28; font-weight:500;">In Dialogue</text>
-                                <circle cx="460" cy="0" r="7" fill="white" stroke="#64646E" stroke-width="1.5" stroke-dasharray="3,3"/>
-                                <text x="476" y="5" style="font-size:13px; fill:#1E1E28; font-weight:500;">Planned</text>
+                            <g class="s-node" data-id="fs" data-tier="planned">
+                                <circle cx="800" cy="800" r="7" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-dasharray="3,3" class="s-dot"/>
+                                <text x="818" y="802" text-anchor="start" class="s-name">Francesco Staps</text>
                             </g>
                         </g>
                     </svg>
+
+                    <!-- Floating legend -->
+                    <div class="map-legend" id="mapLegend">
+                        <div class="map-legend-item" data-tier="core">
+                            <span class="legend-dot" style="background:#C8102E;"></span>
+                            <span class="legend-label">Core Team</span>
+                        </div>
+                        <div class="map-legend-item" data-tier="committed">
+                            <span class="legend-dot" style="background:none; border:2.5px solid #C8102E;"></span>
+                            <span class="legend-label">Committed</span>
+                        </div>
+                        <div class="map-legend-item" data-tier="dialogue">
+                            <span class="legend-dot" style="background:none; border:2px solid rgba(255,255,255,0.45);"></span>
+                            <span class="legend-label">In Dialogue</span>
+                        </div>
+                        <div class="map-legend-item" data-tier="planned">
+                            <span class="legend-dot" style="background:none; border:1.5px dashed rgba(255,255,255,0.25);"></span>
+                            <span class="legend-label">Planned</span>
+                        </div>
+                    </div>
 
                     <!-- Backdrop for bottom-sheet on mobile -->
                     <div class="panel-backdrop" id="panelBackdrop"></div>
@@ -1267,6 +1359,64 @@
                 openPanel(node.dataset.id);
             });
         });
+
+        // ==========================================
+        //  Legend hover → highlight tier
+        // ==========================================
+        const allNodes = document.querySelectorAll('.s-node');
+        const legendItems = document.querySelectorAll('.map-legend-item');
+        const mapEl = document.getElementById('mapContainer');
+
+        function highlightTier(tier) {
+            mapEl.classList.add('tier-focus');
+            allNodes.forEach(n => {
+                n.classList.toggle('tier-highlight', n.dataset.tier === tier);
+            });
+        }
+        function clearHighlight() {
+            mapEl.classList.remove('tier-focus');
+            allNodes.forEach(n => n.classList.remove('tier-highlight'));
+        }
+
+        legendItems.forEach(item => {
+            const tier = item.dataset.tier;
+            // Desktop: hover
+            item.addEventListener('mouseenter', () => highlightTier(tier));
+            item.addEventListener('mouseleave', clearHighlight);
+            // Mobile: tap toggle
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (mapEl.classList.contains('tier-focus') &&
+                    document.querySelector('.s-node.tier-highlight')?.dataset.tier === tier) {
+                    clearHighlight();
+                } else {
+                    highlightTier(tier);
+                }
+            });
+        });
+        // Clear on tap outside legend on mobile
+        mapEl.addEventListener('click', (e) => {
+            if (!e.target.closest('.map-legend') && !e.target.closest('.s-node') && !e.target.closest('.detail-panel')) {
+                clearHighlight();
+            }
+        });
+
+        // ==========================================
+        //  Map entrance animation (IntersectionObserver)
+        // ==========================================
+        if ('IntersectionObserver' in window) {
+            const mapObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        mapEl.classList.add('map-entered');
+                        mapObs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            mapObs.observe(mapEl);
+        } else {
+            mapEl.classList.add('map-entered');
+        }
 
         // ==========================================
         //  Zoom and Pan for stakeholder map
