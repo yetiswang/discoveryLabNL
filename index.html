@@ -77,8 +77,14 @@
         .header-content { display: flex; align-items: center; gap: 1.1rem; }
         .header-logo { height: 36px; width: auto; filter: brightness(0) invert(1); opacity: 0.92; }
         .header-sep {
-            width: 6px; height: 6px; border-radius: 50%;
-            background: var(--tue-red); opacity: 0.85;
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--tue-red);
+            flex-shrink: 0;
+            animation: headerPulse 2.8s ease-in-out infinite;
+        }
+        @keyframes headerPulse {
+            0%, 100% { opacity: 0.55; transform: scale(1); box-shadow: 0 0 0 0 rgba(200, 16, 46, 0); }
+            50% { opacity: 1; transform: scale(1.4); box-shadow: 0 0 10px 3px rgba(200, 16, 46, 0.35); }
         }
         .header-text { display: flex; flex-direction: column; gap: 0.1rem; }
         .header-title { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; line-height: 1.15; }
