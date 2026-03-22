@@ -145,8 +145,9 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
-            opacity: 0.18;
-            filter: saturate(0.6);
+            opacity: 0.10;
+            filter: saturate(0.4) blur(2px);
+            z-index: 0;
         }
 
         /* === Ring container — centered on screen, large & immersive === */
@@ -274,6 +275,19 @@
         }
 
         /* Challenge */
+        #challenge {
+            position: relative;
+        }
+        #challenge::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 100px;
+            background: linear-gradient(180deg, var(--tue-dark) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        #challenge > * { position: relative; z-index: 1; }
         #challenge h2 { font-size: 2.5rem; margin-bottom: 2rem; color: var(--tue-dark); }
         .challenge-text { font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem; color: var(--tue-gray); }
         .challenge-callout {
@@ -663,21 +677,22 @@
             position: absolute;
             inset: 0;
             background: linear-gradient(180deg,
-                rgba(30,30,40,0.55) 0%,
-                rgba(30,30,40,0.25) 40%,
-                rgba(30,30,40,0.55) 100%);
+                rgba(245,245,248,0.95) 0%,
+                rgba(245,245,248,0.15) 12%,
+                rgba(30,30,40,0.10) 50%,
+                rgba(245,245,248,0.15) 88%,
+                rgba(245,245,248,0.95) 100%);
             z-index: 1;
         }
         .photo-divider .photo-caption {
             position: relative;
             z-index: 2;
-            color: white;
-            font-size: 0.8rem;
-            letter-spacing: 0.15em;
+            color: var(--tue-dark);
+            font-size: 0.75rem;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
             font-weight: 600;
-            opacity: 0.7;
-            text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+            opacity: 0.55;
         }
 
         /* Contact */
@@ -685,7 +700,16 @@
             position: relative;
             overflow: hidden;
             background-color: var(--tue-dark);
-            padding: 4rem;
+            padding: 5rem 4rem 4rem;
+        }
+        #contact::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 80px;
+            background: linear-gradient(180deg, var(--tue-light) 0%, transparent 100%);
+            z-index: 2;
+            pointer-events: none;
         }
         #contact .contact-bg {
             position: absolute;
@@ -694,9 +718,10 @@
             height: 100%;
             object-fit: cover;
             object-position: center 40%;
-            opacity: 0.22;
+            opacity: 0.18;
+            filter: saturate(0.5);
         }
-        #contact > *:not(.contact-bg) { position: relative; z-index: 1; }
+        #contact > *:not(.contact-bg) { position: relative; z-index: 3; }
         #contact h2 { font-size: 2.5rem; margin-bottom: 2rem; color: #ffffff; }
         .contact-info { margin-bottom: 2rem; }
         .contact-info p { font-size: 1rem; color: rgba(255,255,255,0.75); margin-bottom: 0.5rem; line-height: 1.7; }
@@ -795,8 +820,10 @@
 
         /* Footer */
         footer {
-            background-color: var(--tue-dark); color: rgba(255,255,255,0.6);
-            text-align: center; padding: 2rem; font-size: 0.9rem;
+            background-color: var(--tue-dark); color: rgba(255,255,255,0.35);
+            text-align: center; padding: 1.5rem 2rem; font-size: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            letter-spacing: 0.02em;
         }
 
 
@@ -1241,9 +1268,9 @@
             </section>
 
             <section class="photo-divider" aria-hidden="true">
-                <img src="img/hero-domains.jpg" alt="Researcher at advanced microscopy workstation" loading="lazy">
+                <img src="img/hero-domains.jpg" alt="Researchers in advanced characterisation lab" loading="lazy">
                 <div class="photo-overlay"></div>
-                <span class="photo-caption">Advanced Characterisation Facility</span>
+                <span class="photo-caption">Advanced Characterisation</span>
             </section>
 
             <!-- 3b. Discovery Domains -->
