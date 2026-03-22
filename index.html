@@ -47,7 +47,7 @@
 
         /* Reset and base styles */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; scroll-padding-top: 60px; }
         body {
             font-family: 'Avenir Next LT Pro', system-ui, sans-serif;
             color: var(--tue-dark);
@@ -1759,6 +1759,9 @@
     </nav>
 
     <script>
+        // Shared constant: sticky header height offset for scroll calculations
+        const HEADER_OFFSET = 56;
+
         // ==========================================
         //  Stakeholder data
         // ==========================================
@@ -2091,8 +2094,16 @@
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetId = link.getAttribute('href').slice(1);
-                const target = document.getElementById(targetId);
-                if (target) { target.scrollIntoView({ behavior: 'smooth' }); updateActiveNav(); }
+                if (targetId === 'landing') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    const target = document.getElementById(targetId);
+                    if (target) {
+                        const y = target.getBoundingClientRect().top + window.pageYOffset - HEADER_OFFSET;
+                        window.scrollTo({ top: y, behavior: 'smooth' });
+                    }
+                }
+                updateActiveNav();
                 if (window.innerWidth <= 768) { sidebar.classList.add('hidden'); content.classList.remove('expanded'); }
             });
         });
@@ -2151,13 +2162,22 @@
             contact: ['contact']
         };
 
-        // Tab click handler
+        // Tab click handler — offset-aware smooth scroll
         tabItems.forEach(tab => {
             tab.addEventListener('click', (e) => {
                 e.preventDefault();
-                const href = tab.getAttribute('href').slice(1);
-                const target = document.getElementById(href);
-                if (target) target.scrollIntoView({ behavior: 'smooth' });
+                const tabKey = tab.dataset.tab;
+                // Home → scroll to absolute top
+                if (tabKey === 'landing') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    const href = tab.getAttribute('href').slice(1);
+                    const target = document.getElementById(href);
+                    if (target) {
+                        const y = target.getBoundingClientRect().top + window.pageYOffset - HEADER_OFFSET;
+                        window.scrollTo({ top: y, behavior: 'smooth' });
+                    }
+                }
                 // Immediately highlight the clicked tab
                 tabItems.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
