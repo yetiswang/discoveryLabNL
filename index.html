@@ -12,23 +12,27 @@
             font-family: 'Avenir Next LT Pro';
             src: url('AvenirNextLTPro-Regular.otf') format('opentype');
             font-weight: 400;
+            font-display: swap;
         }
         @font-face {
             font-family: 'Avenir Next LT Pro';
             src: url('AvenirNextLTPro-Bold.otf') format('opentype');
             font-weight: 700;
+            font-display: swap;
         }
         @font-face {
             font-family: 'Avenir Next LT Pro';
             src: url('AvenirNextLTPro-It.otf') format('opentype');
             font-style: italic;
             font-weight: 400;
+            font-display: swap;
         }
         @font-face {
             font-family: 'Avenir Next LT Pro';
             src: url('AvenirNextLTPro-BoldIt.otf') format('opentype');
             font-weight: 700;
             font-style: italic;
+            font-display: swap;
         }
 
         /* CSS Variables */
@@ -145,8 +149,8 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
-            opacity: 0.10;
-            filter: saturate(0.4) blur(2px);
+            opacity: 0.07;
+            filter: saturate(0.3) blur(3px);
             z-index: 0;
         }
 
@@ -162,11 +166,11 @@
         }
         @keyframes ringFadeIn {
             from { opacity: 0; transform: translate(-50%, -50%) scale(0.88); }
-            to   { opacity: 0.85; transform: translate(-50%, -50%) scale(1); }
+            to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
         @keyframes ringFadeInMobile {
             from { opacity: 0; transform: translate(-50%, -50%) scale(0.88); }
-            to   { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            to   { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
         }
 
         .landing-ring-container svg {
@@ -184,8 +188,8 @@
             50% { opacity: 0.7; transform: scale(1.02); }
         }
         @keyframes glow-inner {
-            0%, 100% { filter: drop-shadow(0 0 6px rgba(200,16,46,0.3)); }
-            50% { filter: drop-shadow(0 0 18px rgba(200,16,46,0.7)); }
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(200,16,46,0.4)) drop-shadow(0 0 24px rgba(200,16,46,0.15)); }
+            50% { filter: drop-shadow(0 0 22px rgba(200,16,46,0.8)) drop-shadow(0 0 48px rgba(200,16,46,0.25)); }
         }
         /* Slow rotation for keyword text groups */
         @keyframes rotate-cw {
@@ -275,19 +279,6 @@
         }
 
         /* Challenge */
-        #challenge {
-            position: relative;
-        }
-        #challenge::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 100px;
-            background: linear-gradient(180deg, var(--tue-dark) 0%, transparent 100%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        #challenge > * { position: relative; z-index: 1; }
         #challenge h2 { font-size: 2.5rem; margin-bottom: 2rem; color: var(--tue-dark); }
         .challenge-text { font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem; color: var(--tue-gray); }
         .challenge-callout {
@@ -693,27 +684,34 @@
             position: absolute;
             inset: 0;
             background: linear-gradient(180deg,
-                rgba(245,245,248,0.95) 0%,
-                rgba(245,245,248,0.15) 12%,
-                rgba(30,30,40,0.10) 50%,
-                rgba(245,245,248,0.15) 88%,
-                rgba(245,245,248,0.95) 100%);
+                rgba(245,245,248,0.7) 0%,
+                rgba(245,245,248,0) 15%,
+                rgba(15,15,22,0.25) 50%,
+                rgba(245,245,248,0) 85%,
+                rgba(245,245,248,0.7) 100%);
             z-index: 1;
         }
         .photo-divider .photo-caption {
-            position: relative;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
             z-index: 2;
-            color: var(--tue-dark);
-            font-size: 0.75rem;
-            letter-spacing: 0.18em;
+            padding: 1rem 2rem;
+            background: linear-gradient(0deg, rgba(15,15,22,0.6) 0%, transparent 100%);
+            color: rgba(255,255,255,0.85);
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
             font-weight: 600;
+            text-align: right;
             opacity: 0;
-            transform: translateY(6px);
-            transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+            transform: translateY(4px);
+            transition: opacity 1s ease 0.4s, transform 1s ease 0.4s;
         }
         .photo-divider.in-view .photo-caption {
-            opacity: 0.55;
+            opacity: 1;
             transform: translateY(0);
         }
 
@@ -728,8 +726,8 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
-            height: 80px;
-            background: linear-gradient(180deg, var(--tue-light) 0%, transparent 100%);
+            height: 50px;
+            background: linear-gradient(180deg, rgba(245,245,248,0.4) 0%, transparent 100%);
             z-index: 2;
             pointer-events: none;
         }
