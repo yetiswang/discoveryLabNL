@@ -138,6 +138,16 @@
             display: flex; flex-direction: column; justify-content: center;
             align-items: flex-start;
         }
+        #landing .landing-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            opacity: 0.18;
+            filter: saturate(0.6);
+        }
 
         /* === Ring container — centered on screen, large & immersive === */
         .landing-ring-container {
@@ -627,16 +637,75 @@
         }
         .stakeholder-stats p { font-size: 1rem; color: var(--tue-gray); font-weight: 600; }
 
+        /* ============================================ */
+        /*  PHOTO DIVIDER STRIPS                        */
+        /* ============================================ */
+        .photo-divider {
+            position: relative;
+            min-height: auto;
+            height: 38vh;
+            max-height: 420px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .photo-divider img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        .photo-divider .photo-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg,
+                rgba(30,30,40,0.55) 0%,
+                rgba(30,30,40,0.25) 40%,
+                rgba(30,30,40,0.55) 100%);
+            z-index: 1;
+        }
+        .photo-divider .photo-caption {
+            position: relative;
+            z-index: 2;
+            color: white;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 600;
+            opacity: 0.7;
+            text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+        }
+
         /* Contact */
-        #contact { background-color: var(--tue-light); padding: 4rem; }
-        #contact h2 { font-size: 2.5rem; margin-bottom: 2rem; color: var(--tue-dark); }
+        #contact {
+            position: relative;
+            overflow: hidden;
+            background-color: var(--tue-dark);
+            padding: 4rem;
+        }
+        #contact .contact-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 40%;
+            opacity: 0.22;
+        }
+        #contact > *:not(.contact-bg) { position: relative; z-index: 1; }
+        #contact h2 { font-size: 2.5rem; margin-bottom: 2rem; color: #ffffff; }
         .contact-info { margin-bottom: 2rem; }
-        .contact-info p { font-size: 1rem; color: var(--tue-gray); margin-bottom: 0.5rem; line-height: 1.7; }
+        .contact-info p { font-size: 1rem; color: rgba(255,255,255,0.75); margin-bottom: 0.5rem; line-height: 1.7; }
+        .contact-info strong { color: rgba(255,255,255,0.9); }
         .next-steps { margin-top: 2rem; }
         .next-steps h3 { font-size: 1.1rem; color: var(--tue-red); margin-bottom: 1rem; font-weight: 700; }
         .next-steps ul { list-style: none; padding-left: 0; }
         .next-steps li {
-            font-size: 0.95rem; color: var(--tue-gray); margin-bottom: 0.75rem;
+            font-size: 0.95rem; color: rgba(255,255,255,0.7); margin-bottom: 0.75rem;
             padding-left: 1.5rem; position: relative;
         }
         .next-steps li::before {
@@ -928,6 +997,7 @@
             .challenge-callout p { font-size: 1rem; }
             .campus-intro { font-size: 1rem; }
             #contact { padding: 2.5rem 1.25rem; }
+            .photo-divider { height: 28vh; max-height: 280px; }
             footer { padding: 1.5rem 1rem; font-size: 0.85rem; }
         }
 
@@ -981,6 +1051,7 @@
             .next-steps h3 { font-size: 1rem; }
             .next-steps li { font-size: 0.9rem; padding-left: 1.25rem; }
             #contact { padding: 2rem 1rem; }
+            .photo-divider { height: 22vh; max-height: 220px; }
             .landing-scroll { font-size: 0.8rem; bottom: 1rem; }
         }
 
@@ -1028,6 +1099,7 @@
 
             <!-- 1. LANDING - Enhanced ring design with keywords and pulsation -->
             <section id="landing">
+                <img class="landing-bg" src="img/hero-landing.jpg" alt="" loading="eager">
                 <div class="landing-ring-container">
                     <svg viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
                         <defs>
@@ -1131,6 +1203,12 @@
                 <p class="challenge-text reveal">The stakes extend well beyond the laboratory. The energy transition, the shift toward circular material flows, and the search for sustainable alternatives to critical raw materials are all bottlenecked by the pace of materials discovery. These are not problems that incremental experimentation can solve at the speed society requires. Infrastructure that systematically accelerates the design, synthesis, and validation of new materials is no longer a competitive advantage; it is a societal necessity.</p>
             </section>
 
+            <section class="photo-divider" aria-hidden="true">
+                <img src="img/hero-pillars.jpg" alt="SDL robot arm at ICMS" loading="lazy">
+                <div class="photo-overlay"></div>
+                <span class="photo-caption">ICMS Self-Driving Laboratory</span>
+            </section>
+
             <!-- 3. Three Pillars -->
             <section id="pillars">
                 <h2 class="reveal">Three Pillars</h2>
@@ -1160,6 +1238,12 @@
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <section class="photo-divider" aria-hidden="true">
+                <img src="img/hero-domains.jpg" alt="Researcher at advanced microscopy workstation" loading="lazy">
+                <div class="photo-overlay"></div>
+                <span class="photo-caption">Advanced Characterisation Facility</span>
             </section>
 
             <!-- 3b. Discovery Domains -->
@@ -1574,6 +1658,7 @@
 
             <!-- 9. Contact -->
             <section id="contact">
+                <img class="contact-bg" src="img/hero-contact.jpg" alt="" loading="lazy">
                 <h2 class="reveal">Contact and Next Steps</h2>
                 <div class="contact-info reveal">
                     <p><strong>Initiative Lead:</strong> Yuyang Wang <a href="mailto:y.wang8@tue.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">&#9993; email</a></p>
@@ -1582,7 +1667,7 @@
                 </div>
                 <div class="next-steps reveal">
                     <h3>Key Milestones</h3>
-                    <p style="color: var(--tue-gray); font-size: 0.8rem; font-style: italic; margin-top: -0.25rem; margin-bottom: 0.75rem;">Indicative, subject to revision</p>
+                    <p style="color: rgba(255,255,255,0.45); font-size: 0.8rem; font-style: italic; margin-top: -0.25rem; margin-bottom: 0.75rem;">Indicative, subject to revision</p>
                     <ul>
                         <li>April 2026: Executive Board alignment meeting</li>
                         <li>Q2-Q3 2026: National consortium formation with leading universities and NWO institutes</li>
@@ -1590,8 +1675,8 @@
                         <li>2027: NWO LSRI submission</li>
                     </ul>
                 </div>
-                <div class="contact-info reveal" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--tue-light-border);">
-                    <p style="color: var(--tue-gray); font-size: 0.95rem; line-height: 1.7;">This briefing is shared with TU/e internal stakeholders. We welcome colleagues who wish to contribute to shaping DiscoveryLabNL, whether scientifically or organisationally. Members of the LSRI Group Materials are particularly encouraged to reach out so we can explore alignment and collaboration opportunities together.</p>
+                <div class="contact-info reveal" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.12);">
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.95rem; line-height: 1.7;">This briefing is shared with TU/e internal stakeholders. We welcome colleagues who wish to contribute to shaping DiscoveryLabNL, whether scientifically or organisationally. Members of the LSRI Group Materials are particularly encouraged to reach out so we can explore alignment and collaboration opportunities together.</p>
                 </div>
             </section>
         </main>
@@ -1959,7 +2044,7 @@
         const navToggle = document.getElementById('navToggle');
         const sidebar = document.getElementById('sidebar');
         const content = document.getElementById('content');
-        const sections = document.querySelectorAll('section');
+        const sections = document.querySelectorAll('section[id]');
 
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -2042,7 +2127,7 @@
         function updateActiveTab() {
             // Find the section currently most visible
             let currentSection = 'landing';
-            const allSections = document.querySelectorAll('section');
+            const allSections = document.querySelectorAll('section[id]');
             for (const section of allSections) {
                 const rect = section.getBoundingClientRect();
                 if (rect.top < window.innerHeight * 0.5) {
