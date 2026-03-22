@@ -665,13 +665,29 @@
             justify-content: center;
             padding: 0;
         }
-        .photo-divider img {
+        .photo-parallax {
             position: absolute;
-            inset: 0;
+            inset: -30px;
+            width: calc(100% + 60px);
+            height: calc(100% + 60px);
+            will-change: transform;
+            transform: translate3d(0,0,0);
+        }
+        .photo-divider img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             object-position: center;
+            transform: scale(1.0);
+            will-change: transform;
+        }
+        /* Ken Burns: slow zoom + subtle drift once in view */
+        @keyframes kenBurns {
+            from { transform: scale(1.0); }
+            to   { transform: scale(1.06); }
+        }
+        .photo-divider.in-view img {
+            animation: kenBurns 14s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
         }
         .photo-divider .photo-overlay {
             position: absolute;
@@ -692,7 +708,13 @@
             letter-spacing: 0.18em;
             text-transform: uppercase;
             font-weight: 600;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+        }
+        .photo-divider.in-view .photo-caption {
             opacity: 0.55;
+            transform: translateY(0);
         }
 
         /* Contact */
@@ -1231,7 +1253,9 @@
             </section>
 
             <section class="photo-divider" aria-hidden="true">
-                <img src="img/hero-pillars.jpg" alt="SDL robot arm at ICMS" loading="lazy">
+                <div class="photo-parallax">
+                    <img src="img/hero-pillars.jpg" alt="SDL robot arm at ICMS" loading="lazy">
+                </div>
                 <div class="photo-overlay"></div>
                 <span class="photo-caption">ICMS Self-Driving Laboratory</span>
             </section>
@@ -1268,7 +1292,9 @@
             </section>
 
             <section class="photo-divider" aria-hidden="true">
-                <img src="img/hero-domains.jpg" alt="Researchers in advanced characterisation lab" loading="lazy">
+                <div class="photo-parallax">
+                    <img src="img/hero-domains.jpg" alt="Researchers in advanced characterisation lab" loading="lazy">
+                </div>
                 <div class="photo-overlay"></div>
                 <span class="photo-caption">Advanced Characterisation</span>
             </section>
@@ -2407,6 +2433,59 @@
             targets.forEach(el => obs.observe(el));
         } else {
             targets.forEach(el => el.classList.add('visible'));
+        }
+    })();
+
+    // ==========================================
+    //  Photo divider animations: Ken Burns + parallax
+    // ==========================================
+    (function() {
+        const dividers = document.querySelectorAll('.photo-divider');
+        if (!dividers.length) return;
+
+        // Ken Burns trigger via IntersectionObserver
+        if ('IntersectionObserver' in window) {
+            const divObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('in-view');
+                    }
+                });
+            }, { threshold: 0.15 });
+            dividers.forEach(d => divObs.observe(d));
+        } else {
+            dividers.forEach(d => d.classList.add('in-view'));
+        }
+
+        // Subtle parallax: shift wrapper Y based on scroll position
+        // Uses requestAnimationFrame for smooth 60fps
+        let ticking = false;
+        function updateParallax() {
+            const vh = window.innerHeight;
+            dividers.forEach(div => {
+                const rect = div.getBoundingClientRect();
+                // Only process if anywhere near the viewport
+                if (rect.bottom < -100 || rect.top > vh + 100) return;
+                const wrapper = div.querySelector('.photo-parallax');
+                if (!wrapper) return;
+                // Map: when divider center is at viewport center → 0 offset
+                // Parallax factor: 0.12 (subtle, within the 30px inset budget)
+                const center = rect.top + rect.height / 2;
+                const offset = Math.max(-25, Math.min(25, (center - vh / 2) * 0.12));
+                wrapper.style.transform = 'translate3d(0,' + offset.toFixed(1) + 'px,0)';
+            });
+            ticking = false;
+        }
+        // Reduce parallax on mobile (performance + less distracting)
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!prefersReduced) {
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            }, { passive: true });
+            updateParallax();
         }
     })();
 
