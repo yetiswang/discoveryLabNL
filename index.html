@@ -102,28 +102,80 @@
         /* Main layout */
         .container { display: flex; min-height: calc(100vh - 60px); }
 
-        /* Sidebar */
+        /* Sidebar — overlay drawer */
         .sidebar {
-            width: 220px; background-color: var(--tue-light);
-            border-right: 1px solid var(--tue-light-border);
-            padding: 2rem 0; position: fixed;
-            height: calc(100vh - 60px); overflow-y: auto;
-            transition: transform 0.3s ease;
+            width: 240px;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 150;
+            padding: 5rem 0 2rem;
+            overflow-y: auto;
+            background: rgba(245,245,248,0.88);
+            -webkit-backdrop-filter: saturate(180%) blur(24px);
+            backdrop-filter: saturate(180%) blur(24px);
+            border-right: 1px solid rgba(200,200,210,0.25);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.08);
+            transform: translateX(-100%);
+            transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .sidebar.hidden { transform: translateX(-100%); }
+        .sidebar.open { transform: translateX(0); }
         .sidebar-nav { list-style: none; }
-        .sidebar-nav li { border-left: 3px solid transparent; transition: all 0.2s ease; }
+        .sidebar-nav li { border-left: 3px solid transparent; transition: all 0.15s ease; }
         .sidebar-nav li a {
-            display: block; padding: 0.75rem 1.5rem;
+            display: block; padding: 0.7rem 1.75rem;
             color: var(--tue-dark); text-decoration: none;
-            font-size: 0.95rem; font-weight: 500;
+            font-size: 0.9rem; font-weight: 500;
+            letter-spacing: 0.01em;
         }
-        .sidebar-nav li a:hover { background-color: rgba(200, 16, 46, 0.05); }
+        .sidebar-nav li a:hover { background-color: rgba(200, 16, 46, 0.06); }
         .sidebar-nav li.active { border-left-color: var(--tue-red); background-color: rgba(200, 16, 46, 0.08); }
         .sidebar-nav li.active a { color: var(--tue-red); font-weight: 700; }
 
-        /* Main content */
-        .content { flex: 1; margin-left: 220px; transition: margin-left 0.3s ease; }
+        /* Sidebar backdrop — click to close */
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 149;
+            background: rgba(0,0,0,0.08);
+        }
+        .sidebar-backdrop.show { display: block; }
+
+        /* Floating "Contents" trigger tab */
+        .nav-trigger {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            z-index: 120;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            padding: 0.9rem 0.45rem;
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--tue-gray);
+            background: rgba(245,245,248,0.7);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(200,200,210,0.3);
+            border-left: none;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            transition: color 0.2s ease, background 0.2s ease, opacity 0.3s ease;
+            opacity: 0.6;
+        }
+        .nav-trigger:hover {
+            color: var(--tue-red);
+            background: rgba(245,245,248,0.92);
+            opacity: 1;
+        }
+        .nav-trigger.hidden { opacity: 0; pointer-events: none; }
+
+        /* Main content — full width */
+        .content { flex: 1; margin-left: 0; transition: none; }
         .content.expanded { margin-left: 0; }
 
         /* Section */
@@ -986,8 +1038,6 @@
 
         /* Responsive — tablet */
         @media (max-width: 1024px) {
-            .sidebar { width: 200px; }
-            .content { margin-left: 200px; }
             section { padding: 4rem 2.5rem; }
             .landing-ring-container { width: 500px; height: 500px; }
         }
@@ -995,7 +1045,8 @@
         /* Responsive — small tablet / large phone */
         @media (max-width: 768px) {
             .sidebar { display: none !important; }
-            .content { margin-left: 0; }
+            .nav-trigger { display: none !important; }
+            .sidebar-backdrop { display: none !important; }
             .nav-toggle { display: none !important; }
             .bottom-tabs { display: flex; }
             body { padding-bottom: 76px; }
@@ -1122,8 +1173,13 @@
     </header>
 
     <!-- Main container -->
+    <!-- Floating contents trigger (desktop only) -->
+    <div class="nav-trigger" id="navTrigger">Contents</div>
+    <!-- Sidebar backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
     <div class="container">
-        <!-- Sidebar navigation -->
+        <!-- Sidebar navigation — overlay drawer -->
         <aside class="sidebar" id="sidebar">
             <nav>
                 <ul class="sidebar-nav">
@@ -2082,14 +2138,32 @@
         resizeMap();
 
         // ==========================================
-        //  Sidebar navigation + scroll spy
+        //  Sidebar drawer + scroll spy
         // ==========================================
         const navLinks = document.querySelectorAll('.sidebar-nav a');
-        const navToggle = document.getElementById('navToggle');
         const sidebar = document.getElementById('sidebar');
-        const content = document.getElementById('content');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+        const navTrigger = document.getElementById('navTrigger');
         const sections = document.querySelectorAll('section[id]');
 
+        function openDrawer() {
+            sidebar.classList.add('open');
+            sidebarBackdrop.classList.add('show');
+            navTrigger.classList.add('hidden');
+        }
+        function closeDrawer() {
+            sidebar.classList.remove('open');
+            sidebarBackdrop.classList.remove('show');
+            navTrigger.classList.remove('hidden');
+        }
+
+        // Open drawer: click trigger tab
+        navTrigger.addEventListener('click', openDrawer);
+
+        // Close drawer: click backdrop or press Escape
+        sidebarBackdrop.addEventListener('click', closeDrawer);
+
+        // Nav link clicks: scroll + close drawer
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -2103,12 +2177,10 @@
                         window.scrollTo({ top: y, behavior: 'smooth' });
                     }
                 }
+                closeDrawer();
                 updateActiveNav();
-                if (window.innerWidth <= 768) { sidebar.classList.add('hidden'); content.classList.remove('expanded'); }
             });
         });
-
-        navToggle.addEventListener('click', () => { sidebar.classList.toggle('hidden'); content.classList.toggle('expanded'); });
 
         function updateActiveNav() {
             let activeSection = sections[0];
@@ -2121,7 +2193,7 @@
             });
         }
 
-        // Scroll progress
+        // Scroll progress + active nav tracking
         window.addEventListener('scroll', () => {
             const total = document.documentElement.scrollHeight - window.innerHeight;
             document.querySelector('.scroll-progress').style.width = (window.scrollY / total) * 100 + '%';
@@ -2130,7 +2202,10 @@
 
         // Keyboard nav
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') { closePanel(); document.getElementById('landing').scrollIntoView({ behavior: 'smooth' }); }
+            if (e.key === 'Escape') {
+                closeDrawer();
+                closePanel();
+            }
             else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
                 const next = document.querySelector('.sidebar-nav li.active a')?.parentElement.nextElementSibling?.querySelector('a');
                 if (next) next.click();
@@ -2140,7 +2215,7 @@
             }
         });
 
-        // Close panel on outside click
+        // Close stakeholder detail panel on outside click
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.detail-panel') && !e.target.closest('.s-node')) closePanel();
         });
