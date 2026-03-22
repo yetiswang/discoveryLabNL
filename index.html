@@ -174,6 +174,52 @@
         }
         .nav-trigger.hidden { opacity: 0; pointer-events: none; }
 
+        /* Floating section nav (next/prev) */
+        .section-nav {
+            position: fixed;
+            right: 1.5rem;
+            bottom: 2rem;
+            z-index: 110;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .section-nav button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(30,30,40,0.55);
+            -webkit-backdrop-filter: saturate(180%) blur(14px);
+            backdrop-filter: saturate(180%) blur(14px);
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, transform 0.15s ease, opacity 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+        }
+        .section-nav button:hover {
+            background: rgba(200,16,46,0.8);
+            transform: scale(1.08);
+        }
+        .section-nav button:active { transform: scale(0.94); }
+        .section-nav button:disabled {
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        .section-nav button svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
         /* Main content — full width */
         .content { flex: 1; margin-left: 0; transition: none; }
         .content.expanded { margin-left: 0; }
@@ -1049,6 +1095,8 @@
         @media (max-width: 768px) {
             .sidebar { display: none !important; }
             .nav-trigger { display: none !important; }
+            .section-nav { bottom: 5.5rem; right: 1rem; }
+            .section-nav button { width: 36px; height: 36px; }
             .sidebar-backdrop { display: none !important; }
             .nav-toggle { display: none !important; }
             .bottom-tabs { display: flex; }
@@ -1787,6 +1835,16 @@
         <p>March 2026 &middot; ICMS &middot; TU/e &middot; TU/e Flagship: Advanced Materials</p>
     </footer>
 
+    <!-- Floating section nav (next/prev) -->
+    <div class="section-nav" id="sectionNav">
+        <button id="prevSection" aria-label="Previous section" disabled>
+            <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+        <button id="nextSection" aria-label="Next section">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+    </div>
+
     <!-- Bottom tab bar (mobile) — must be before <script> so JS can find .tab-item elements -->
     <nav class="bottom-tabs" id="bottomTabs">
         <div class="tab-pill" id="tabPill"></div>
@@ -2203,21 +2261,6 @@
             updateActiveNav();
         });
 
-        // Keyboard nav
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeDrawer();
-                closePanel();
-            }
-            else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-                const next = document.querySelector('.sidebar-nav li.active a')?.parentElement.nextElementSibling?.querySelector('a');
-                if (next) next.click();
-            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-                const prev = document.querySelector('.sidebar-nav li.active a')?.parentElement.previousElementSibling?.querySelector('a');
-                if (prev) prev.click();
-            }
-        });
-
         // Close stakeholder detail panel on outside click
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.detail-panel') && !e.target.closest('.s-node')) closePanel();
@@ -2225,6 +2268,68 @@
 
         // Init
         updateActiveNav();
+
+        // ==========================================
+        //  Floating section nav (next/prev buttons)
+        // ==========================================
+        const prevBtn = document.getElementById('prevSection');
+        const nextBtn = document.getElementById('nextSection');
+        const navSections = Array.from(document.querySelectorAll('section[id]'));
+
+        function getCurrentSectionIndex() {
+            let idx = 0;
+            for (let i = 0; i < navSections.length; i++) {
+                if (navSections[i].getBoundingClientRect().top < window.innerHeight * 0.5) {
+                    idx = i;
+                } else {
+                    break;
+                }
+            }
+            return idx;
+        }
+
+        function scrollToSection(idx) {
+            if (idx < 0 || idx >= navSections.length) return;
+            if (idx === 0) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                const y = navSections[idx].getBoundingClientRect().top + window.pageYOffset - HEADER_OFFSET;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        }
+
+        function updateSectionNavState() {
+            const idx = getCurrentSectionIndex();
+            prevBtn.disabled = idx === 0;
+            nextBtn.disabled = idx >= navSections.length - 1;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            scrollToSection(getCurrentSectionIndex() - 1);
+        });
+        nextBtn.addEventListener('click', () => {
+            scrollToSection(getCurrentSectionIndex() + 1);
+        });
+
+        window.addEventListener('scroll', updateSectionNavState, { passive: true });
+        updateSectionNavState();
+
+        // Keyboard nav (arrow keys = next/prev section, Escape = close panels)
+        document.addEventListener('keydown', (e) => {
+            // Don't intercept arrows when typing in inputs
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === 'Escape') {
+                closeDrawer();
+                closePanel();
+            }
+            else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                nextBtn.click();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                prevBtn.click();
+            }
+        });
 
 
         // ==========================================
