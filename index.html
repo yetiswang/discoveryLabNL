@@ -310,12 +310,15 @@
 
         /* Scroll indicator — entrance + bounce combined in one keyframe */
         .landing-scroll {
-            position: absolute; bottom: 2rem; left: 50%;
+            position: fixed; bottom: 2rem; left: 50%;
             transform: translateX(-50%);
+            z-index: 90;
             font-size: 0.9rem; color: rgba(255, 255, 255, 0.4);
             opacity: 0;
             animation: scrollEnterThenBounce 3s ease-out 1.2s forwards;
+            transition: opacity 0.4s ease;
         }
+        .landing-scroll.fade-out { opacity: 0 !important; pointer-events: none; }
         @keyframes bounce {
             0%, 100% { transform: translateX(-50%) translateY(0); }
             50% { transform: translateX(-50%) translateY(8px); }
@@ -1150,7 +1153,7 @@
             .next-steps li { font-size: 0.9rem; padding-left: 1.25rem; }
             #contact { padding: 2rem 1rem; }
             .photo-divider { height: 22vh; max-height: 220px; }
-            .landing-scroll { font-size: 0.8rem; bottom: 1rem; }
+            .landing-scroll { font-size: 0.8rem; bottom: 5.5rem; }
         }
 
     </style>
@@ -1291,8 +1294,8 @@
                     <p class="landing-meta anim-entrance delay-4">Proposed for NWO Large-Scale Research Infrastructure &middot; ICMS &middot; TU/e</p>
                 </div>
 
-                <div class="landing-scroll">&darr; Scroll to explore</div>
             </section>
+            <div class="landing-scroll">&darr; Scroll to explore</div>
 
             <!-- 2. The Challenge -->
             <section id="challenge">
@@ -2572,19 +2575,27 @@
         }
     })();
 
-    // Switch scroll indicator to persistent bounce after entrance finishes
+    // Switch scroll indicator to persistent bounce after entrance, hide on scroll
     (function() {
         const scrollEl = document.querySelector('.landing-scroll');
-        if (scrollEl) {
-            scrollEl.addEventListener('animationend', function() {
-                scrollEl.style.animation = 'none';
-                scrollEl.style.opacity = '1';
-                scrollEl.style.transform = 'translateX(-50%)';
-                // Trigger reflow then apply bounce
-                void scrollEl.offsetWidth;
-                scrollEl.style.animation = 'bounce 2s ease-in-out infinite';
-            }, { once: true });
-        }
+        if (!scrollEl) return;
+
+        scrollEl.addEventListener('animationend', function() {
+            scrollEl.style.animation = 'none';
+            scrollEl.style.opacity = '1';
+            scrollEl.style.transform = 'translateX(-50%)';
+            void scrollEl.offsetWidth;
+            scrollEl.style.animation = 'bounce 2s ease-in-out infinite';
+        }, { once: true });
+
+        // Fade out once user scrolls past landing
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > window.innerHeight * 0.4) {
+                scrollEl.classList.add('fade-out');
+            } else {
+                scrollEl.classList.remove('fade-out');
+            }
+        }, { passive: true });
     })();
 
     // ==========================================
