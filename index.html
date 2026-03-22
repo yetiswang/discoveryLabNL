@@ -741,16 +741,22 @@
             width: calc(100% - 28px);
             max-width: 400px;
             height: 58px;
-            background: rgba(20, 20, 30, 0.68);
-            -webkit-backdrop-filter: saturate(190%) blur(24px);
-            backdrop-filter: saturate(190%) blur(24px);
-            border: none;
-            border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+            background: rgba(20, 20, 30, 0.52);
+            background-image: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(255, 255, 255, 0.02) 40%,
+                rgba(255, 255, 255, 0.05) 100%
+            );
+            -webkit-backdrop-filter: saturate(200%) blur(28px);
+            backdrop-filter: saturate(200%) blur(28px);
+            border: 0.5px solid rgba(255, 255, 255, 0.15);
             border-radius: 22px;
             box-shadow:
-                0 0.5px 0 0 rgba(255, 255, 255, 0.06) inset,
-                0 12px 40px rgba(0, 0, 0, 0.18),
-                0 4px 12px rgba(0, 0, 0, 0.08);
+                0 0.5px 0 0 rgba(255, 255, 255, 0.1) inset,
+                0 -0.5px 0 0 rgba(255, 255, 255, 0.04) inset,
+                0 16px 48px rgba(0, 0, 0, 0.2),
+                0 4px 12px rgba(0, 0, 0, 0.1);
             z-index: 150;
             justify-content: space-around;
             align-items: center;
@@ -1602,25 +1608,25 @@
             <svg viewBox="0 0 24 24"><path d="M12 3L3 10.5V20a1 1 0 0 0 1 1h5v-6h6v6h5a1 1 0 0 0 1-1V10.5L12 3z"/></svg>
             <span>Home</span>
         </a>
-        <a href="#pillars" class="tab-item" data-tab="pillars">
-            <!-- Phosphor Light: Columns -->
-            <svg viewBox="0 0 24 24"><line x1="2" y1="4" x2="22" y2="4"/><line x1="2" y1="20" x2="22" y2="20"/><line x1="5" y1="4" x2="5" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="19" y1="4" x2="19" y2="20"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="9" y1="12" x2="15" y2="12" opacity="0.35"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
-            <span>Pillars</span>
+        <a href="#pillars" class="tab-item" data-tab="science">
+            <!-- Phosphor Light: Flask / Science -->
+            <svg viewBox="0 0 24 24"><path d="M9 3h6"/><path d="M10 3v6.5L4.5 18a1.5 1.5 0 0 0 1.3 2.2h12.4a1.5 1.5 0 0 0 1.3-2.2L14 9.5V3"/><path d="M7.5 15h9"/></svg>
+            <span>Science</span>
         </a>
-        <a href="#roadmap" class="tab-item" data-tab="roadmap">
+        <a href="#campus" class="tab-item" data-tab="plan">
             <!-- Phosphor Light: Path / Route -->
             <svg viewBox="0 0 24 24"><path d="M4 19h4a4 4 0 0 0 4-4V9a4 4 0 0 1 4-4h4"/><circle cx="4" cy="19" r="1.5"/><circle cx="20" cy="5" r="1.5"/></svg>
-            <span>Roadmap</span>
+            <span>Plan</span>
         </a>
-        <a href="#team" class="tab-item" data-tab="team">
+        <a href="#team" class="tab-item" data-tab="people">
             <!-- Phosphor Light: Users -->
             <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M1.5 21v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 21v-.5a4.5 4.5 0 0 1 6 0v.5"/></svg>
-            <span>Team</span>
+            <span>People</span>
         </a>
-        <a href="#stakeholders" class="tab-item" data-tab="stakeholders">
-            <!-- Phosphor Light: Map Pin -->
-            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-            <span>Map</span>
+        <a href="#contact" class="tab-item" data-tab="contact">
+            <!-- Phosphor Light: Envelope -->
+            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 5l9 7 9-7"/></svg>
+            <span>Contact</span>
         </a>
     </nav>
 
@@ -2011,10 +2017,10 @@
         // Map: which sections each tab "owns"
         const tabSections = {
             landing: ['landing', 'challenge'],
-            pillars: ['pillars', 'domains', 'campus'],
-            roadmap: ['positioning', 'roadmap'],
-            team: ['team'],
-            stakeholders: ['stakeholders', 'contact']
+            science: ['pillars', 'domains'],
+            plan: ['campus', 'positioning', 'roadmap'],
+            people: ['team', 'stakeholders'],
+            contact: ['contact']
         };
 
         // Tab click handler
