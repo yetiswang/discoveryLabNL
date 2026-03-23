@@ -1093,11 +1093,11 @@
 
         /* Responsive — small tablet / large phone */
         @media (max-width: 768px) {
-            .sidebar { display: none !important; }
-            .nav-trigger { display: none !important; }
+            .sidebar, .sidebar.open { display: none !important; visibility: hidden !important; transform: none !important; }
+            .nav-trigger, .nav-trigger:hover { display: none !important; visibility: hidden !important; }
+            .sidebar-backdrop, .sidebar-backdrop.show { display: none !important; visibility: hidden !important; }
             .section-nav { bottom: 5.5rem; right: 1rem; }
             .section-nav button { width: 36px; height: 36px; }
-            .sidebar-backdrop { display: none !important; }
             .nav-toggle { display: none !important; }
             .bottom-tabs { display: flex; }
             body { padding-bottom: 76px; }
@@ -1124,7 +1124,6 @@
             .roadmap-line { display: none; }
             .roadmap-phase { text-align: left; display: flex; align-items: flex-start; gap: 1rem; }
             .phase-dot { margin: 0; flex-shrink: 0; }
-            .sidebar-nav li a { padding: 0.5rem 1rem; font-size: 0.9rem; }
             .map-container { min-height: 350px; overflow: visible; }
             .detail-panel {
                 position: fixed; top: auto; right: 0; bottom: 0; left: 0;
