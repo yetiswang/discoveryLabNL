@@ -481,6 +481,28 @@
         .phase-title { font-size: 0.95rem; font-weight: 700; color: var(--tue-dark); margin-bottom: 0.5rem; }
         .phase-desc { font-size: 0.85rem; color: var(--tue-gray); line-height: 1.5; }
         .phase-here { font-size: 0.75rem; color: var(--tue-red); font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .roadmap-phase.done .phase-dot { background-color: var(--tue-dark); border-color: var(--tue-dark); }
+        .roadmap-phase.done .phase-title, .roadmap-phase.done .phase-marker { opacity: 0.85; }
+
+        /* Landscape */
+        #landscape h2 { font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--tue-dark); }
+        .landscape-intro { font-size: 1rem; color: var(--tue-gray); margin-bottom: 2.5rem; line-height: 1.7; max-width: 820px; }
+        .landscape-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .landscape-card { background: #fff; border: 1px solid var(--tue-light-border); border-radius: 4px; padding: 1.5rem; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .landscape-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+        .landscape-card h3 { font-size: 1.1rem; color: var(--tue-dark); margin-bottom: 0.3rem; }
+        .landscape-meta { font-size: 0.78rem; color: var(--tue-gray); font-weight: 600; letter-spacing: 0.02em; margin-bottom: 0.75rem; text-transform: uppercase; }
+        .landscape-card p:last-child { font-size: 0.9rem; color: var(--tue-gray); line-height: 1.55; margin: 0; }
+        .landscape-highlight { background: var(--tue-dark); border-color: var(--tue-dark); }
+        .landscape-highlight h3 { color: #fff; }
+        .landscape-highlight .landscape-meta { color: rgba(255,255,255,0.85); }
+        .landscape-highlight p:last-child { color: rgba(255,255,255,0.92); }
+        .landscape-cta { margin-top: 2rem; font-size: 0.95rem; color: var(--tue-gray); text-align: center; }
+        .landscape-cta a { color: var(--tue-red); text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--tue-red); padding-bottom: 1px; transition: opacity 0.2s; }
+        .landscape-cta a:hover { opacity: 0.7; }
+        @media (max-width: 768px) {
+            .landscape-grid { grid-template-columns: 1fr; }
+        }
 
         /* Team */
         #team h2 { font-size: 2.5rem; margin-bottom: 2.5rem; color: var(--tue-dark); }
@@ -1307,6 +1329,7 @@
                     <li><a href="#pillars">Three Pillars</a></li>
                     <li><a href="#domains">Discovery Domains</a></li>
                     <li><a href="#campus">Campus Consortium</a></li>
+                    <li><a href="#landscape">Landscape</a></li>
                     <li><a href="#positioning">Positioning</a></li>
                     <li><a href="#roadmap">Roadmap</a></li>
                     <li><a href="#team">Team</a></li>
@@ -1674,6 +1697,45 @@
                 </div>
             </section>
 
+            <!-- 4b. Global Landscape -->
+            <section id="landscape">
+                <h2 class="reveal">The Global Landscape</h2>
+                <p class="landscape-intro reveal">Smart microscopy, autonomous instruments, and AI-driven spectroscopy are advancing rapidly worldwide &mdash; but groups pursue these single techniques in isolation. No major initiative integrates them into a multimodal closed loop. That requires cross-domain coordination no single group can achieve alone.</p>
+                <div class="landscape-grid reveal-group">
+                    <div class="landscape-card">
+                        <h3>Acceleration Consortium</h3>
+                        <p class="landscape-meta">Canada &middot; Can$500M</p>
+                        <p>50 robots, 7 SDLs. World&rsquo;s largest SDL programme. No characterisation pillar.</p>
+                    </div>
+                    <div class="landscape-card">
+                        <h3>Korea 500 SDL</h3>
+                        <p class="landscape-meta">Korea &middot; $125M+</p>
+                        <p>500 labs by 2030. National scale. XRD only, no multimodal characterisation.</p>
+                    </div>
+                    <div class="landscape-card">
+                        <h3>DIADEM</h3>
+                        <p class="landscape-meta">France &middot; &euro;85M</p>
+                        <p>Synchrotron + EM + spectroscopy. Advanced but not yet integrated into SDL loops.</p>
+                    </div>
+                    <div class="landscape-card">
+                        <h3>CAPeX</h3>
+                        <p class="landscape-meta">DTU, Denmark &middot; 300M DKK (~&euro;45M)</p>
+                        <p>Synchrotron PDF in SDL loop. Battery-only, single-technique per workflow.</p>
+                    </div>
+                    <div class="landscape-card">
+                        <h3>Big Chemistry</h3>
+                        <p class="landscape-meta">Netherlands &middot; &euro;207M</p>
+                        <p>Inline techniques (tensiometry, confocal microscopy, nanoindenter). Chemistry-specific, not cross-domain.</p>
+                    </div>
+                    <div class="landscape-card landscape-highlight">
+                        <h3>DiscoveryLabNL</h3>
+                        <p class="landscape-meta">Netherlands &middot; &euro;30M planned</p>
+                        <p>Correlated multimodal characterisation. Cross-domain. Permanent research infrastructure.</p>
+                    </div>
+                </div>
+                <p class="landscape-cta reveal">For a global SDL landscape scan, <a href="https://yetiswang.github.io/LSRI-presentation/sdl-map.html" target="_blank" rel="noopener">explore the interactive SDL map</a>.</p>
+            </section>
+
             <!-- 5. Positioning -->
             <section id="positioning">
                 <h2 class="reveal">Positioning</h2>
@@ -1701,36 +1763,30 @@
                 <div class="roadmap-timeline">
                     <div class="roadmap-line"></div>
                     <div class="roadmap-phases reveal-group">
+                        <div class="roadmap-phase done">
+                            <div class="phase-dot"></div>
+                            <div class="phase-marker">2024–2025</div>
+                            <div class="phase-title">Phase 1 &middot; Positioning</div>
+                            <div class="phase-desc">Strategic framing, three-pillar architecture, initial stakeholder engagement.</div>
+                        </div>
                         <div class="roadmap-phase active">
                             <div class="phase-dot"></div>
-                            <div class="phase-marker">Mar 2026</div>
-                            <div class="phase-title">Initiation &amp; Alignment</div>
-                            <div class="phase-desc">Project charter, governance structure, Executive Board endorsement</div>
+                            <div class="phase-marker">2025–2026</div>
+                            <div class="phase-title">Phase 2 &middot; Consortium Building</div>
+                            <div class="phase-desc">Charter, governance, Executive Board endorsement, national partner alignment, pilot scoping.</div>
                             <div class="phase-here">We are here</div>
                         </div>
                         <div class="roadmap-phase">
                             <div class="phase-dot"></div>
-                            <div class="phase-marker">Q2–Q3 2026</div>
-                            <div class="phase-title">Concept &amp; Architecture</div>
-                            <div class="phase-desc">Three-pillar technical design, national consortium formation, partnership agreements</div>
+                            <div class="phase-marker">2026–2027</div>
+                            <div class="phase-title">Phase 3 &middot; Full Proposal</div>
+                            <div class="phase-desc">NWO LSRI 2027 submission, external review readiness, co-funding commitments.</div>
                         </div>
                         <div class="roadmap-phase">
                             <div class="phase-dot"></div>
-                            <div class="phase-marker">Q3 2026</div>
-                            <div class="phase-title">Stakeholder Validation</div>
-                            <div class="phase-desc">Institute and Flagship alignment, co-funding commitments, advisory board formation</div>
-                        </div>
-                        <div class="roadmap-phase">
-                            <div class="phase-dot"></div>
-                            <div class="phase-marker">Q4 2026</div>
-                            <div class="phase-title">Pilot &amp; Investment</div>
-                            <div class="phase-desc">Pilot project portfolio, phased investment logic, LSRI proposal drafting</div>
-                        </div>
-                        <div class="roadmap-phase">
-                            <div class="phase-dot"></div>
-                            <div class="phase-marker">2027</div>
-                            <div class="phase-title">NWO LSRI Submission</div>
-                            <div class="phase-desc">Full proposal to NWO, external review readiness</div>
+                            <div class="phase-marker">2028–2032</div>
+                            <div class="phase-title">Phase 4 &middot; Infrastructure Build</div>
+                            <div class="phase-desc">Capital deployment, instrument procurement, AI Core ramp-up, operational launch.</div>
                         </div>
                     </div>
                 </div>
@@ -1843,13 +1899,13 @@
                             </g>
 
                             <!-- IN DIALOGUE (r~310) -->
-                            <g class="s-node" data-id="rw" data-tier="dialogue">
-                                <circle cx="500" cy="190" r="8" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" class="s-dot"/>
-                                <text x="520" y="182" text-anchor="start" class="s-name">Ren&#233;e Westenbrink</text>
+                            <g class="s-node" data-id="rw" data-tier="committed">
+                                <circle cx="465" cy="305" r="9" fill="none" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
+                                <text x="455" y="295" text-anchor="end" class="s-name">Ren&#233;e Westenbrink</text>
                             </g>
-                            <g class="s-node" data-id="mkb" data-tier="dialogue">
-                                <circle cx="760" cy="330" r="8" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" class="s-dot"/>
-                                <text x="778" y="332" text-anchor="start" class="s-name">Mark Boneschanscher</text>
+                            <g class="s-node" data-id="mkb" data-tier="committed">
+                                <circle cx="645" cy="365" r="9" fill="none" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
+                                <text x="663" y="367" text-anchor="start" class="s-name">Mark Boneschanscher</text>
                             </g>
                             <g class="s-node" data-id="mva" data-tier="dialogue">
                                 <circle cx="810" cy="500" r="8" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" class="s-dot"/>
@@ -1909,13 +1965,21 @@
                                 <circle cx="380" cy="680" r="9" fill="none" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
                                 <text x="362" y="684" text-anchor="end" class="s-name">Ghislaine Vantomme</text>
                             </g>
-                            <g class="s-node" data-id="mmm" data-tier="planned">
-                                <circle cx="870" cy="370" r="7" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-dasharray="3,3" class="s-dot"/>
-                                <text x="888" y="372" text-anchor="start" class="s-name">Monica Morales-Masis</text>
+                            <g class="s-node" data-id="mmm" data-tier="dialogue">
+                                <circle cx="790" cy="410" r="8" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" class="s-dot"/>
+                                <text x="808" y="414" text-anchor="start" class="s-name">Monica Morales-Masis</text>
                             </g>
-                            <g class="s-node" data-id="cvdw" data-tier="planned">
-                                <circle cx="870" cy="500" r="7" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-dasharray="3,3" class="s-dot"/>
-                                <text x="888" y="502" text-anchor="start" class="s-name">Carlo van de Weijer</text>
+                            <g class="s-node" data-id="cvdw" data-tier="dialogue">
+                                <circle cx="790" cy="580" r="8" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" class="s-dot"/>
+                                <text x="808" y="584" text-anchor="start" class="s-name">Carlo van de Weijer</text>
+                            </g>
+                            <g class="s-node" data-id="nd" data-tier="committed">
+                                <circle cx="605" cy="660" r="9" fill="none" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
+                                <text x="623" y="664" text-anchor="start" class="s-name">Niels Deen</text>
+                            </g>
+                            <g class="s-node" data-id="ne" data-tier="committed">
+                                <circle cx="495" cy="700" r="9" fill="none" stroke="#C8102E" stroke-width="2.5" class="s-dot"/>
+                                <text x="495" y="720" text-anchor="middle" class="s-name">Nadia Erkamp</text>
                             </g>
                         </g>
                     </svg>
@@ -2061,10 +2125,10 @@
             iv: { name: 'Ilja Voets', role: 'Head SSM, Infrastructure Advocate', org: 'Chemical Engineering and Chemistry', tier: 'committed', note: 'Institutional infrastructure champion.' },
             pz: { name: 'Peter Zijlstra', role: 'Full Professor, Nanophotonics', org: 'Applied Physics / TU/e', tier: 'committed', note: 'Advanced Characterisation pillar; single-molecule sensing and nanophotonics expertise.' },
             la: { name: 'Lorenzo Albertazzi', role: 'Associate Professor, Nanoscopy', org: 'Biomedical Engineering / ICMS / TU/e', tier: 'committed', note: 'Advanced Characterisation pillar; super-resolution microscopy and nanomedicine imaging.' },
-            rw: { name: 'Ren\u00e9e Westenbrink', role: 'Head Research Policy', org: 'TU/e', tier: 'dialogue', note: 'April 2026 EB alignment meeting planned.' },
-            mkb: { name: 'Mark Boneschanscher', role: 'Dean', org: 'Chemical Engineering and Chemistry', tier: 'dialogue', note: 'Executive Board endorsement pathway.' },
+            rw: { name: 'Ren\u00e9e Westenbrink', role: 'Head Research Policy', org: 'TU/e', tier: 'committed', note: 'Active on Executive Board alignment pathway; ongoing engagement on LSRI positioning.' },
+            mkb: { name: 'Mark Boneschanscher', role: 'Dean', org: 'Chemical Engineering and Chemistry', tier: 'committed', note: 'Executive Board endorsement pathway; committed to DiscoveryLabNL trajectory.' },
             mva: { name: 'Mark van Assem', role: 'LSRI Secretary', org: 'NWO', tier: 'dialogue', note: 'External validation: "credible addition to the landscape".' },
-            se: { name: 'S\u00fcleyman Er', role: 'Department Head', org: 'DIFFER', tier: 'dialogue', note: 'Potential national consortium leader.' },
+            se: { name: 'S\u00fcleyman Er', role: 'Department Head', org: 'DIFFER', tier: 'dialogue', note: 'Apr 2026 strategy meeting: agreed DIFFER-led joint initiative; figurehead role under discussion.' },
             st: { name: 'Shuxia Tao', role: 'Department Head', org: 'DIFFER', tier: 'dialogue', note: 'Dutch Physics Council proposal involvement.' },
             eb: { name: 'Erik Bakkers', role: 'Group Leader', org: 'Applied Photonics and Semiconductor Engineering', tier: 'dialogue', note: 'Willing to join for Casimir representation.' },
             lb: { name: 'Luc Brunsveld', role: 'Scientific Director', org: 'ICMS / TU/e', tier: 'planned', note: 'To be formally engaged in next phase.' },
@@ -2077,8 +2141,10 @@
             hf: { name: 'Heiner Friedrich', role: 'Associate Professor, CMEM', org: 'TU/e', tier: 'committed', note: 'Met 2026-03-23 with Nicholas Tito. Discussed LSRI infrastructure and roboLab alignment. Committed to collaboration on Advanced Characterisation pillar.' },
             vsm: { name: 'V\u00edctor S\u00e1nchez Mart\u00edn', role: 'Managing Director, Casimir Institute', org: 'TU/e', tier: 'committed', note: 'Fully on board (March 2026). 700+ researchers across semiconductors, photonics, quantum, advanced materials. Key campus consortium ally.' },
             gv: { name: 'Ghislaine Vantomme', role: 'Associate Professor, Supramolecular Chemistry', org: 'CEC / ICMS / TU/e', tier: 'committed', note: 'Big Chemistry PI (BioSoftCoat): AI + robotics for high-throughput materials mapping. LSRI intelligence sharing.' },
-            mmm: { name: 'Monica Morales-Masis', role: 'Head, M4N Group', org: 'Applied Physics / TU/e', tier: 'planned', note: 'To be engaged.' },
-            cvdw: { name: 'Carlo van de Weijer', role: 'Director, EAISI', org: 'EAISI / TU/e', tier: 'planned', note: 'Key contact for AI Core pillar: AI expertise, staffing model, training, model hosting. Cross-faculty AI positioning.' }
+            mmm: { name: 'Monica Morales-Masis', role: 'Head, M4N Group', org: 'Applied Physics / TU/e', tier: 'dialogue', note: 'M4N group; SDL-curious; active interest in advanced characterisation hardware.' },
+            cvdw: { name: 'Carlo van de Weijer', role: 'Director, EAISI', org: 'EAISI / TU/e', tier: 'dialogue', note: 'Active liaison for AI Core pillar: AI expertise, staffing model, model hosting. Cross-faculty AI positioning.' },
+            nd: { name: 'Niels Deen', role: 'Professor, Mechanical Engineering / Robotics', org: 'TU/e', tier: 'committed', note: 'Engineering Roadmap Group; engaged on robotics and engineering pillar of DiscoveryLabNL.' },
+            ne: { name: 'Nadia Erkamp', role: 'Assistant Professor, Biological Soft Matter', org: 'ICMS / TU/e', tier: 'committed', note: 'Runs SDL for phase separation screening (picolitre scale). Pitch: "AlphaFold for food formulation". Industry pilots with Unilever, Arla, Merck.' }
         };
 
         const tierLabels = { core: 'Core Team', committed: 'Committed', dialogue: 'In Dialogue', planned: 'Planned' };
@@ -2512,7 +2578,7 @@
         const tabSections = {
             landing: ['landing', 'challenge'],
             science: ['pillars', 'domains'],
-            plan: ['campus', 'positioning', 'roadmap'],
+            plan: ['campus', 'landscape', 'positioning', 'roadmap'],
             people: ['team', 'stakeholders'],
             contact: ['contact']
         };
