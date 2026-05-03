@@ -404,12 +404,20 @@
         }
         .pillar-expand-btn:hover { color: var(--tue-dark); }
         .pillar-expanded { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-        .pillar-expanded.open { max-height: 500px; }
+        .pillar-expanded.open { max-height: 700px; }
         .pillar-expanded p {
             margin-top: 1rem; padding-top: 1rem;
             border-top: 1px solid var(--tue-light-border);
             font-size: 0.95rem; color: var(--tue-gray); line-height: 1.7;
         }
+        .pillar-expanded p.operational-ref {
+            border-top: none; padding-top: 0; margin-top: 0.6rem;
+            font-size: 0.9rem;
+        }
+        .pillar-expanded p.operational-ref a {
+            color: var(--tue-red); text-decoration: none; font-weight: 600;
+        }
+        .pillar-expanded p.operational-ref a:hover { text-decoration: underline; }
 
         /* Discovery Domains */
         #domains h2 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--tue-dark); }
@@ -1475,6 +1483,7 @@
                         <button class="pillar-expand-btn" onclick="togglePillar(this)">Show more</button>
                         <div class="pillar-expanded">
                             <p>Connects to NEMI (national electron microscopy) and XNL (X-ray Netherlands). Key verification and integration layer ensuring experimental results feed back into the AI-driven discovery loop.</p>
+                            <p class="operational-ref"><strong>Operational reference:</strong> <a href="https://superresolution.nl/" target="_blank" rel="noopener">superresolution.nl</a>, the Advanced Microscopy Facility (AMF) at ICMS.</p>
                         </div>
                     </div>
                     <div class="pillar-card">
