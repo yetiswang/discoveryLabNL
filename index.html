@@ -1456,6 +1456,21 @@
             .landing-scroll { font-size: 0.8rem; bottom: 5.5rem; }
         }
 
+    
+        /* === STATIC MODE: white bg, no animations === */
+        .static-mode,
+        .static-mode body,
+        .static-mode html { background-color: #FFFFFF !important; }
+        .static-mode *,
+        .static-mode *::before,
+        .static-mode *::after {
+            animation: none !important;
+            transition: none !important;
+        }
+        .static-mode .loop-banner::before { display: none; }
+        .static-mode .scroll-indicator { display: none; }
+        .static-mode .animated-rings * { animation: none !important; }
+
     </style>
 </head>
 <body>
@@ -3181,6 +3196,14 @@
         });
     })();
 
-    </script>
+    
+    /* Static mode: append ?static to URL for white bg, no animations */
+    (function(){
+        if (window.location.search.indexOf('static') > -1) {
+            document.documentElement.classList.add('static-mode');
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    })();
+</script>
 </body>
 </html>
