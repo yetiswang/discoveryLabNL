@@ -8,18 +8,17 @@
     <meta name="theme-color" content="#FFFFFF">
     <script>
         // Theme bootstrap — runs before <body> renders to prevent FOUC.
-        // Default to light for first-time visitors (briefing site read in well-lit rooms).
-        // Honour stored choice on subsequent visits.
+        // Default to dark for first-time visitors. Honour stored choice on subsequent visits.
         (function () {
             try {
                 var stored = localStorage.getItem('dlnl-theme');
                 if (stored === 'dark' || stored === 'light') {
                     document.documentElement.setAttribute('data-theme', stored);
                 } else {
-                    document.documentElement.setAttribute('data-theme', 'light');
+                    document.documentElement.setAttribute('data-theme', 'dark');
                 }
             } catch (e) {
-                document.documentElement.setAttribute('data-theme', 'light');
+                document.documentElement.setAttribute('data-theme', 'dark');
             }
         })();
     </script>
