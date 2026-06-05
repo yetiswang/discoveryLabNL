@@ -2064,15 +2064,15 @@
                     /* Mark + label hover (replaces text popups; click opens the slide-in panel) */
                     #consortium .ng {
                         cursor: pointer;
-                        /* transform-origin is set inline per chip to the chip's (mx, my) user-space
-                           coords, so scale grows the chip in place instead of shifting toward the
-                           bounding-box center. transform-box deliberately omitted — it would force
-                           fill-box (bbox center) and override the inline origin. */
-                        transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
-                                    filter    0.28s ease;
+                        /* No group transform — text grows via font-size, dots via r attribute.
+                           This sidesteps every SVG transform-origin engine quirk and keeps
+                           each element growing from its own anchor (in place, no translation). */
                     }
                     #consortium .ng > text {
-                        transition: fill 0.22s ease, font-weight 0.22s ease;
+                        transition: fill 0.22s ease,
+                                    font-weight 0.22s ease,
+                                    font-size 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+                                    filter 0.28s ease;
                     }
                     #consortium .ng > circle {
                         transition: fill 0.22s ease,
@@ -2080,11 +2080,12 @@
                                     stroke-width 0.22s ease,
                                     r 0.26s cubic-bezier(0.22, 1, 0.36, 1);
                     }
-                    #consortium .ng.is-hover {
-                        transform: scale(1.22);
-                    }
-                    /* Glow + colour change on TEXT ONLY (per request — dots should grow, not glow).
-                       Stacked drop-shadows so WebKit reads them clearly. */
+                    /* Glow + colour + size on TEXT ONLY (per request — dots grow, don't glow).
+                       Stacked drop-shadows so WebKit reads them clearly. font-size grows the
+                       text from its own anchor point — in place, no translation. */
+                    #consortium .ng.is-hover > text.ln,
+                    #consortium .ng.is-hover > text.lt { font-size: 40px; }
+                    #consortium .ng.is-hover > text.lo { font-size: 35px; }
                     #consortium .ng.is-hover > text {
                         fill: var(--tue-red);
                         font-weight: 800;
@@ -2399,10 +2400,12 @@
                        Same scale + glow on .ng as desktop. iOS browsers all use WebKit, so
                        relying on transform-box:fill-box on <g> works uniformly. */
                     @media (hover: none) {
-                        #consortium .ng:active,
-                        #consortium .ng.is-hover {
-                            transform: scale(1.22);
-                        }
+                        #consortium .ng:active > text.ln,
+                        #consortium .ng:active > text.lt,
+                        #consortium .ng.is-hover > text.ln,
+                        #consortium .ng.is-hover > text.lt { font-size: 45px; }
+                        #consortium .ng:active > text.lo,
+                        #consortium .ng.is-hover > text.lo { font-size: 39px; }
                         #consortium .ng:active > text,
                         #consortium .ng.is-hover > text {
                             fill: var(--tue-red);
@@ -2780,10 +2783,6 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         const dx = Math.abs(Math.cos(a)) < 0.2 ? 0 : (Math.cos(a) > 0 ? 1 : -1);
 
                         const g = el('g', { class: 'ng', tabindex: 0, role: 'button', 'aria-label': m.name });
-                        // Pin transform-origin to the chip's user-space coords so scale grows from the
-                        // chip (not from the bounding-box center, which sits between chip and labels).
-                        // Avoids translation-on-scale and works the same on Chrome + Safari (+ iOS).
-                        g.style.transformOrigin = mx + 'px ' + my + 'px';
                         // Debounced activator — fires on click + pointerup so SVG taps on mobile work
                         let _lastActivate = 0;
                         const _activate = () => {
