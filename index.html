@@ -1993,14 +1993,46 @@
                     }
                     #consortium .csm-map .nl-outline { fill: none; stroke: var(--csm-faint); stroke-width: 1.2; }
                     #consortium .csm-map svg > g > path {
-                        fill: rgba(var(--accent-rgb), 0.05) !important;
-                        stroke: var(--csm-faint) !important;
-                        stroke-width: 18 !important;
+                        fill: rgba(var(--accent-rgb), 0.12) !important;
+                        stroke: rgba(var(--accent-rgb), 0.55) !important;
+                        stroke-width: 12 !important;
+                        stroke-linejoin: round !important;
                         vector-effect: non-scaling-stroke;
                     }
+                    html[data-theme="dark"] #consortium .csm-map svg > g > path {
+                        fill: rgba(var(--accent-rgb), 0.18) !important;
+                        stroke: rgba(var(--accent-rgb), 0.60) !important;
+                    }
+                    /* Sea panel background for the map */
+                    #consortium .csm-map { position: relative; }
+                    #consortium .csm-map::before {
+                        content: "";
+                        position: absolute;
+                        inset: 0;
+                        background:
+                            radial-gradient(ellipse at 30% 25%, rgba(120,160,200,0.08), transparent 55%),
+                            linear-gradient(180deg, rgba(120,160,200,0.06), rgba(120,160,200,0.02));
+                        border: 1px solid var(--csm-hairline);
+                        border-radius: 4px;
+                        pointer-events: none;
+                    }
+                    html[data-theme="dark"] #consortium .csm-map::before {
+                        background:
+                            radial-gradient(ellipse at 30% 25%, rgba(120,140,170,0.08), transparent 55%),
+                            linear-gradient(180deg, rgba(120,140,170,0.05), rgba(120,140,170,0.02));
+                    }
+                    /* City marker styling */
+                    #consortium .csm-map .city-dot-cmp {
+                        fill: var(--tue-red);
+                        filter: drop-shadow(0 0 4px rgba(var(--accent-rgb), 0.5));
+                    }
+                    #consortium .csm-map .city-dot-tlk {
+                        fill: white;
+                        stroke: var(--tue-red);
+                        stroke-width: 3;
+                    }
+                    html[data-theme="dark"] #consortium .csm-map .city-dot-tlk { fill: var(--bg); }
                     #consortium .csm-map .nl-fill { fill: rgba(var(--accent-rgb), 0.03); stroke: var(--csm-faint); stroke-width: 1.2; }
-                    #consortium .csm-map .city-dot-cmp { fill: var(--tue-red); }
-                    #consortium .csm-map .city-dot-tlk { fill: none; stroke: var(--tue-red); stroke-width: 2; }
                     #consortium .csm-map .city-label { fill: var(--csm-ink); font-size: 36px; font-weight: 600; font-family: 'Avenir Next LT Pro', 'Avenir Next', Avenir, sans-serif; }
                     #consortium .csm-map .city-label-tlk { fill: var(--tue-red); font-style: italic; font-weight: 500; }
                     #consortium .csm-map .city-meta { fill: var(--csm-eyebrow); font-size: 22px; letter-spacing: 0.5px; font-family: 'Avenir Next LT Pro', 'Avenir Next', Avenir, sans-serif; }
