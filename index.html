@@ -2765,7 +2765,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         // Stagger index for entrance reveal
                         g.style.setProperty('--idx', members.indexOf(m));
                         // JS-driven hover state (SVG <g> :hover is unreliable across browsers)
-                        const setHover  = () => { g.classList.add('is-hover'); g.parentNode.appendChild(g); };
+                        const setHover  = () => g.classList.add('is-hover');
                         const clearHover = () => g.classList.remove('is-hover');
                         g.addEventListener('mouseenter', setHover);
                         g.addEventListener('mouseleave', clearHover);
