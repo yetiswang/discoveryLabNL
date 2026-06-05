@@ -1978,9 +1978,12 @@
                         --csm-faint: rgba(30,30,40,0.20);
                         --csm-tip-bg: #FFFFFF;
                         --csm-tip-border: rgba(30,30,40,0.18);
-                        padding: 5rem 4rem;
+                        padding: 4rem 4rem;
                         background: var(--bg);
                         color: var(--tue-dark);
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
                     }
                     html[data-theme="dark"] #consortium {
                         --csm-ink: var(--tue-dark);
@@ -2002,23 +2005,32 @@
                     #consortium .csm-intro {
                         font-size: 1.05rem;
                         color: var(--tue-gray);
-                        margin-bottom: 3rem;
-                        line-height: 1.7;
+                        margin-bottom: 1.8rem;
+                        line-height: 1.6;
                         max-width: 820px;
                     }
+                    #consortium h2 { margin-bottom: 0.8rem; }
                     #consortium .csm-layout {
                         display: grid;
                         grid-template-columns: 1.4fr 0.6fr;
-                        gap: 3.5rem;
+                        gap: 3rem;
                         align-items: center;
                         max-width: none;
                         margin: 0;
                         padding: 0;
+                        flex: 1 1 auto;
+                        min-height: 0;
+                        max-height: calc(100vh - 16rem);
                     }
                     @media (max-width: 940px) {
-                        #consortium .csm-layout { grid-template-columns: 1fr; gap: 2.4rem; }
-                        #consortium .csm-rings { max-width: 760px; margin: 0 auto; aspect-ratio: 1.3; }
-                        #consortium .csm-map   { max-width: 460px; margin: 0 auto; aspect-ratio: 0.85; }
+                        #consortium { display: block; padding: 3rem 1.5rem; min-height: auto; }
+                        #consortium .csm-layout { grid-template-columns: 1fr; gap: 2rem; max-height: none; }
+                        #consortium .csm-rings { width: 100%; height: auto; max-width: 700px; margin: 0 auto; aspect-ratio: 1.3; max-height: 70vh; }
+                        #consortium .csm-map   { width: 100%; height: auto; max-width: 420px; margin: 0 auto; aspect-ratio: 0.85; max-height: 60vh; }
+                    }
+                    @media (max-width: 600px) {
+                        #consortium { padding: 2.5rem 1rem; }
+                        #consortium .csm-layout { gap: 1.5rem; }
                     }
                     @media (max-width: 600px) {
                         #consortium h2 { font-size: 2rem; }
@@ -2026,9 +2038,9 @@
                         #consortium { padding: 4rem 1.5rem; }
                     }
                     #consortium .csm-rings-wrap, #consortium .csm-map-wrap { width: 100%; }
-                    #consortium .csm-rings { width: 100%; aspect-ratio: 1.3; max-width: 1100px; margin: 0 auto; overflow: visible; }
-                    #consortium .csm-rings svg { overflow: visible; }
-                    #consortium .csm-map { width: 100%; aspect-ratio: 0.85; max-width: 480px; margin: 0 auto; }
+                    #consortium .csm-rings { width: auto; height: 100%; aspect-ratio: 1.3; max-width: 100%; max-height: calc(100vh - 18rem); margin: 0 auto; overflow: visible; display: block; }
+                    #consortium .csm-rings svg { overflow: visible; width: 100%; height: 100%; }
+                    #consortium .csm-map { width: auto; height: 100%; aspect-ratio: 0.85; max-width: 100%; max-height: calc(100vh - 18rem); margin: 0 auto; display: block; }
                     #consortium .csm-rings svg, #consortium .csm-map svg { width: 100%; height: 100%; display: block; }
 
                     /* Rings */
@@ -2059,12 +2071,15 @@
 
                     /* Marginalia */
                     #consortium .csm-key {
-                        display: flex; gap: 2.4rem; justify-content: center; align-items: baseline;
-                        margin: 1rem auto 0.4rem; padding-top: 14px;
+                        display: flex; gap: 1.8rem; justify-content: center; align-items: baseline;
+                        margin: 0.6rem auto 0.3rem; padding-top: 10px;
                         border-top: 1px solid var(--csm-rule);
                         max-width: 720px; flex-wrap: wrap;
-                        font-size: 15px; color: var(--csm-ink); opacity: 0.78;
+                        font-size: 13px; color: var(--csm-ink); opacity: 0.78;
                     }
+                    #consortium .pillar-key { margin: 0.4rem auto 0; font-size: 11px; }
+                    #consortium .csm-cap { margin: 0.5rem auto 0; font-size: 11px; }
+                    #consortium .csm-map-title { font-size: 11px; margin-bottom: 0.3rem; }
                     #consortium .csm-key strong { font-weight: 600; }
                     #consortium .csm-key .mk { display: inline-block; vertical-align: middle; margin-right: 6px; width: 11px; height: 11px; border-radius: 50%; }
                     #consortium .mk-cmp { background: var(--tue-red); }
