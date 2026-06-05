@@ -1911,7 +1911,7 @@
                         --csm-faint: rgba(30,30,40,0.20);
                         --csm-tip-bg: rgba(255,255,255,0.98);
                         --csm-tip-border: rgba(30,30,40,0.18);
-                        padding: 6rem 3rem;
+                        padding: 5rem 4rem;
                         background: var(--bg);
                         color: var(--tue-dark);
                     }
@@ -1933,7 +1933,7 @@
                         font-weight: 700;
                     }
                     #consortium .csm-intro {
-                        font-size: 1.2rem;
+                        font-size: 1.05rem;
                         color: var(--tue-gray);
                         margin-bottom: 3rem;
                         line-height: 1.7;
@@ -1971,11 +1971,11 @@
                     #consortium .m-cmp { fill: var(--tue-red); }
                     #consortium .m-tlk { fill: none; stroke: var(--tue-red); stroke-width: 2.2; }
                     #consortium .m-opn { fill: none; stroke: var(--csm-soft); stroke-width: 1.5; stroke-dasharray: 2 2; }
-                    #consortium .ln { fill: var(--csm-ink); font-size: 52px; font-weight: 600; }
-                    #consortium .lr { fill: var(--csm-eyebrow); font-size: 22px; letter-spacing: 1.5px; font-weight: 500; text-transform: uppercase; }
-                    #consortium .lt { fill: var(--tue-red); font-size: 52px; font-weight: 500; font-style: italic; }
-                    #consortium .lo { fill: var(--csm-soft); font-size: 46px; font-weight: 400; font-style: italic; }
-                    #consortium .te { fill: var(--csm-eyebrow); font-size: 22px; letter-spacing: 3.5px; text-transform: uppercase; font-weight: 600; }
+                    #consortium .ln { fill: var(--csm-ink); font-size: 30px; font-weight: 600; }
+                    #consortium .lr { fill: var(--csm-eyebrow); font-size: 14px; letter-spacing: 1.5px; font-weight: 500; text-transform: uppercase; }
+                    #consortium .lt { fill: var(--tue-red); font-size: 30px; font-weight: 500; font-style: italic; }
+                    #consortium .lo { fill: var(--csm-soft); font-size: 26px; font-weight: 400; font-style: italic; }
+                    #consortium .te { fill: var(--csm-eyebrow); font-size: 15px; letter-spacing: 4px; text-transform: uppercase; font-weight: 600; }
 
                     /* Tooltip */
                     #consortium .ng { cursor: pointer; }
@@ -1983,9 +1983,9 @@
                     #consortium .ng:hover .tip, #consortium .ng:focus .tip { opacity: 1; pointer-events: auto; }
                     #consortium .tip-bg { fill: var(--csm-tip-bg); stroke: var(--csm-tip-border); stroke-width: 1; }
                     #consortium .tip-rule { stroke: rgba(var(--accent-rgb), 0.55); stroke-width: 1.5; }
-                    #consortium .tip-eb { fill: var(--csm-eyebrow); font-size: 22px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; }
-                    #consortium .tip-txt { fill: var(--csm-ink); font-size: 28px; font-weight: 400; }
-                    #consortium .tip-cta { fill: var(--tue-red); font-size: 26px; font-style: italic; cursor: pointer; }
+                    #consortium .tip-eb { fill: var(--csm-eyebrow); font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; }
+                    #consortium .tip-txt { fill: var(--csm-ink); font-size: 17px; font-weight: 400; }
+                    #consortium .tip-cta { fill: var(--tue-red); font-size: 14px; font-style: italic; cursor: pointer; }
                     #consortium .tip-cta:hover { text-decoration: underline; }
 
                     /* Marginalia */
@@ -2053,6 +2053,25 @@
                     #consortium .csm-map .city-label-tlk { fill: var(--tue-red); font-style: italic; font-weight: 500; }
                     #consortium .csm-map .city-meta { fill: var(--csm-eyebrow); font-size: 22px; letter-spacing: 0.5px; font-family: 'Avenir Next LT Pro', 'Avenir Next', Avenir, sans-serif; }
                     #consortium .csm-map-cap { text-align: center; max-width: 420px; margin: 0.6rem auto 0; font-size: 13px; font-style: italic; color: var(--csm-eyebrow); line-height: 1.5; }
+                    /* Pillar colours — SDL, Characterisation, AI */
+                    #consortium .pillar-sdl  { fill: #C8102E; }   /* TU/e Red — automation/robotics */
+                    #consortium .pillar-char { fill: #C4A158; }   /* warm gold — optical/microscopy */
+                    #consortium .pillar-ai   { fill: #1F6F7A; }   /* deep teal — digital/data */
+                    html[data-theme="dark"] #consortium .pillar-char { fill: #DDB870; }
+                    html[data-theme="dark"] #consortium .pillar-ai   { fill: #38A2B0; }
+                    #consortium .pillar-key {
+                        display: flex; gap: 1.4rem; justify-content: center; align-items: baseline;
+                        margin: 0.6rem auto 0; font-size: 12px;
+                        color: var(--csm-eyebrow); flex-wrap: wrap;
+                    }
+                    #consortium .pillar-key strong { color: var(--csm-ink); font-weight: 600; letter-spacing: .3px; }
+                    #consortium .pillar-key .pmk { display: inline-block; vertical-align: middle; margin-right: 6px; width: 9px; height: 9px; border-radius: 50%; }
+                    #consortium .pmk-sdl  { background: #C8102E; }
+                    #consortium .pmk-char { background: #C4A158; }
+                    #consortium .pmk-ai   { background: #1F6F7A; }
+                    html[data-theme="dark"] #consortium .pmk-char { background: #DDB870; }
+                    html[data-theme="dark"] #consortium .pmk-ai   { background: #38A2B0; }
+
                 </style>
 
                 <h2 class="reveal">An open consortium</h2>
@@ -2068,7 +2087,12 @@
                             <span><span class="mk mk-tlk"></span><strong>In conversation</strong></span>
                             <span><span class="mk mk-opn"></span><strong>Open invitation</strong></span>
                         </div>
-                        <p class="csm-cap">Hover any chair for what they bring or what's invited.</p>
+                        <div class="pillar-key">
+                            <span><span class="pmk pmk-sdl"></span><strong>SDL</strong></span>
+                            <span><span class="pmk pmk-char"></span><strong>Multimodal characterisation</strong></span>
+                            <span><span class="pmk pmk-ai"></span><strong>AI core</strong></span>
+                        </div>
+                        <p class="csm-cap">Hover any chair for what they bring or what's invited. Coloured dots show pillar contributions.</p>
                     </div>
 
                     <!-- NL map: geography companion -->
@@ -2322,36 +2346,36 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                             { id: 'intl',     radius: 445, label: '' },
                         ],
                         members: [
-                            { tier: 'campus', angle: -90, status: 'committed', name: 'ICMS', role: 'Soft matter',
-                              bring: 'Operational SDL platforms (RobotLab), soft matter and polymer characterisation, consortium coordination.' },
-                            { tier: 'campus', angle:   0, status: 'committed', name: 'EIRES', role: 'Energy',
-                              bring: 'Energy materials, electrochemistry, solar and storage workflows.' },
-                            { tier: 'campus', angle:  90, status: 'committed', name: 'DIFFER', role: 'Energy · joint host',
-                              bring: 'Plasma and energy-conversion materials; joint-host institutional anchor.' },
-                            { tier: 'campus', angle: 180, status: 'committed', name: 'Casimir', role: 'Quantum & info materials',
-                              bring: 'Quantum and informational materials; cross-institute photonics and condensed-matter community.' },
+                            { tier: 'campus', angle: -90, status: 'committed', name: 'ICMS', role: 'Soft matter', pillars: ['sdl','char','ai'],
+                              bring: 'Operational SDL platforms (RobotLab), advanced multimodal characterisation via the AMF, and AI methods through EAISI. Consortium coordination.' },
+                            { tier: 'campus', angle:   0, status: 'committed', name: 'EIRES', role: 'Energy', pillars: ['sdl','char'],
+                              bring: 'Energy materials, electrochemistry, solar and storage workflows. SDL practice plus operando characterisation.' },
+                            { tier: 'campus', angle:  90, status: 'committed', name: 'DIFFER', role: 'Energy · host', pillars: ['sdl','char'],
+                              bring: 'Plasma and energy-conversion materials autonomous workflows; joint-host institutional anchor.' },
+                            { tier: 'campus', angle: 180, status: 'committed', name: 'Casimir', role: 'Quantum & info', pillars: ['char','ai'],
+                              bring: 'Quantum and informational materials; cross-institute photonics, condensed-matter measurement, and computational layers.' },
 
-                            { tier: 'national', angle: -90, status: 'talking', name: 'TU Delft',
+                            { tier: 'national', angle: -90, status: 'talking', name: 'TU Delft', pillars: ['char'],
                               bring: 'Advanced microscopy capability on the national infrastructure ring.' },
-                            { tier: 'national', angle: -18, status: 'talking', name: 'Radboud',
+                            { tier: 'national', angle: -18, status: 'talking', name: 'Radboud', pillars: ['sdl'],
                               bring: 'Soft-matter and biophysics SDL capability on the national ring.' },
-                            { tier: 'national', angle:  54, status: 'open', name: 'Open · SDL partner',
+                            { tier: 'national', angle:  54, status: 'open', name: 'Open · SDL partner', pillars: ['sdl'],
                               bring: 'A self-driving laboratory partner with complementary domain capability.',
                               cta: 'This chair is reserved by capability, not by name. Talk to us.' },
-                            { tier: 'national', angle: 126, status: 'open', name: 'Open · Characterisation',
+                            { tier: 'national', angle: 126, status: 'open', name: 'Open · Characterisation', pillars: ['char'],
                               bring: 'A characterisation partner bringing modalities complementary to the campus core: scattering, synchrotron, neutron, or correlative imaging.',
                               cta: 'This chair is reserved by capability, not by name. Talk to us.' },
-                            { tier: 'national', angle: 198, status: 'open', name: 'Open · AI partner',
+                            { tier: 'national', angle: 198, status: 'open', name: 'Open · AI partner', pillars: ['ai'],
                               bring: 'An AI partner bringing foundation models, methods, or compute that strengthens the AI Core pillar.',
                               cta: 'This chair is reserved by capability, not by name. Talk to us.' },
 
-                            { tier: 'intl', angle: -150, status: 'open', name: 'Open · EU partner',
+                            { tier: 'intl', angle: -150, status: 'open', name: 'Open · EU partner', pillars: ['sdl','char','ai'],
                               bring: 'European partner institution aligned with open science and Materials Commons interoperability.',
                               cta: 'Open to a conversation. Join the consortium.' },
-                            { tier: 'intl', angle:  -30, status: 'open', name: 'Open · EU partner',
+                            { tier: 'intl', angle:  -30, status: 'open', name: 'Open · EU partner', pillars: ['sdl','char','ai'],
                               bring: 'European partner institution aligned with open science and Materials Commons interoperability.',
                               cta: 'Open to a conversation. Join the consortium.' },
-                            { tier: 'intl', angle:   90, status: 'open', name: 'Open · Intl partner',
+                            { tier: 'intl', angle:   90, status: 'open', name: 'Open · Intl partner', pillars: ['sdl','char','ai'],
                               bring: 'Global open-science partner aligned with autonomous-discovery practice.',
                               cta: 'Open to a conversation. Join the consortium.' },
                         ],
@@ -2376,7 +2400,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                     });
 
                     // Tier eyebrows on top arc (LTR sweep, readable)
-                    const tierLabels = { campus: 'TU/e Campus', national: 'National', intl: 'International' };
+                    const tierLabels = { campus: '', national: 'National', intl: 'International' };
                     const defs = el('defs');
                     consortium.tiers.forEach(t => {
                         const r = t.radius;
@@ -2397,8 +2421,8 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                     });
 
                     // Core wordmark
-                    root.appendChild(el('text', { class: 'cw', x: cx, y: cy - 2, 'text-anchor': 'middle', 'font-size': 50 }, consortium.core.label));
-                    root.appendChild(el('text', { class: 'ct', x: cx, y: cy + 18, 'text-anchor': 'middle', 'font-size': 14 }, consortium.core.tagline));
+                    root.appendChild(el('text', { class: 'cw', x: cx, y: cy - 2, 'text-anchor': 'middle', 'font-size': 32 }, consortium.core.label));
+                    root.appendChild(el('text', { class: 'ct', x: cx, y: cy + 18, 'text-anchor': 'middle', 'font-size': 9 }, consortium.core.tagline));
 
                     // Members
                     consortium.members.forEach(m => {
@@ -2444,19 +2468,33 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                             g.appendChild(el('text', { class: labelClass, x: labelX, y: lineY, 'text-anchor': anchor }, line));
                         });
 
-                        // Role sub-label for committed campus
-                        if (m.role && m.status === 'committed') {
+                        // Pillar dot strip beneath the name — colour-coded what they bring
+                        if (m.pillars && m.pillars.length) {
                             const nameLines = nameWrap.length;
-                            // Place role below last name line for bottom/side, above for top
-                            const isAbove = m.angle > -135 && m.angle < -45;  // top-ish
-                            const subY = isAbove
-                                ? labelY - (nameLines * 26 + 4)  // above the name
-                                : labelY + (nameLines * 26 + 6); // below the name
-                            g.appendChild(el('text', { class: 'lr', x: labelX, y: subY, 'text-anchor': anchor }, m.role.toUpperCase()));
+                            const lineHeight = 26;  // approx for 30px font
+                            const isAbove = m.angle > -135 && m.angle < -45;
+                            const stripGap = 8;
+                            const stripY = isAbove
+                                ? labelY - (nameLines * lineHeight + stripGap)
+                                : labelY + (nameLines * lineHeight + stripGap + 6);
+                            const dotR = 6;
+                            const dotSpacing = 18;
+                            const totalWidth = (m.pillars.length - 1) * dotSpacing;
+                            const startX = anchor === 'start' ? labelX
+                                : anchor === 'end' ? labelX - totalWidth
+                                : labelX - totalWidth / 2;
+                            m.pillars.forEach((p, pi) => {
+                                g.appendChild(el('circle', {
+                                    cx: startX + pi * dotSpacing,
+                                    cy: stripY,
+                                    r: dotR,
+                                    class: 'pillar-' + p
+                                }));
+                            });
                         }
 
                         // Tooltip placed ADJACENT to the mark, offset outward from ring center
-                        const tipW = 540, tipH = m.cta ? 240 : 160;
+                        const tipW = 400, tipH = m.cta ? 180 : 110;
                         // Outward radial offset from mark
                         const offset = 30;
                         const dirX = Math.cos(a), dirY = Math.sin(a);
@@ -2496,19 +2534,19 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                             }, initials));
                             tipG.appendChild(mono);
                         }
-                        tipG.appendChild(el('line', { class: 'tip-rule', x1: 30, y1: 30, x2: 78, y2: 30 }));
+                        tipG.appendChild(el('line', { class: 'tip-rule', x1: 18, y1: 18, x2: 48, y2: 18 }));
                         const eyebrowText = m.status === 'committed' ? 'What they bring' : 'Capability sought';
-                        tipG.appendChild(el('text', { class: 'tip-eb', x: 30, y: 58 }, eyebrowText));
+                        tipG.appendChild(el('text', { class: 'tip-eb', x: 18, y: 36 }, eyebrowText));
                         // Body: word-wrap manually at ~36 chars per line
-                        const lines = wrapText(m.bring, 32);
+                        const lines = wrapText(m.bring, 36);
                         lines.forEach((line, i) => {
-                            tipG.appendChild(el('text', { class: 'tip-txt', x: 30, y: 92 + i * 34 }, line));
+                            tipG.appendChild(el('text', { class: 'tip-txt', x: 18, y: 58 + i * 22 }, line));
                         });
                         if (m.cta) {
-                            const ctaY = 92 + lines.length * 34 + 26;
-                            const ctaLines = wrapText(m.cta, 34);
+                            const ctaY = 58 + lines.length * 22 + 16;
+                            const ctaLines = wrapText(m.cta, 36);
                             ctaLines.forEach((line, i) => {
-                                const ctaText = el('text', { class: 'tip-cta', x: 30, y: ctaY + i * 32 }, line);
+                                const ctaText = el('text', { class: 'tip-cta', x: 18, y: ctaY + i * 20 }, line);
                                 ctaText.addEventListener('click', () => {
                                     const target = document.getElementById('contact');
                                     if (target) target.scrollIntoView({ behavior: 'smooth' });
