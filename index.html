@@ -2850,6 +2850,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         return lines;
                     }
 
+                    function csmInitPanelAndObserver() {
                     // ===== Slide-in panel logic (v1.13) =====
                     const panel = document.getElementById('csmPanel');
                     const backdrop = document.getElementById('csmBackdrop');
@@ -2929,6 +2930,12 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         }
                     } else {
                         sectionEl && sectionEl.classList.add('csm-revealed');
+                    }
+                    }
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', csmInitPanelAndObserver);
+                    } else {
+                        csmInitPanelAndObserver();
                     }
                 })();
                 </script>
