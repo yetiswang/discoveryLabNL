@@ -2269,9 +2269,9 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                     const consortium = {
                         core: { label: 'DiscoveryLabNL', tagline: 'AI Discovery Infrastructure' },
                         tiers: [
-                            { id: 'campus',   radius: 215, label: 'TU/e CAMPUS' },
-                            { id: 'national', radius: 360, label: 'NATIONAL' },
-                            { id: 'intl',     radius: 465, label: 'INTERNATIONAL' },
+                            { id: 'campus',   radius: 190, label: '' },
+                            { id: 'national', radius: 340, label: '' },
+                            { id: 'intl',     radius: 445, label: '' },
                         ],
                         members: [
                             { tier: 'campus', angle: -90, status: 'committed', name: 'ICMS', role: 'Soft matter',
@@ -2327,29 +2327,11 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         root.appendChild(el('circle', { cx, cy, r: t.radius, class: cls }));
                     });
 
-                    // Tier eyebrow arcs
-                    const defs = el('defs');
-                    consortium.tiers.forEach(t => {
-                        const r = t.radius;
-                        const d = `M ${cx + r},${cy} A ${r},${r} 0 0 0 ${cx - r},${cy}`;
-                        defs.appendChild(el('path', { id: 'arc-' + t.id, d, fill: 'none' }));
-                    });
-                    root.appendChild(defs);
-                    consortium.tiers.forEach(t => {
-                        const txt = el('text', { class: 'te' });
-                        const tp = el('textPath');
-                        tp.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#arc-' + t.id);
-                        tp.setAttribute('href', '#arc-' + t.id);
-                        tp.setAttribute('startOffset', '50%');
-                        tp.setAttribute('text-anchor', 'middle');
-                        tp.textContent = t.label;
-                        txt.appendChild(tp);
-                        root.appendChild(txt);
-                    });
+                    // Tier eyebrows removed v1.4 — marginalia row below carries the semantic key
 
                     // Core wordmark
-                    root.appendChild(el('text', { class: 'cw', x: cx, y: cy - 4, 'text-anchor': 'middle', 'font-size': 36 }, consortium.core.label));
-                    root.appendChild(el('text', { class: 'ct', x: cx, y: cy + 22, 'text-anchor': 'middle', 'font-size': 11 }, consortium.core.tagline));
+                    root.appendChild(el('text', { class: 'cw', x: cx, y: cy - 2, 'text-anchor': 'middle', 'font-size': 30 }, consortium.core.label));
+                    root.appendChild(el('text', { class: 'ct', x: cx, y: cy + 18, 'text-anchor': 'middle', 'font-size': 9 }, consortium.core.tagline));
 
                     // Members
                     consortium.members.forEach(m => {
@@ -2388,11 +2370,17 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                             labelY = my - 2;
                             anchor = 'end';
                         }
-                        g.appendChild(el('text', { class: labelClass, x: labelX, y: labelY, 'text-anchor': anchor }, m.name));
+                        // Wrap long names onto two lines
+                        const nameWrap = m.name.length > 22 ? wrapText(m.name, 18) : [m.name];
+                        nameWrap.forEach((line, li) => {
+                            const lineY = labelY + li * (labelClass === 'lr' ? 14 : 26);
+                            g.appendChild(el('text', { class: labelClass, x: labelX, y: lineY, 'text-anchor': anchor }, line));
+                        });
 
                         // Sub-label (role) for committed campus only
                         if (m.role && m.status === 'committed') {
-                            const subY = labelY + 17 * (m.angle === -90 ? -1 : 1);
+                            const wrapped = nameWrap.length;
+                            const subY = labelY + (wrapped * 26 + 4) * (m.angle === -90 ? 0 : 1) - (m.angle === -90 ? 30 : 0);
                             g.appendChild(el('text', { class: 'lr', x: labelX, y: subY, 'text-anchor': anchor }, m.role.toUpperCase()));
                         }
 
