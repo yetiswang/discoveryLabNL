@@ -2075,27 +2075,36 @@
                         transition: fill 0.22s ease, font-weight 0.22s ease;
                     }
                     #consortium .ng > circle {
-                        transition: fill 0.22s ease, stroke 0.22s ease, stroke-width 0.22s ease;
+                        transition: fill 0.22s ease,
+                                    stroke 0.22s ease,
+                                    stroke-width 0.22s ease,
+                                    r 0.26s cubic-bezier(0.22, 1, 0.36, 1);
                     }
                     #consortium .ng.is-hover {
                         transform: scale(1.22);
-                        /* Two stacked drop-shadows for a thicker, more visible glow in WebKit
-                           (Safari's filter renderer fades single thin shadows quickly). */
-                        filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.85))
-                                drop-shadow(0 0 14px rgba(var(--accent-rgb), 0.55));
                     }
+                    /* Glow + colour change on TEXT ONLY (per request — dots should grow, not glow).
+                       Stacked drop-shadows so WebKit reads them clearly. */
                     #consortium .ng.is-hover > text {
                         fill: var(--tue-red);
                         font-weight: 800;
+                        filter: drop-shadow(0 0 5px rgba(var(--accent-rgb), 0.75))
+                                drop-shadow(0 0 12px rgba(var(--accent-rgb), 0.45));
                     }
                     #consortium .ng.is-hover > text.lo {
                         fill: var(--tue-red); opacity: 1; font-weight: 700;
                     }
-                    #consortium .ng.is-hover > circle {
-                        fill: var(--tue-red);
-                        stroke: var(--tue-red);
-                        stroke-width: 2;
-                    }
+                    /* Dots: size-only response on hover — no fill/stroke change, no filter glow. */
+                    /* Bump chip & pillar circle radii on hover — animating the `r` attribute
+                       avoids the Safari transform-origin bug entirely (CSS r is supported
+                       on all modern browsers; Chrome 90+, Safari 13.1+). The .ng group is
+                       also scaling 1.22, so visual radius gain is (newR/oldR) × 1.22. */
+                    #consortium .ng.is-hover > circle.m-cmp,
+                    #consortium .ng.is-hover > circle.m-tlk { r: 11; }
+                    #consortium .ng.is-hover > circle.m-opn { r: 9; }
+                    #consortium .ng.is-hover > circle.pillar-sdl,
+                    #consortium .ng.is-hover > circle.pillar-char,
+                    #consortium .ng.is-hover > circle.pillar-ai { r: 9; }
                     #consortium .ng.is-hover > circle.m-opn {
                         stroke: var(--tue-red);
                         stroke-dasharray: 0;
@@ -2393,20 +2402,15 @@
                         #consortium .ng:active,
                         #consortium .ng.is-hover {
                             transform: scale(1.22);
-                            filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.85))
-                                    drop-shadow(0 0 14px rgba(var(--accent-rgb), 0.55));
                         }
                         #consortium .ng:active > text,
                         #consortium .ng.is-hover > text {
                             fill: var(--tue-red);
                             font-weight: 800;
+                            filter: drop-shadow(0 0 5px rgba(var(--accent-rgb), 0.75))
+                                    drop-shadow(0 0 12px rgba(var(--accent-rgb), 0.45));
                         }
-                        #consortium .ng:active > circle,
-                        #consortium .ng.is-hover > circle {
-                            fill: var(--tue-red);
-                            stroke: var(--tue-red);
-                            stroke-width: 2;
-                        }
+                        /* Dots size-only on touch (r bump from is-hover rules above applies). */
                     }
 
                 </style>
