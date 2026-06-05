@@ -2058,16 +2058,35 @@
                     #consortium .lo { fill: var(--csm-soft); font-size: 29px; font-weight: 400; font-style: italic; }
                     #consortium .te { fill: var(--csm-eyebrow); font-size: 17px; letter-spacing: 4px; text-transform: uppercase; font-weight: 600; }
 
-                    /* Tooltip */
+                    /* Mark + label hover (replaces text popups; click opens the slide-in panel) */
                     #consortium .ng { cursor: pointer; }
-                    #consortium .ng .tip { opacity: 0; pointer-events: none; transition: opacity .18s ease; }
-                    #consortium .ng:hover .tip, #consortium .ng:focus .tip { opacity: 1; pointer-events: auto; }
-                    #consortium .tip-bg { fill: var(--csm-tip-bg); stroke: var(--csm-tip-border); stroke-width: 1; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.18)); }
-                    #consortium .tip-rule { stroke: rgba(var(--accent-rgb), 0.55); stroke-width: 1.5; }
-                    #consortium .tip-eb { fill: var(--csm-eyebrow); font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; }
-                    #consortium .tip-txt { fill: var(--csm-ink); font-size: 19px; font-weight: 400; }
-                    #consortium .tip-cta { fill: var(--tue-red); font-size: 15px; font-style: italic; cursor: pointer; }
-                    #consortium .tip-cta:hover { text-decoration: underline; }
+                    #consortium .ng > circle,
+                    #consortium .ng > text {
+                        transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                                    fill 0.22s ease,
+                                    filter 0.22s ease,
+                                    font-weight 0.22s ease;
+                        transform-box: fill-box;
+                        transform-origin: center;
+                    }
+                    #consortium .ng:hover > text, #consortium .ng:focus > text {
+                        transform: scale(1.18);
+                        fill: var(--tue-red);
+                        font-weight: 800;
+                        filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.35));
+                    }
+                    #consortium .ng:hover > text.lo, #consortium .ng:focus > text.lo {
+                        fill: var(--tue-red); opacity: 1; font-weight: 700;
+                    }
+                    #consortium .ng:hover > circle, #consortium .ng:focus > circle {
+                        transform: scale(1.7);
+                        filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.55));
+                    }
+                    #consortium .ng:hover > circle.m-opn, #consortium .ng:focus > circle.m-opn {
+                        stroke: var(--tue-red);
+                        stroke-dasharray: 0;
+                        animation: none !important;
+                    }
 
                     /* Marginalia */
                     #consortium .csm-key {
@@ -2834,21 +2853,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         root.appendChild(g);
                     });
 
-                    function wrapText(text, maxChars) {
-                        const words = text.split(' ');
-                        const lines = [];
-                        let cur = '';
-                        for (const w of words) {
-                            if ((cur + ' ' + w).trim().length > maxChars) {
-                                if (cur) lines.push(cur);
-                                cur = w;
-                            } else {
-                                cur = (cur + ' ' + w).trim();
-                            }
-                        }
-                        if (cur) lines.push(cur);
-                        return lines;
-                    }
+
 
                     // ===== Slide-in panel (hoisted so click handlers can reach openCsmPanel) =====
                     let _panel, _backdrop, _panelClose, _panelName, _panelEyebrow, _panelPillars, _panelBody, _panelCta, _panelCtaPrefix;
