@@ -2112,6 +2112,48 @@
                         animation: none !important;
                     }
 
+                    /* ============================================================
+                       WebKit (Safari desktop + iOS Safari + iOS Chrome) overrides
+                       Chrome path (above) uses CSS `r` animation for circles and
+                       `filter: drop-shadow` for text glow. Both render poorly in
+                       WebKit's SVG engine: CSS-animated `r` snaps without easing,
+                       and drop-shadow on SVG <text> is anaemic.
+                       WebKit path: transform:scale on circles (transform-box:
+                       fill-box works on <circle> — the bug is text-specific),
+                       and text-shadow on text (renders cleanly on SVG text in
+                       all WebKit versions).
+                       ============================================================ */
+                    html.webkit #consortium .ng > circle {
+                        transform-box: fill-box;
+                        transform-origin: center;
+                        transition: fill 0.22s ease,
+                                    stroke 0.22s ease,
+                                    stroke-width 0.22s ease,
+                                    transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+                    }
+                    /* Cancel the CSS-r overrides from the Chrome path so transform:scale
+                       starts from the base attribute r (not the bumped CSS r). */
+                    html.webkit #consortium .ng.is-hover > circle.m-cmp,
+                    html.webkit #consortium .ng.is-hover > circle.m-tlk { r: 6; transform: scale(1.85); }
+                    html.webkit #consortium .ng.is-hover > circle.m-opn { r: 5; transform: scale(1.85); }
+                    html.webkit #consortium .ng.is-hover > circle.pillar-sdl,
+                    html.webkit #consortium .ng.is-hover > circle.pillar-char,
+                    html.webkit #consortium .ng.is-hover > circle.pillar-ai { r: 6; transform: scale(1.5); }
+
+                    /* Text glow: text-shadow renders cleanly on SVG <text> in WebKit;
+                       filter: drop-shadow does not. Disable filter, use text-shadow. */
+                    html.webkit #consortium .ng > text {
+                        transition: fill 0.22s ease,
+                                    font-weight 0.22s ease,
+                                    font-size 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+                                    text-shadow 0.28s ease;
+                    }
+                    html.webkit #consortium .ng.is-hover > text {
+                        filter: none;
+                        text-shadow: 0 0 5px rgba(var(--accent-rgb), 0.95),
+                                     0 0 14px rgba(var(--accent-rgb), 0.6);
+                    }
+
                     /* Marginalia */
                     #consortium .csm-key {
                         display: flex; gap: 1.8rem; justify-content: center; align-items: baseline;
@@ -2413,7 +2455,25 @@
                             filter: drop-shadow(0 0 5px rgba(var(--accent-rgb), 0.75))
                                     drop-shadow(0 0 12px rgba(var(--accent-rgb), 0.45));
                         }
-                        /* Dots size-only on touch (r bump from is-hover rules above applies). */
+                        /* iOS path: same WebKit overrides as desktop Safari */
+                        html.webkit #consortium .ng:active > text,
+                        html.webkit #consortium .ng.is-hover > text {
+                            filter: none;
+                            text-shadow: 0 0 5px rgba(var(--accent-rgb), 0.95),
+                                         0 0 14px rgba(var(--accent-rgb), 0.6);
+                        }
+                        html.webkit #consortium .ng:active > circle.m-cmp,
+                        html.webkit #consortium .ng:active > circle.m-tlk,
+                        html.webkit #consortium .ng.is-hover > circle.m-cmp,
+                        html.webkit #consortium .ng.is-hover > circle.m-tlk { r: 6; transform: scale(1.85); }
+                        html.webkit #consortium .ng:active > circle.m-opn,
+                        html.webkit #consortium .ng.is-hover > circle.m-opn { r: 5; transform: scale(1.85); }
+                        html.webkit #consortium .ng:active > circle.pillar-sdl,
+                        html.webkit #consortium .ng:active > circle.pillar-char,
+                        html.webkit #consortium .ng:active > circle.pillar-ai,
+                        html.webkit #consortium .ng.is-hover > circle.pillar-sdl,
+                        html.webkit #consortium .ng.is-hover > circle.pillar-char,
+                        html.webkit #consortium .ng.is-hover > circle.pillar-ai { r: 6; transform: scale(1.5); }
                     }
 
                 </style>
@@ -2684,6 +2744,16 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
 
                 <script>
                 (function() {
+                    // WebKit detection — covers macOS Safari + iOS Safari + iOS Chrome (Apple forces
+                    // all iOS browsers onto WebKit). Used to swap hover effect implementations to
+                    // ones that render reliably in WebKit's SVG path.
+                    (function tagWebkit() {
+                        const ua = navigator.userAgent;
+                        const isIOS = /iPad|iPhone|iPod/.test(ua);
+                        const isSafariDesktop = /Safari/.test(ua) && !/Chrome|Chromium|CriOS|Edg|OPR/.test(ua);
+                        if (isIOS || isSafariDesktop) document.documentElement.classList.add('webkit');
+                    })();
+
                     const consortium = {
                         core: { label: 'DiscoveryLabNL', tagline: 'OPEN CONSORTIUM FORMING' },
                         tiers: [
