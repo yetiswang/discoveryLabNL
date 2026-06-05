@@ -1517,6 +1517,7 @@
                     <li><a href="#campus">Campus Consortium</a></li>
                     <li><a href="#landscape">Landscape</a></li>
                     <li><a href="#positioning">Positioning</a></li>
+                    <li><a href="#consortium">An Open Consortium</a></li>
                     <li><a href="#roadmap">Roadmap</a></li>
                     <li><a href="#team">Team</a></li>
                     <li><a href="#stakeholders">Stakeholders</a></li>
@@ -1941,6 +1942,354 @@
                         <p>&#8364;20-30M indicative range. Subject to TU/e EB negotiation. Target cycle: NWO LSRI 2027.</p>
                     </div>
                 </div>
+            </section>
+
+            <!-- 5b. An Open Consortium - org-tier rings + Dutch geography companion -->
+            <section id="consortium">
+                <style>
+                    /* Section CSS scoped to #consortium */
+                    #consortium {
+                        --csm-canvas: #FAF5EE;
+                        --csm-ink: #1E1E28;
+                        --csm-eyebrow: rgba(30,30,40,0.55);
+                        --csm-soft: rgba(30,30,40,0.45);
+                        --csm-rule: rgba(30,30,40,0.16);
+                        --csm-hairline: rgba(30,30,40,0.10);
+                        --csm-faint: rgba(30,30,40,0.18);
+                        --csm-tip-bg: rgba(250,245,238,0.97);
+                        --csm-tip-border: rgba(30,30,40,0.18);
+                        --csm-ink-dark-on-light: #1E1E28;
+                        padding: 5rem 0;
+                        background: var(--csm-canvas);
+                        color: var(--csm-ink);
+                    }
+                    html[data-theme="dark"] #consortium {
+                        --csm-canvas: #1a1a22;
+                        --csm-ink: #f5f0e6;
+                        --csm-eyebrow: rgba(255,255,255,0.50);
+                        --csm-soft: rgba(255,255,255,0.40);
+                        --csm-rule: rgba(255,255,255,0.16);
+                        --csm-hairline: rgba(255,255,255,0.08);
+                        --csm-faint: rgba(255,255,255,0.18);
+                        --csm-tip-bg: rgba(26,26,34,0.97);
+                        --csm-tip-border: rgba(255,255,255,0.18);
+                    }
+                    #consortium h2 {
+                        text-align: center;
+                        color: var(--tue-red);
+                        font-size: 2.4rem;
+                        margin-bottom: 0.6rem;
+                        font-weight: 700;
+                    }
+                    #consortium .csm-intro {
+                        text-align: center;
+                        max-width: 720px;
+                        margin: 0 auto 2.4rem;
+                        font-size: 1.05rem;
+                        color: var(--csm-ink);
+                        line-height: 1.6;
+                    }
+                    #consortium .csm-layout {
+                        display: grid;
+                        grid-template-columns: 1fr 0.62fr;
+                        gap: 2.4rem;
+                        align-items: start;
+                        max-width: 1240px;
+                        margin: 0 auto;
+                        padding: 0 1.5rem;
+                    }
+                    @media (max-width: 940px) {
+                        #consortium .csm-layout { grid-template-columns: 1fr; gap: 1.6rem; }
+                    }
+                    #consortium .csm-rings-wrap, #consortium .csm-map-wrap { width: 100%; }
+                    #consortium .csm-rings, #consortium .csm-map { width: 100%; aspect-ratio: 1; }
+                    #consortium .csm-rings svg, #consortium .csm-map svg { width: 100%; height: 100%; display: block; }
+
+                    /* Rings */
+                    #consortium .t-int { fill: none; stroke: var(--csm-hairline); stroke-width: 1; stroke-dasharray: 6 5; }
+                    #consortium .t-nat { fill: none; stroke: var(--csm-faint); stroke-width: 1; }
+                    #consortium .t-cmp { fill: none; stroke: rgba(var(--accent-rgb), 0.45); stroke-width: 1.5; }
+                    #consortium .cw { fill: var(--tue-red); font-weight: 700; }
+                    #consortium .ct { fill: var(--csm-eyebrow); font-weight: 400; letter-spacing: 2px; text-transform: uppercase; }
+                    #consortium .m-cmp { fill: var(--tue-red); }
+                    #consortium .m-tlk { fill: none; stroke: var(--tue-red); stroke-width: 2.2; }
+                    #consortium .m-opn { fill: none; stroke: var(--csm-soft); stroke-width: 1.5; stroke-dasharray: 2 2; }
+                    #consortium .ln { fill: var(--csm-ink); font-size: 19px; font-weight: 600; }
+                    #consortium .lr { fill: var(--csm-eyebrow); font-size: 11px; letter-spacing: 1.5px; font-weight: 500; text-transform: uppercase; }
+                    #consortium .lt { fill: var(--tue-red); font-size: 19px; font-weight: 500; font-style: italic; }
+                    #consortium .lo { fill: var(--csm-soft); font-size: 17px; font-weight: 400; font-style: italic; }
+                    #consortium .te { fill: var(--csm-eyebrow); font-size: 11px; letter-spacing: 3.5px; text-transform: uppercase; font-weight: 600; }
+
+                    /* Tooltip */
+                    #consortium .ng { cursor: pointer; }
+                    #consortium .ng .tip { opacity: 0; pointer-events: none; transition: opacity .18s ease; }
+                    #consortium .ng:hover .tip, #consortium .ng:focus .tip { opacity: 1; pointer-events: auto; }
+                    #consortium .tip-bg { fill: var(--csm-tip-bg); stroke: var(--csm-tip-border); stroke-width: 1; }
+                    #consortium .tip-rule { stroke: rgba(var(--accent-rgb), 0.55); stroke-width: 1.5; }
+                    #consortium .tip-eb { fill: var(--csm-eyebrow); font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; }
+                    #consortium .tip-txt { fill: var(--csm-ink); font-size: 13px; font-weight: 400; }
+                    #consortium .tip-cta { fill: var(--tue-red); font-size: 12px; font-style: italic; cursor: pointer; }
+                    #consortium .tip-cta:hover { text-decoration: underline; }
+
+                    /* Marginalia */
+                    #consortium .csm-key {
+                        display: flex; gap: 2.4rem; justify-content: center; align-items: baseline;
+                        margin: 1rem auto 0.4rem; padding-top: 14px;
+                        border-top: 1px solid var(--csm-rule);
+                        max-width: 720px; flex-wrap: wrap;
+                        font-size: 12.5px; color: var(--csm-ink); opacity: 0.72;
+                    }
+                    #consortium .csm-key strong { font-weight: 600; }
+                    #consortium .csm-key .mk { display: inline-block; vertical-align: middle; margin-right: 6px; width: 11px; height: 11px; border-radius: 50%; }
+                    #consortium .mk-cmp { background: var(--tue-red); }
+                    #consortium .mk-tlk { background: transparent; border: 1.8px solid var(--tue-red); }
+                    #consortium .mk-opn { background: transparent; border: 1.4px dashed var(--csm-soft); }
+                    #consortium .csm-cap {
+                        text-align: center; max-width: 720px; margin: 0.7rem auto 0;
+                        font-size: 12px; font-style: italic; color: var(--csm-eyebrow); line-height: 1.5;
+                    }
+
+                    /* NL map companion */
+                    #consortium .csm-map-title {
+                        font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+                        color: var(--csm-eyebrow); font-weight: 600; text-align: center; margin-bottom: 0.6rem;
+                    }
+                    #consortium .csm-map .nl-outline { fill: none; stroke: var(--csm-faint); stroke-width: 1.2; }
+                    #consortium .csm-map .nl-fill { fill: rgba(var(--accent-rgb), 0.03); stroke: var(--csm-faint); stroke-width: 1.2; }
+                    #consortium .csm-map .city-dot-cmp { fill: var(--tue-red); }
+                    #consortium .csm-map .city-dot-tlk { fill: none; stroke: var(--tue-red); stroke-width: 2; }
+                    #consortium .csm-map .city-label { fill: var(--csm-ink); font-size: 11px; font-weight: 600; font-family: 'Avenir Next LT Pro', 'Avenir Next', Avenir, sans-serif; }
+                    #consortium .csm-map .city-label-tlk { fill: var(--tue-red); font-style: italic; font-weight: 500; }
+                    #consortium .csm-map .city-meta { fill: var(--csm-eyebrow); font-size: 9px; letter-spacing: 0.5px; font-family: 'Avenir Next LT Pro', 'Avenir Next', Avenir, sans-serif; }
+                    #consortium .csm-map-cap { text-align: center; max-width: 360px; margin: 0.6rem auto 0; font-size: 11px; font-style: italic; color: var(--csm-eyebrow); line-height: 1.5; }
+                </style>
+
+                <h2 class="reveal">An open consortium</h2>
+                <p class="csm-intro reveal">DiscoveryLabNL is built as a three-tier open consortium: a TU/e campus core, a national partner ring, and an international ring of open invitations.</p>
+
+                <div class="csm-layout reveal">
+
+                    <!-- Rings: architecture view -->
+                    <div class="csm-rings-wrap">
+                        <div class="csm-rings"><svg id="consortiumRings" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg></div>
+                        <div class="csm-key">
+                            <span><span class="mk mk-cmp"></span><strong>Committed</strong> &nbsp;Campus partners</span>
+                            <span><span class="mk mk-tlk"></span><strong>In conversation</strong> &nbsp;National partners</span>
+                            <span><span class="mk mk-opn"></span><strong>Open invitation</strong> &nbsp;One per pillar</span>
+                        </div>
+                        <p class="csm-cap">Hover any partner to read what they bring. Open invitations name the capability sought.</p>
+                    </div>
+
+                    <!-- NL map: geography companion -->
+                    <div class="csm-map-wrap">
+                        <p class="csm-map-title">Geographic anchor · Netherlands</p>
+                        <div class="csm-map"><svg id="consortiumMap" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                            <!-- Simplified NL silhouette (~ rough, recognisable) -->
+                            <path class="nl-fill" d="M 152,62 L 178,55 L 215,60 L 258,70 L 290,92 L 296,128 L 302,148 L 295,182 L 318,224 L 322,278 L 308,330 L 286,360 L 278,408 L 268,440 L 272,472 L 252,482 L 220,460 L 208,432 L 174,412 L 158,392 L 128,408 L 92,408 L 68,398 L 48,378 L 32,348 L 46,318 L 60,288 L 72,266 L 92,250 L 78,216 L 92,196 L 70,176 L 92,156 L 112,138 L 132,108 L 152,62 Z"/>
+                            <!-- Eindhoven cluster: 4 TU/e institutes + DIFFER co-located -->
+                            <circle cx="215" cy="405" r="6" class="city-dot-cmp"/>
+                            <text x="195" y="426" text-anchor="end" class="city-label">Eindhoven</text>
+                            <text x="195" y="438" text-anchor="end" class="city-meta">ICMS · EIRES · CASIMIR · DIFFER</text>
+                            <!-- Delft (TU Delft) -->
+                            <circle cx="115" cy="268" r="5.5" class="city-dot-tlk"/>
+                            <text x="100" y="265" text-anchor="end" class="city-label city-label-tlk">Delft</text>
+                            <text x="100" y="277" text-anchor="end" class="city-meta">TU DELFT · IN CONVERSATION</text>
+                            <!-- Nijmegen (Radboud) -->
+                            <circle cx="248" cy="322" r="5.5" class="city-dot-tlk"/>
+                            <text x="263" y="320" text-anchor="start" class="city-label city-label-tlk">Nijmegen</text>
+                            <text x="263" y="332" text-anchor="start" class="city-meta">RADBOUD · IN CONVERSATION</text>
+                        </svg></div>
+                        <p class="csm-map-cap">Named NL partners shown by city. The rings opposite show the full open-consortium architecture, including pillar-aligned and international invitations.</p>
+                    </div>
+
+                </div>
+
+                <script>
+                (function() {
+                    const consortium = {
+                        core: { label: 'DiscoveryLabNL', tagline: 'AI Discovery Infrastructure' },
+                        tiers: [
+                            { id: 'campus',   radius: 155, label: 'TU/e Campus · Committed' },
+                            { id: 'national', radius: 290, label: 'National · Open to partners' },
+                            { id: 'intl',     radius: 430, label: 'International · Open invitations' },
+                        ],
+                        members: [
+                            { tier: 'campus', angle: -90, status: 'committed', name: 'ICMS', role: 'Soft matter',
+                              bring: 'Operational SDL platforms (RobotLab), soft matter and polymer characterisation, consortium coordination.' },
+                            { tier: 'campus', angle:   0, status: 'committed', name: 'EIRES', role: 'Energy',
+                              bring: 'Energy materials, electrochemistry, solar and storage workflows.' },
+                            { tier: 'campus', angle:  90, status: 'committed', name: 'DIFFER', role: 'Energy · joint host',
+                              bring: 'Plasma and energy-conversion materials; joint-host institutional anchor.' },
+                            { tier: 'campus', angle: 180, status: 'committed', name: 'Casimir', role: 'Quantum & info materials',
+                              bring: 'Quantum and informational materials; cross-institute photonics and condensed-matter community.' },
+
+                            { tier: 'national', angle: -90, status: 'talking', name: 'TU Delft',
+                              bring: 'Advanced microscopy capability on the national infrastructure ring.' },
+                            { tier: 'national', angle: -18, status: 'talking', name: 'Radboud',
+                              bring: 'Soft-matter and biophysics SDL capability on the national ring.' },
+                            { tier: 'national', angle:  54, status: 'open', name: 'Open · SDL partner',
+                              bring: 'A self-driving laboratory partner with complementary domain capability.',
+                              cta: 'This chair is reserved by capability, not by name. Talk to us.' },
+                            { tier: 'national', angle: 126, status: 'open', name: 'Open · Characterisation partner',
+                              bring: 'A characterisation partner bringing modalities complementary to the campus core: scattering, synchrotron, neutron, or correlative imaging.',
+                              cta: 'This chair is reserved by capability, not by name. Talk to us.' },
+                            { tier: 'national', angle: 198, status: 'open', name: 'Open · AI partner',
+                              bring: 'An AI partner bringing foundation models, methods, or compute that strengthens the AI Core pillar.',
+                              cta: 'This chair is reserved by capability, not by name. Talk to us.' },
+
+                            { tier: 'intl', angle: -150, status: 'open', name: 'Open · EU partner',
+                              bring: 'European partner institution aligned with open science and Materials Commons interoperability.',
+                              cta: 'Open to a conversation. Join the consortium.' },
+                            { tier: 'intl', angle:  -30, status: 'open', name: 'Open · EU partner',
+                              bring: 'European partner institution aligned with open science and Materials Commons interoperability.',
+                              cta: 'Open to a conversation. Join the consortium.' },
+                            { tier: 'intl', angle:   90, status: 'open', name: 'Open · Intl partner',
+                              bring: 'Global open-science partner aligned with autonomous-discovery practice.',
+                              cta: 'Open to a conversation. Join the consortium.' },
+                        ],
+                    };
+
+                    const svgNS = 'http://www.w3.org/2000/svg';
+                    const root = document.getElementById('consortiumRings');
+                    if (!root) return;
+                    const cx = 500, cy = 500;
+
+                    function el(name, attrs, text) {
+                        const e = document.createElementNS(svgNS, name);
+                        if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]);
+                        if (text != null) e.textContent = text;
+                        return e;
+                    }
+
+                    // Tier rings
+                    consortium.tiers.forEach(t => {
+                        const cls = t.id === 'campus' ? 't-cmp' : t.id === 'national' ? 't-nat' : 't-int';
+                        root.appendChild(el('circle', { cx, cy, r: t.radius, class: cls }));
+                    });
+
+                    // Tier eyebrow arcs
+                    const defs = el('defs');
+                    consortium.tiers.forEach(t => {
+                        const r = t.radius;
+                        const d = `M ${cx - r},${cy} A ${r},${r} 0 0 1 ${cx + r},${cy}`;
+                        defs.appendChild(el('path', { id: 'arc-' + t.id, d, fill: 'none' }));
+                    });
+                    root.appendChild(defs);
+                    consortium.tiers.forEach(t => {
+                        const txt = el('text', { class: 'te' });
+                        const tp = el('textPath');
+                        tp.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#arc-' + t.id);
+                        tp.setAttribute('href', '#arc-' + t.id);
+                        tp.setAttribute('startOffset', '50%');
+                        tp.setAttribute('text-anchor', 'middle');
+                        tp.textContent = t.label;
+                        txt.appendChild(tp);
+                        root.appendChild(txt);
+                    });
+
+                    // Core wordmark
+                    root.appendChild(el('text', { class: 'cw', x: cx, y: cy - 5, 'text-anchor': 'middle', 'font-size': 34 }, consortium.core.label));
+                    root.appendChild(el('text', { class: 'ct', x: cx, y: cy + 25, 'text-anchor': 'middle', 'font-size': 10.5 }, consortium.core.tagline));
+
+                    // Members
+                    consortium.members.forEach(m => {
+                        const tier = consortium.tiers.find(t => t.id === m.tier);
+                        const r = tier.radius;
+                        const a = (m.angle - 90) * Math.PI / 180;  // 0deg = top by convention
+                        const mx = cx + r * Math.cos(a);
+                        const my = cy + r * Math.sin(a);
+                        // Adjust label anchor based on quadrant
+                        const dy = m.angle > -90 && m.angle < 90 ? 1 : -1;  // below or above
+                        const dx = Math.abs(Math.cos(a)) < 0.2 ? 0 : (Math.cos(a) > 0 ? 1 : -1);
+
+                        const g = el('g', { class: 'ng', tabindex: 0 });
+
+                        // Mark
+                        const markClass = m.status === 'committed' ? 'm-cmp' : m.status === 'talking' ? 'm-tlk' : 'm-opn';
+                        const markR = m.status === 'open' ? 5 : 6;
+                        g.appendChild(el('circle', { cx: mx, cy: my, r: markR, class: markClass }));
+
+                        // Labels
+                        const labelClass = m.status === 'committed' ? 'ln' : m.status === 'talking' ? 'lt' : 'lo';
+                        let labelX, labelY, anchor;
+                        if (Math.abs(Math.cos(a)) < 0.2) {
+                            // top or bottom — label vertically offset
+                            labelX = mx;
+                            labelY = m.angle === -90 ? my - 17 : my + 27;
+                            anchor = 'middle';
+                        } else if (Math.cos(a) > 0) {
+                            // right side
+                            labelX = mx + 17;
+                            labelY = my - 2;
+                            anchor = 'start';
+                        } else {
+                            // left side
+                            labelX = mx - 17;
+                            labelY = my - 2;
+                            anchor = 'end';
+                        }
+                        g.appendChild(el('text', { class: labelClass, x: labelX, y: labelY, 'text-anchor': anchor }, m.name));
+
+                        // Sub-label (role) for committed campus only
+                        if (m.role && m.status === 'committed') {
+                            const subY = labelY + 17 * (m.angle === -90 ? -1 : 1);
+                            g.appendChild(el('text', { class: 'lr', x: labelX, y: subY, 'text-anchor': anchor }, m.role.toUpperCase()));
+                        }
+
+                        // Tooltip in negative space opposite the mark
+                        const tipW = 280, tipH = m.cta ? 110 : 86;
+                        const opp = a + Math.PI;
+                        // Place tooltip on the OPPOSITE side of center from mark
+                        let tipX = cx + (r - 130) * Math.cos(opp) - tipW / 2;
+                        let tipY = cy + (r - 130) * Math.sin(opp) - tipH / 2;
+                        // Clamp within viewBox
+                        tipX = Math.max(20, Math.min(1000 - tipW - 20, tipX));
+                        tipY = Math.max(20, Math.min(1000 - tipH - 20, tipY));
+
+                        const tipG = el('g', { class: 'tip', transform: `translate(${tipX},${tipY})` });
+                        tipG.appendChild(el('rect', { class: 'tip-bg', x: 0, y: 0, width: tipW, height: tipH, rx: 2 }));
+                        tipG.appendChild(el('line', { class: 'tip-rule', x1: 14, y1: 14, x2: 44, y2: 14 }));
+                        const eyebrowText = m.status === 'committed' ? 'What they bring' : 'Capability sought';
+                        tipG.appendChild(el('text', { class: 'tip-eb', x: 14, y: 32 }, eyebrowText));
+                        // Body: word-wrap manually at ~36 chars per line
+                        const lines = wrapText(m.bring, 38);
+                        lines.forEach((line, i) => {
+                            tipG.appendChild(el('text', { class: 'tip-txt', x: 14, y: 54 + i * 17 }, line));
+                        });
+                        if (m.cta) {
+                            const ctaY = 54 + lines.length * 17 + 14;
+                            const ctaLines = wrapText(m.cta, 40);
+                            ctaLines.forEach((line, i) => {
+                                const ctaText = el('text', { class: 'tip-cta', x: 14, y: ctaY + i * 16 }, line);
+                                ctaText.addEventListener('click', () => {
+                                    const target = document.getElementById('contact');
+                                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                                });
+                                tipG.appendChild(ctaText);
+                            });
+                        }
+                        g.appendChild(tipG);
+
+                        root.appendChild(g);
+                    });
+
+                    function wrapText(text, maxChars) {
+                        const words = text.split(' ');
+                        const lines = [];
+                        let cur = '';
+                        for (const w of words) {
+                            if ((cur + ' ' + w).trim().length > maxChars) {
+                                if (cur) lines.push(cur);
+                                cur = w;
+                            } else {
+                                cur = (cur + ' ' + w).trim();
+                            }
+                        }
+                        if (cur) lines.push(cur);
+                        return lines;
+                    }
+                })();
+                </script>
             </section>
 
             <!-- 6. Roadmap -->
