@@ -2850,92 +2850,102 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         return lines;
                     }
 
-                    function csmInitPanelAndObserver() {
-                    // ===== Slide-in panel logic (v1.13) =====
-                    const panel = document.getElementById('csmPanel');
-                    const backdrop = document.getElementById('csmBackdrop');
-                    const panelClose = document.getElementById('csmPanelClose');
-                    const panelName = document.getElementById('csmPanelName');
-                    const panelEyebrow = document.getElementById('csmPanelEyebrow');
-                    const panelPillars = document.getElementById('csmPanelPillars');
-                    const panelBody = document.getElementById('csmPanelBody');
-                    const panelCta = document.getElementById('csmPanelCta');
-                    const panelCtaPrefix = document.getElementById('csmPanelCtaPrefix');
+                    // ===== Slide-in panel (hoisted so click handlers can reach openCsmPanel) =====
+                    let _panel, _backdrop, _panelClose, _panelName, _panelEyebrow, _panelPillars, _panelBody, _panelCta, _panelCtaPrefix;
+                    let _lastTrigger = null;
                     const pillarLabels = { sdl: 'SDL', char: 'Characterisation', ai: 'AI Core' };
-                    let lastTrigger = null;
+
+                    function _initPanelRefs() {
+                        _panel = document.getElementById('csmPanel');
+                        _backdrop = document.getElementById('csmBackdrop');
+                        _panelClose = document.getElementById('csmPanelClose');
+                        _panelName = document.getElementById('csmPanelName');
+                        _panelEyebrow = document.getElementById('csmPanelEyebrow');
+                        _panelPillars = document.getElementById('csmPanelPillars');
+                        _panelBody = document.getElementById('csmPanelBody');
+                        _panelCta = document.getElementById('csmPanelCta');
+                        _panelCtaPrefix = document.getElementById('csmPanelCtaPrefix');
+                        if (_panel && !_panel.__csmInit) {
+                            _panelClose.addEventListener('click', closeCsmPanel);
+                            _backdrop.addEventListener('click', closeCsmPanel);
+                            document.addEventListener('keydown', (e) => {
+                                if (e.key === 'Escape' && _panel.classList.contains('open')) closeCsmPanel();
+                            });
+                            _panelCta.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                closeCsmPanel();
+                                const target = document.getElementById('contact');
+                                if (target) target.scrollIntoView({ behavior: 'smooth' });
+                            });
+                            _panel.__csmInit = true;
+                        }
+                    }
 
                     function openCsmPanel(m) {
-                        lastTrigger = document.activeElement;
-                        panelEyebrow.textContent = m.status === 'committed' ? 'What they bring' : 'Capability sought';
-                        panelName.textContent = m.name;
-                        panelName.className = 'csm-panel-name ' + m.status;
-                        panelPillars.innerHTML = '';
+                        if (!_panel) _initPanelRefs();
+                        if (!_panel) return;
+                        _lastTrigger = document.activeElement;
+                        _panelEyebrow.textContent = m.status === 'committed' ? 'What they bring' : 'Capability sought';
+                        _panelName.textContent = m.name;
+                        _panelName.className = 'csm-panel-name ' + m.status;
+                        _panelPillars.innerHTML = '';
                         if (m.pillars && m.pillars.length) {
                             m.pillars.forEach(p => {
                                 const span = document.createElement('span');
                                 span.className = 'pp pp-' + p;
                                 span.textContent = pillarLabels[p];
-                                panelPillars.appendChild(span);
+                                _panelPillars.appendChild(span);
                             });
                         }
-                        panelBody.textContent = m.bring;
+                        _panelBody.textContent = m.bring;
                         if (m.cta) {
-                            panelCtaPrefix.textContent = m.cta;
-                            panelCtaPrefix.classList.remove('hidden');
-                            panelCta.textContent = 'Talk to us';
-                            panelCta.classList.remove('hidden');
+                            _panelCtaPrefix.textContent = m.cta;
+                            _panelCtaPrefix.classList.remove('hidden');
+                            _panelCta.textContent = 'Talk to us';
+                            _panelCta.classList.remove('hidden');
                         } else {
-                            panelCtaPrefix.classList.add('hidden');
-                            panelCta.classList.add('hidden');
+                            _panelCtaPrefix.classList.add('hidden');
+                            _panelCta.classList.add('hidden');
                         }
-                        panel.classList.add('open');
-                        backdrop.classList.add('open');
-                        panel.setAttribute('aria-hidden', 'false');
-                        setTimeout(() => panelClose.focus(), 200);
+                        _panel.classList.add('open');
+                        _backdrop.classList.add('open');
+                        _panel.setAttribute('aria-hidden', 'false');
+                        setTimeout(() => _panelClose.focus(), 200);
                     }
+
                     function closeCsmPanel() {
-                        panel.classList.remove('open');
-                        backdrop.classList.remove('open');
-                        panel.setAttribute('aria-hidden', 'true');
-                        if (lastTrigger && lastTrigger.focus) lastTrigger.focus();
+                        if (!_panel) return;
+                        _panel.classList.remove('open');
+                        _backdrop.classList.remove('open');
+                        _panel.setAttribute('aria-hidden', 'true');
+                        if (_lastTrigger && _lastTrigger.focus) _lastTrigger.focus();
                     }
-                    panelClose.addEventListener('click', closeCsmPanel);
-                    backdrop.addEventListener('click', closeCsmPanel);
-                    document.addEventListener('keydown', (e) => {
-                        if (e.key === 'Escape' && panel.classList.contains('open')) closeCsmPanel();
-                    });
-                    // Panel CTA scrolls to #contact
-                    panelCta.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        closeCsmPanel();
-                        const target = document.getElementById('contact');
-                        if (target) target.scrollIntoView({ behavior: 'smooth' });
-                    });
 
                     // ===== A · Staged reveal trigger (IntersectionObserver) =====
-                    const sectionEl = document.getElementById('consortium');
-                    if (sectionEl && 'IntersectionObserver' in window) {
-                        const io = new IntersectionObserver((entries) => {
-                            entries.forEach(e => {
-                                if (e.isIntersecting) {
-                                    sectionEl.classList.add('csm-revealed');
-                                    io.disconnect();
-                                }
-                            });
-                        }, { threshold: 0.15 });
-                        io.observe(sectionEl);
-                        // Fallback: if section is already visible on initial load, reveal immediately
-                        if (sectionEl.getBoundingClientRect().top < window.innerHeight) {
-                            setTimeout(() => sectionEl.classList.add('csm-revealed'), 60);
+                    function csmInitObserver() {
+                        _initPanelRefs();
+                        const sectionEl = document.getElementById('consortium');
+                        if (sectionEl && 'IntersectionObserver' in window) {
+                            const io = new IntersectionObserver((entries) => {
+                                entries.forEach(e => {
+                                    if (e.isIntersecting) {
+                                        sectionEl.classList.add('csm-revealed');
+                                        io.disconnect();
+                                    }
+                                });
+                            }, { threshold: 0.15 });
+                            io.observe(sectionEl);
+                            if (sectionEl.getBoundingClientRect().top < window.innerHeight) {
+                                setTimeout(() => sectionEl.classList.add('csm-revealed'), 60);
+                            }
+                        } else {
+                            sectionEl && sectionEl.classList.add('csm-revealed');
                         }
-                    } else {
-                        sectionEl && sectionEl.classList.add('csm-revealed');
-                    }
                     }
                     if (document.readyState === 'loading') {
-                        document.addEventListener('DOMContentLoaded', csmInitPanelAndObserver);
+                        document.addEventListener('DOMContentLoaded', csmInitObserver);
                     } else {
-                        csmInitPanelAndObserver();
+                        csmInitObserver();
                     }
                 })();
                 </script>
