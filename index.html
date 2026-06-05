@@ -2827,6 +2827,22 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
 
 
 
+                    function wrapText(text, maxChars) {
+                        const words = text.split(' ');
+                        const lines = [];
+                        let cur = '';
+                        for (const w of words) {
+                            if ((cur + ' ' + w).trim().length > maxChars) {
+                                if (cur) lines.push(cur);
+                                cur = w;
+                            } else {
+                                cur = (cur + ' ' + w).trim();
+                            }
+                        }
+                        if (cur) lines.push(cur);
+                        return lines;
+                    }
+
                     // ===== Slide-in panel (hoisted so click handlers can reach openCsmPanel) =====
                     let _panel, _backdrop, _panelClose, _panelName, _panelEyebrow, _panelPillars, _panelBody, _panelCta, _panelCtaPrefix;
                     let _lastTrigger = null;
