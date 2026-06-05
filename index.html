@@ -2750,9 +2750,17 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         const dx = Math.abs(Math.cos(a)) < 0.2 ? 0 : (Math.cos(a) > 0 ? 1 : -1);
 
                         const g = el('g', { class: 'ng', tabindex: 0, role: 'button', 'aria-label': m.name });
-                        g.addEventListener('click', () => openCsmPanel(m));
+                        // Debounced activator — fires on click + pointerup so SVG taps on mobile work
+                        let _lastActivate = 0;
+                        const _activate = () => {
+                            if (Date.now() - _lastActivate < 400) return;
+                            _lastActivate = Date.now();
+                            openCsmPanel(m);
+                        };
+                        g.addEventListener('click', _activate);
+                        g.addEventListener('pointerup', (e) => { if (e.pointerType === 'touch') _activate(); });
                         g.addEventListener('keydown', (e) => {
-                            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCsmPanel(m); }
+                            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); _activate(); }
                         });
                         // Stagger index for entrance reveal
                         g.style.setProperty('--idx', members.indexOf(m));
