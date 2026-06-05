@@ -52,6 +52,19 @@
             font-display: swap;
         }
 
+
+        /* Flagship hyperlink — TU/e Red on all states (overrides browser blue/purple) */
+        a[href*="tue-flagship-advanced-materials"],
+        a[href*="tue-flagship-advanced-materials"]:visited,
+        a[href*="tue-flagship-advanced-materials"]:active {
+            color: var(--tue-red);
+            text-decoration: underline;
+            text-decoration-color: rgba(var(--accent-rgb), 0.45);
+            text-underline-offset: 2px;
+        }
+        a[href*="tue-flagship-advanced-materials"]:hover {
+            text-decoration-color: var(--tue-red);
+        }
         /* CSS Variables */
         :root {
             --tue-red: #C8102E;
