@@ -2072,6 +2072,99 @@
                     html[data-theme="dark"] #consortium .pmk-char { background: #DDB870; }
                     html[data-theme="dark"] #consortium .pmk-ai   { background: #38A2B0; }
 
+
+                    /* Slide-in detail panel for partner deep-dive (v1.13) */
+                    #consortium .csm-backdrop {
+                        position: fixed; inset: 0;
+                        background: rgba(20,20,28,0.45);
+                        opacity: 0; pointer-events: none;
+                        transition: opacity 0.25s ease;
+                        z-index: 100;
+                    }
+                    #consortium .csm-backdrop.open { opacity: 1; pointer-events: auto; }
+                    #consortium .csm-panel {
+                        position: fixed; top: 0; right: 0;
+                        width: 440px; max-width: 100vw; height: 100vh;
+                        background: var(--bg);
+                        border-left: 4px solid var(--tue-red);
+                        box-shadow: -10px 0 32px rgba(0,0,0,0.18);
+                        transform: translateX(100%);
+                        transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+                        z-index: 101;
+                        padding: 4rem 2.5rem 2.5rem;
+                        overflow-y: auto;
+                        color: var(--tue-dark);
+                        font-family: 'Avenir Next LT Pro', 'Avenir Next', Avenir, sans-serif;
+                    }
+                    #consortium .csm-panel.open { transform: translateX(0); }
+                    @media (max-width: 600px) { #consortium .csm-panel { width: 100vw; padding: 3.5rem 1.75rem 2rem; } }
+                    #consortium .csm-panel-close {
+                        position: absolute; top: 1.25rem; right: 1.5rem;
+                        background: none; border: none;
+                        font-size: 1.9rem; color: var(--tue-gray);
+                        cursor: pointer; line-height: 1;
+                        padding: 0.2rem 0.55rem;
+                    }
+                    #consortium .csm-panel-close:hover { color: var(--tue-dark); }
+                    #consortium .csm-panel-eyebrow {
+                        font-size: 0.72rem; letter-spacing: 0.22em;
+                        text-transform: uppercase; font-weight: 600;
+                        color: var(--csm-eyebrow); margin-bottom: 0.4rem;
+                        padding-bottom: 0.7rem;
+                        border-bottom: 1px solid rgba(var(--accent-rgb), 0.55);
+                        width: 38px;
+                    }
+                    #consortium .csm-panel-name {
+                        font-size: 2.1rem; color: var(--tue-dark);
+                        margin: 0.6rem 0 1rem; font-weight: 700; line-height: 1.1;
+                    }
+                    #consortium .csm-panel-name.talking { color: var(--tue-red); font-style: italic; font-weight: 500; }
+                    #consortium .csm-panel-name.open    { color: var(--tue-gray); font-style: italic; font-weight: 400; }
+                    #consortium .csm-panel-pillars {
+                        display: flex; gap: 0.55rem; margin: 1rem 0 1.6rem; flex-wrap: wrap;
+                    }
+                    #consortium .csm-panel-pillars .pp {
+                        display: inline-flex; align-items: center; gap: 0.5rem;
+                        padding: 0.35rem 0.75rem;
+                        border: 1px solid var(--tue-light-border);
+                        border-radius: 18px;
+                        font-size: 0.72rem; font-weight: 600;
+                        text-transform: uppercase; letter-spacing: 0.06em;
+                        color: var(--tue-dark);
+                    }
+                    #consortium .csm-panel-pillars .pp::before {
+                        content: ""; width: 9px; height: 9px; border-radius: 50%;
+                    }
+                    #consortium .csm-panel-pillars .pp-sdl::before  { background: #C8102E; }
+                    #consortium .csm-panel-pillars .pp-char::before { background: #C4A158; }
+                    #consortium .csm-panel-pillars .pp-ai::before   { background: #1F6F7A; }
+                    html[data-theme="dark"] #consortium .csm-panel-pillars .pp-char::before { background: #DDB870; }
+                    html[data-theme="dark"] #consortium .csm-panel-pillars .pp-ai::before   { background: #38A2B0; }
+                    #consortium .csm-panel-body {
+                        font-size: 1.02rem; line-height: 1.65;
+                        color: var(--tue-dark); margin: 0 0 1.5rem;
+                    }
+                    #consortium .csm-panel-cta {
+                        display: inline-block;
+                        padding: 0.75rem 1.4rem;
+                        background: var(--tue-red); color: white;
+                        text-decoration: none; font-weight: 600;
+                        font-size: 0.95rem;
+                        border-radius: 2px;
+                        transition: background 0.2s ease, transform 0.15s ease;
+                    }
+                    #consortium .csm-panel-cta:hover { background: #a00d24; transform: translateY(-1px); }
+                    #consortium .csm-panel-cta.hidden { display: none; }
+                    #consortium .csm-panel-cta-prefix {
+                        font-size: 0.85rem; color: var(--tue-gray); font-style: italic;
+                        margin-bottom: 0.7rem; line-height: 1.5;
+                    }
+                    #consortium .csm-panel-cta-prefix.hidden { display: none; }
+                    /* Marks indicate they're clickable */
+                    #consortium .ng { cursor: pointer; }
+                    #consortium .ng:focus { outline: none; }
+                    #consortium .ng:focus circle:first-of-type { filter: drop-shadow(0 0 4px rgba(var(--accent-rgb), 0.6)); }
+
                 </style>
 
                 <h2 class="reveal">An open consortium</h2>
@@ -2336,6 +2429,19 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
 
                 </div>
 
+
+                <!-- Slide-in deep-dive panel (v1.13 — click any chair) -->
+                <div class="csm-backdrop" id="csmBackdrop"></div>
+                <aside class="csm-panel" id="csmPanel" role="dialog" aria-modal="true" aria-labelledby="csmPanelName" aria-hidden="true" tabindex="-1">
+                    <button class="csm-panel-close" id="csmPanelClose" aria-label="Close">&times;</button>
+                    <div class="csm-panel-eyebrow" id="csmPanelEyebrow"></div>
+                    <h3 class="csm-panel-name" id="csmPanelName"></h3>
+                    <div class="csm-panel-pillars" id="csmPanelPillars"></div>
+                    <p class="csm-panel-body" id="csmPanelBody"></p>
+                    <p class="csm-panel-cta-prefix hidden" id="csmPanelCtaPrefix"></p>
+                    <a class="csm-panel-cta hidden" id="csmPanelCta" href="#contact">Talk to us</a>
+                </aside>
+
                 <script>
                 (function() {
                     const consortium = {
@@ -2435,7 +2541,11 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         const dy = m.angle > -90 && m.angle < 90 ? 1 : -1;  // below or above
                         const dx = Math.abs(Math.cos(a)) < 0.2 ? 0 : (Math.cos(a) > 0 ? 1 : -1);
 
-                        const g = el('g', { class: 'ng', tabindex: 0 });
+                        const g = el('g', { class: 'ng', tabindex: 0, role: 'button', 'aria-label': m.name });
+                        g.addEventListener('click', () => openCsmPanel(m));
+                        g.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCsmPanel(m); }
+                        });
 
                         // Mark
                         const markClass = m.status === 'committed' ? 'm-cmp' : m.status === 'talking' ? 'm-tlk' : 'm-opn';
@@ -2574,6 +2684,67 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         if (cur) lines.push(cur);
                         return lines;
                     }
+
+                    // ===== Slide-in panel logic (v1.13) =====
+                    const panel = document.getElementById('csmPanel');
+                    const backdrop = document.getElementById('csmBackdrop');
+                    const panelClose = document.getElementById('csmPanelClose');
+                    const panelName = document.getElementById('csmPanelName');
+                    const panelEyebrow = document.getElementById('csmPanelEyebrow');
+                    const panelPillars = document.getElementById('csmPanelPillars');
+                    const panelBody = document.getElementById('csmPanelBody');
+                    const panelCta = document.getElementById('csmPanelCta');
+                    const panelCtaPrefix = document.getElementById('csmPanelCtaPrefix');
+                    const pillarLabels = { sdl: 'SDL', char: 'Characterisation', ai: 'AI Core' };
+                    let lastTrigger = null;
+
+                    function openCsmPanel(m) {
+                        lastTrigger = document.activeElement;
+                        panelEyebrow.textContent = m.status === 'committed' ? 'What they bring' : 'Capability sought';
+                        panelName.textContent = m.name;
+                        panelName.className = 'csm-panel-name ' + m.status;
+                        panelPillars.innerHTML = '';
+                        if (m.pillars && m.pillars.length) {
+                            m.pillars.forEach(p => {
+                                const span = document.createElement('span');
+                                span.className = 'pp pp-' + p;
+                                span.textContent = pillarLabels[p];
+                                panelPillars.appendChild(span);
+                            });
+                        }
+                        panelBody.textContent = m.bring;
+                        if (m.cta) {
+                            panelCtaPrefix.textContent = m.cta;
+                            panelCtaPrefix.classList.remove('hidden');
+                            panelCta.textContent = 'Talk to us';
+                            panelCta.classList.remove('hidden');
+                        } else {
+                            panelCtaPrefix.classList.add('hidden');
+                            panelCta.classList.add('hidden');
+                        }
+                        panel.classList.add('open');
+                        backdrop.classList.add('open');
+                        panel.setAttribute('aria-hidden', 'false');
+                        setTimeout(() => panelClose.focus(), 200);
+                    }
+                    function closeCsmPanel() {
+                        panel.classList.remove('open');
+                        backdrop.classList.remove('open');
+                        panel.setAttribute('aria-hidden', 'true');
+                        if (lastTrigger && lastTrigger.focus) lastTrigger.focus();
+                    }
+                    panelClose.addEventListener('click', closeCsmPanel);
+                    backdrop.addEventListener('click', closeCsmPanel);
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && panel.classList.contains('open')) closeCsmPanel();
+                    });
+                    // Panel CTA scrolls to #contact
+                    panelCta.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        closeCsmPanel();
+                        const target = document.getElementById('contact');
+                        if (target) target.scrollIntoView({ behavior: 'smooth' });
+                    });
                 })();
                 </script>
             </section>
