@@ -1957,11 +1957,11 @@
                     #consortium .m-cmp { fill: var(--tue-red); }
                     #consortium .m-tlk { fill: none; stroke: var(--tue-red); stroke-width: 2.2; }
                     #consortium .m-opn { fill: none; stroke: var(--csm-soft); stroke-width: 1.5; stroke-dasharray: 2 2; }
-                    #consortium .ln { fill: var(--csm-ink); font-size: 38px; font-weight: 600; }
-                    #consortium .lr { fill: var(--csm-eyebrow); font-size: 16px; letter-spacing: 1.5px; font-weight: 500; text-transform: uppercase; }
-                    #consortium .lt { fill: var(--tue-red); font-size: 38px; font-weight: 500; font-style: italic; }
-                    #consortium .lo { fill: var(--csm-soft); font-size: 34px; font-weight: 400; font-style: italic; }
-                    #consortium .te { fill: var(--csm-eyebrow); font-size: 15px; letter-spacing: 3.5px; text-transform: uppercase; font-weight: 600; }
+                    #consortium .ln { fill: var(--csm-ink); font-size: 50px; font-weight: 600; }
+                    #consortium .lr { fill: var(--csm-eyebrow); font-size: 22px; letter-spacing: 1.5px; font-weight: 500; text-transform: uppercase; }
+                    #consortium .lt { fill: var(--tue-red); font-size: 50px; font-weight: 500; font-style: italic; }
+                    #consortium .lo { fill: var(--csm-soft); font-size: 44px; font-weight: 400; font-style: italic; }
+                    #consortium .te { fill: var(--csm-eyebrow); font-size: 22px; letter-spacing: 3.5px; text-transform: uppercase; font-weight: 600; }
 
                     /* Tooltip */
                     #consortium .ng { cursor: pointer; }
@@ -1969,9 +1969,9 @@
                     #consortium .ng:hover .tip, #consortium .ng:focus .tip { opacity: 1; pointer-events: auto; }
                     #consortium .tip-bg { fill: var(--csm-tip-bg); stroke: var(--csm-tip-border); stroke-width: 1; }
                     #consortium .tip-rule { stroke: rgba(var(--accent-rgb), 0.55); stroke-width: 1.5; }
-                    #consortium .tip-eb { fill: var(--csm-eyebrow); font-size: 18px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; }
-                    #consortium .tip-txt { fill: var(--csm-ink); font-size: 22px; font-weight: 400; }
-                    #consortium .tip-cta { fill: var(--tue-red); font-size: 20px; font-style: italic; cursor: pointer; }
+                    #consortium .tip-eb { fill: var(--csm-eyebrow); font-size: 22px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; }
+                    #consortium .tip-txt { fill: var(--csm-ink); font-size: 28px; font-weight: 400; }
+                    #consortium .tip-cta { fill: var(--tue-red); font-size: 26px; font-style: italic; cursor: pointer; }
                     #consortium .tip-cta:hover { text-decoration: underline; }
 
                     /* Marginalia */
@@ -2321,23 +2321,23 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                               bring: 'Advanced microscopy capability on the national infrastructure ring.' },
                             { tier: 'national', angle: -18, status: 'talking', name: 'Radboud',
                               bring: 'Soft-matter and biophysics SDL capability on the national ring.' },
-                            { tier: 'national', angle:  54, status: 'open', name: 'SDL partner',
+                            { tier: 'national', angle:  54, status: 'open', name: 'Open · SDL partner',
                               bring: 'A self-driving laboratory partner with complementary domain capability.',
                               cta: 'This chair is reserved by capability, not by name. Talk to us.' },
-                            { tier: 'national', angle: 126, status: 'open', name: 'Characterisation',
+                            { tier: 'national', angle: 126, status: 'open', name: 'Open · Characterisation',
                               bring: 'A characterisation partner bringing modalities complementary to the campus core: scattering, synchrotron, neutron, or correlative imaging.',
                               cta: 'This chair is reserved by capability, not by name. Talk to us.' },
-                            { tier: 'national', angle: 198, status: 'open', name: 'AI partner',
+                            { tier: 'national', angle: 198, status: 'open', name: 'Open · AI partner',
                               bring: 'An AI partner bringing foundation models, methods, or compute that strengthens the AI Core pillar.',
                               cta: 'This chair is reserved by capability, not by name. Talk to us.' },
 
-                            { tier: 'intl', angle: -150, status: 'open', name: 'EU partner',
+                            { tier: 'intl', angle: -150, status: 'open', name: 'Open · EU partner',
                               bring: 'European partner institution aligned with open science and Materials Commons interoperability.',
                               cta: 'Open to a conversation. Join the consortium.' },
-                            { tier: 'intl', angle:  -30, status: 'open', name: 'EU partner',
+                            { tier: 'intl', angle:  -30, status: 'open', name: 'Open · EU partner',
                               bring: 'European partner institution aligned with open science and Materials Commons interoperability.',
                               cta: 'Open to a conversation. Join the consortium.' },
-                            { tier: 'intl', angle:   90, status: 'open', name: 'Open partner',
+                            { tier: 'intl', angle:   90, status: 'open', name: 'Open · Intl partner',
                               bring: 'Global open-science partner aligned with autonomous-discovery practice.',
                               cta: 'Open to a conversation. Join the consortium.' },
                         ],
@@ -2361,11 +2361,30 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         root.appendChild(el('circle', { cx, cy, r: t.radius, class: cls }));
                     });
 
-                    // Tier eyebrows removed v1.4 — marginalia row below carries the semantic key
+                    // Tier eyebrows on top arc (LTR sweep, readable)
+                    const tierLabels = { campus: 'TU/e Campus', national: 'National', intl: 'International' };
+                    const defs = el('defs');
+                    consortium.tiers.forEach(t => {
+                        const r = t.radius;
+                        // Top arc, LEFT to RIGHT (sweep flag 1)
+                        const d = `M ${cx - r},${cy} A ${r},${r} 0 0 1 ${cx + r},${cy}`;
+                        defs.appendChild(el('path', { id: 'arc-' + t.id, d, fill: 'none' }));
+                    });
+                    root.appendChild(defs);
+                    consortium.tiers.forEach(t => {
+                        const txt = el('text', { class: 'te' });
+                        const tp = el('textPath');
+                        tp.setAttribute('href', '#arc-' + t.id);
+                        tp.setAttribute('startOffset', '50%');
+                        tp.setAttribute('text-anchor', 'middle');
+                        tp.textContent = tierLabels[t.id] || '';
+                        txt.appendChild(tp);
+                        root.appendChild(txt);
+                    });
 
                     // Core wordmark
-                    root.appendChild(el('text', { class: 'cw', x: cx, y: cy - 2, 'text-anchor': 'middle', 'font-size': 42 }, consortium.core.label));
-                    root.appendChild(el('text', { class: 'ct', x: cx, y: cy + 18, 'text-anchor': 'middle', 'font-size': 11 }, consortium.core.tagline));
+                    root.appendChild(el('text', { class: 'cw', x: cx, y: cy - 2, 'text-anchor': 'middle', 'font-size': 50 }, consortium.core.label));
+                    root.appendChild(el('text', { class: 'ct', x: cx, y: cy + 18, 'text-anchor': 'middle', 'font-size': 14 }, consortium.core.tagline));
 
                     // Members
                     consortium.members.forEach(m => {
@@ -2411,14 +2430,37 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                             g.appendChild(el('text', { class: labelClass, x: labelX, y: lineY, 'text-anchor': anchor }, line));
                         });
 
-                        // Role sub-labels removed v1.8 — minimize text
+                        // Role sub-label for committed campus
+                        if (m.role && m.status === 'committed') {
+                            const nameLines = nameWrap.length;
+                            // Place role below last name line for bottom/side, above for top
+                            const isAbove = m.angle > -135 && m.angle < -45;  // top-ish
+                            const subY = isAbove
+                                ? labelY - (nameLines * 26 + 4)  // above the name
+                                : labelY + (nameLines * 26 + 6); // below the name
+                            g.appendChild(el('text', { class: 'lr', x: labelX, y: subY, 'text-anchor': anchor }, m.role.toUpperCase()));
+                        }
 
-                        // Tooltip in negative space opposite the mark
-                        const tipW = 460, tipH = m.cta ? 200 : 130;
-                        const opp = a + Math.PI;
-                        // Place tooltip on the OPPOSITE side of center from mark
-                        let tipX = cx + (r - 130) * Math.cos(opp) - tipW / 2;
-                        let tipY = cy + (r - 130) * Math.sin(opp) - tipH / 2;
+                        // Tooltip placed ADJACENT to the mark, offset outward from ring center
+                        const tipW = 540, tipH = m.cta ? 240 : 160;
+                        // Outward radial offset from mark
+                        const offset = 30;
+                        const dirX = Math.cos(a), dirY = Math.sin(a);
+                        // Anchor depending on which side of center the mark is
+                        // If mark is on right half (dirX > 0), tip goes to the right of mark
+                        // If on left half, tip goes to the left
+                        // If at top/bottom, tip goes outward vertically with horizontal centring
+                        let tipX, tipY;
+                        if (dirX > 0.3) {
+                            tipX = mx + offset;
+                            tipY = my - tipH / 2;
+                        } else if (dirX < -0.3) {
+                            tipX = mx - offset - tipW;
+                            tipY = my - tipH / 2;
+                        } else {
+                            tipX = mx - tipW / 2;
+                            tipY = dirY > 0 ? my + offset : my - offset - tipH;
+                        }
                         // Clamp within viewBox
                         tipX = Math.max(20, Math.min(1000 - tipW - 20, tipX));
                         tipY = Math.max(20, Math.min(1000 - tipH - 20, tipY));
@@ -2440,19 +2482,19 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                             }, initials));
                             tipG.appendChild(mono);
                         }
-                        tipG.appendChild(el('line', { class: 'tip-rule', x1: 28, y1: 26, x2: 72, y2: 26 }));
+                        tipG.appendChild(el('line', { class: 'tip-rule', x1: 30, y1: 30, x2: 78, y2: 30 }));
                         const eyebrowText = m.status === 'committed' ? 'What they bring' : 'Capability sought';
-                        tipG.appendChild(el('text', { class: 'tip-eb', x: 28, y: 50 }, eyebrowText));
+                        tipG.appendChild(el('text', { class: 'tip-eb', x: 30, y: 58 }, eyebrowText));
                         // Body: word-wrap manually at ~36 chars per line
-                        const lines = wrapText(m.bring, 38);
+                        const lines = wrapText(m.bring, 32);
                         lines.forEach((line, i) => {
-                            tipG.appendChild(el('text', { class: 'tip-txt', x: 28, y: 78 + i * 28 }, line));
+                            tipG.appendChild(el('text', { class: 'tip-txt', x: 30, y: 92 + i * 34 }, line));
                         });
                         if (m.cta) {
-                            const ctaY = 78 + lines.length * 28 + 22;
-                            const ctaLines = wrapText(m.cta, 40);
+                            const ctaY = 92 + lines.length * 34 + 26;
+                            const ctaLines = wrapText(m.cta, 34);
                             ctaLines.forEach((line, i) => {
-                                const ctaText = el('text', { class: 'tip-cta', x: 28, y: ctaY + i * 26 }, line);
+                                const ctaText = el('text', { class: 'tip-cta', x: 30, y: ctaY + i * 32 }, line);
                                 ctaText.addEventListener('click', () => {
                                     const target = document.getElementById('contact');
                                     if (target) target.scrollIntoView({ behavior: 'smooth' });
