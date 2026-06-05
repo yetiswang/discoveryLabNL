@@ -2059,27 +2059,29 @@
                     #consortium .te { fill: var(--csm-eyebrow); font-size: 17px; letter-spacing: 4px; text-transform: uppercase; font-weight: 600; }
 
                     /* Mark + label hover (replaces text popups; click opens the slide-in panel) */
-                    #consortium .ng { cursor: pointer; }
-                    #consortium .ng > circle,
-                    #consortium .ng > text {
-                        transition: font-size 0.26s cubic-bezier(0.22, 1, 0.36, 1),
-                                    fill 0.22s ease,
-                                    stroke 0.22s ease,
-                                    stroke-width 0.22s ease,
-                                    filter 0.28s ease,
-                                    font-weight 0.22s ease;
+                    #consortium .ng {
+                        cursor: pointer;
+                        /* Scale whole chip group (chip dot + name + pillar dots) uniformly on hover.
+                           Safari respects transform-box:fill-box on <g> (not <text>), so this is
+                           GPU-smooth on both engines and avoids the WebKit text-origin drift. */
                         transform-box: fill-box;
                         transform-origin: center;
+                        transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                                    filter    0.28s ease;
                     }
-                    /* Safari-safe: avoid transform:scale on SVG <text>/<circle> (transform-origin drift bug).
-                       Use font-size + stroke + glow instead. */
-                    #consortium .ng.is-hover > text.ln,
-                    #consortium .ng.is-hover > text.lt { font-size: 39px; }
-                    #consortium .ng.is-hover > text.lo { font-size: 34px; }
+                    #consortium .ng > text {
+                        transition: fill 0.22s ease, font-weight 0.22s ease;
+                    }
+                    #consortium .ng > circle {
+                        transition: fill 0.22s ease, stroke 0.22s ease, stroke-width 0.22s ease;
+                    }
+                    #consortium .ng.is-hover {
+                        transform: scale(1.18);
+                        filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.5));
+                    }
                     #consortium .ng.is-hover > text {
                         fill: var(--tue-red);
                         font-weight: 800;
-                        filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.45));
                     }
                     #consortium .ng.is-hover > text.lo {
                         fill: var(--tue-red); opacity: 1; font-weight: 700;
@@ -2087,8 +2089,7 @@
                     #consortium .ng.is-hover > circle {
                         fill: var(--tue-red);
                         stroke: var(--tue-red);
-                        stroke-width: 3;
-                        filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.7));
+                        stroke-width: 2;
                     }
                     #consortium .ng.is-hover > circle.m-opn {
                         stroke: var(--tue-red);
@@ -2380,13 +2381,15 @@
                         #consortium .lo { font-size: 36px; }
                     }
                     /* Touch device: hover effects map to focus (so the visual cue happens on first tap) */
+                    /* Touch devices (iOS Safari, iOS Chrome — both WebKit; Android Chrome).
+                       Same scale + glow on .ng as desktop. iOS browsers all use WebKit, so
+                       relying on transform-box:fill-box on <g> works uniformly. */
                     @media (hover: none) {
-                        #consortium .ng:active > text.ln,
-                        #consortium .ng:active > text.lt,
-                        #consortium .ng.is-hover > text.ln,
-                        #consortium .ng.is-hover > text.lt { font-size: 44px; }
-                        #consortium .ng:active > text.lo,
-                        #consortium .ng.is-hover > text.lo { font-size: 38px; }
+                        #consortium .ng:active,
+                        #consortium .ng.is-hover {
+                            transform: scale(1.18);
+                            filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.6));
+                        }
                         #consortium .ng:active > text,
                         #consortium .ng.is-hover > text {
                             fill: var(--tue-red);
@@ -2396,8 +2399,7 @@
                         #consortium .ng.is-hover > circle {
                             fill: var(--tue-red);
                             stroke: var(--tue-red);
-                            stroke-width: 3;
-                            filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.7));
+                            stroke-width: 2;
                         }
                     }
 
