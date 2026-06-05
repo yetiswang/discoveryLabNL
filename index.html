@@ -2078,8 +2078,9 @@
                         padding: 0;
                     }
                     @media (max-width: 940px) {
-                        #consortium .csm-layout { grid-template-columns: 1fr; gap: 1.6rem; }
-                        #consortium .csm-rings, #consortium .csm-map { max-width: 600px; margin: 0 auto; }
+                        #consortium .csm-layout { grid-template-columns: 1fr; gap: 2.4rem; }
+                        #consortium .csm-rings { max-width: 760px; margin: 0 auto; aspect-ratio: 1.3; }
+                        #consortium .csm-map   { max-width: 460px; margin: 0 auto; aspect-ratio: 0.85; }
                     }
                     @media (max-width: 600px) {
                         #consortium h2 { font-size: 2rem; }
@@ -2087,7 +2088,7 @@
                         #consortium { padding: 4rem 1.5rem; }
                     }
                     #consortium .csm-rings-wrap, #consortium .csm-map-wrap { width: 100%; }
-                    #consortium .csm-rings { width: 100%; aspect-ratio: 1; max-width: 920px; margin: 0 auto; overflow: visible; }
+                    #consortium .csm-rings { width: 100%; aspect-ratio: 1.3; max-width: 1100px; margin: 0 auto; overflow: visible; }
                     #consortium .csm-rings svg { overflow: visible; }
                     #consortium .csm-map { width: 100%; aspect-ratio: 0.85; max-width: 480px; margin: 0 auto; }
                     #consortium .csm-rings svg, #consortium .csm-map svg { width: 100%; height: 100%; display: block; }
@@ -2304,7 +2305,7 @@
 
                     <!-- Rings: architecture view -->
                     <div class="csm-rings-wrap">
-                        <div class="csm-rings"><svg id="consortiumRings" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg></div>
+                        <div class="csm-rings"><svg id="consortiumRings" viewBox="-150 0 1300 1000" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg></div>
                         <div class="csm-key">
                             <span><span class="mk mk-cmp"></span><strong>Committed</strong></span>
                             <span><span class="mk mk-tlk"></span><strong>In conversation</strong></span>
@@ -2754,8 +2755,8 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                             tipY = dirY > 0 ? my + offset : my - offset - tipH;
                         }
                         // Clamp within viewBox
-                        tipX = Math.max(20, Math.min(1000 - tipW - 20, tipX));
-                        tipY = Math.max(20, Math.min(1000 - tipH - 20, tipY));
+                        tipX = Math.max(-130, Math.min(1130 - tipW, tipX));
+                        tipY = Math.max(20, Math.min(980 - tipH, tipY));
 
                         const tipG = el('g', { class: 'tip', transform: `translate(${tipX},${tipY})` });
                         tipG.appendChild(el('rect', { class: 'tip-bg', x: 0, y: 0, width: tipW, height: tipH, rx: 2 }));
