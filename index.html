@@ -2758,7 +2758,6 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                             openCsmPanel(m);
                         };
                         g.addEventListener('click', _activate);
-                        g.addEventListener('pointerup', (e) => { if (e.pointerType === 'touch') _activate(); });
                         g.addEventListener('keydown', (e) => {
                             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); _activate(); }
                         });
@@ -2772,7 +2771,11 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         g.addEventListener('focusin',    setHover);
                         g.addEventListener('focusout',   clearHover);
                         g.addEventListener('touchstart', setHover, { passive: true });
-                        g.addEventListener('touchend',   () => setTimeout(clearHover, 1500), { passive: true });
+                        g.addEventListener('touchend',   (e) => {
+                            e.preventDefault();  // prevent synthesized ghost-click + ensures handler runs on iOS Safari
+                            _activate();
+                            setTimeout(clearHover, 1500);
+                        }, { passive: false });
 
                         // Mark
                         const markClass = m.status === 'committed' ? 'm-cmp' : m.status === 'talking' ? 'm-tlk' : 'm-opn';
