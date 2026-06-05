@@ -2349,6 +2349,40 @@
                         #consortium.csm-revealed .m-opn { animation: none !important; }
                     }
 
+
+                    /* === v2.8 Mobile bumps: bigger rings + text on iPhone viewports === */
+                    @media (max-width: 600px) {
+                        #consortium .ln { font-size: 38px; }   /* was 33 */
+                        #consortium .lt { font-size: 38px; }
+                        #consortium .lo { font-size: 33px; }   /* was 29 */
+                        #consortium .lr { font-size: 18px; }   /* was 16 */
+                        #consortium .te { font-size: 19px; }   /* was 17 */
+                        #consortium .csm-rings { max-width: 100%; aspect-ratio: 1.3; max-height: 65vh; }
+                        #consortium .csm-map   { max-width: 92%; max-height: 55vh; }
+                        #consortium .csm-key { font-size: 12px; gap: 1.2rem; }
+                        #consortium .pillar-key { font-size: 11.5px; gap: 1rem; }
+                        #consortium .csm-cap, #consortium .csm-map-cap { font-size: 12px; }
+                        /* Make tap targets generous on touch */
+                        #consortium .ng > circle { r: 9; }
+                        /* Slide-in panel: full width sheet from right on phones */
+                        .csm-panel { width: 100vw; padding: 3.5rem 1.5rem 2rem; }
+                    }
+                    @media (max-width: 380px) {
+                        #consortium .ln, #consortium .lt { font-size: 42px; }
+                        #consortium .lo { font-size: 36px; }
+                    }
+                    /* Touch device: hover effects map to focus (so the visual cue happens on first tap) */
+                    @media (hover: none) {
+                        #consortium .ng:active > text {
+                            transform: scale(1.18); fill: var(--tue-red);
+                            font-weight: 800;
+                        }
+                        #consortium .ng:active > circle {
+                            transform: scale(1.7);
+                            filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.55));
+                        }
+                    }
+
                 </style>
 
                 <h2 class="reveal">An open consortium</h2>
@@ -2369,7 +2403,7 @@
                             <span><span class="pmk pmk-char"></span><strong>Multimodal characterisation</strong></span>
                             <span><span class="pmk pmk-ai"></span><strong>AI core</strong></span>
                         </div>
-                        <p class="csm-cap">Hover any chair for what they bring or what's invited. Coloured dots show pillar contributions.</p>
+                        <p class="csm-cap">Tap or click any chair for what they bring. Coloured dots show pillar contributions.</p>
                     </div>
 
                     <!-- NL map: geography companion -->
