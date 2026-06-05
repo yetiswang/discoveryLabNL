@@ -2234,6 +2234,87 @@
                     #consortium .ng:focus { outline: none; }
                     #consortium .ng:focus circle:first-of-type { filter: drop-shadow(0 0 4px rgba(var(--accent-rgb), 0.6)); }
 
+
+                    /* === v2.4 ANIMATION: A staged reveal + B open-slot pulse === */
+                    /* Pre-state: hide everything visually inside the section */
+                    #consortium .t-cmp, #consortium .t-nat, #consortium .t-int {
+                        opacity: 0;
+                        transition: opacity 0.5s ease-out;
+                    }
+                    #consortium.csm-revealed .t-cmp { opacity: 1; transition-delay: 0s; }
+                    #consortium.csm-revealed .t-nat { opacity: 1; transition-delay: 0.25s; }
+                    #consortium.csm-revealed .t-int { opacity: 1; transition-delay: 0.50s; }
+                    /* Optional: draw-in stroke effect for rings (works in modern browsers) */
+                    #consortium .t-cmp { stroke-dasharray: 1200; stroke-dashoffset: 1200; transition: stroke-dashoffset 0.7s ease-out, opacity 0.4s; }
+                    #consortium .t-nat { stroke-dasharray: 2020; stroke-dashoffset: 2020; transition: stroke-dashoffset 0.85s ease-out, opacity 0.4s; }
+                    #consortium .t-int { stroke-dasharray: 2800; stroke-dashoffset: 2800; transition: stroke-dashoffset 1s ease-out, opacity 0.4s; }
+                    #consortium.csm-revealed .t-cmp { stroke-dashoffset: 0; transition-delay: 0s; }
+                    #consortium.csm-revealed .t-nat { stroke-dashoffset: 0; transition-delay: 0.25s; }
+                    #consortium.csm-revealed .t-int { stroke-dashoffset: 0; transition-delay: 0.50s; }
+                    /* Core wordmark + tagline fade in after rings */
+                    #consortium .cw, #consortium .ct {
+                        opacity: 0;
+                        transition: opacity 0.5s ease-out;
+                    }
+                    #consortium.csm-revealed .cw { opacity: 1; transition-delay: 0.7s; }
+                    #consortium.csm-revealed .ct { opacity: 0.85; transition-delay: 0.85s; }
+                    /* Members: stagger fade-in using --idx CSS variable set in JS */
+                    #consortium .ng {
+                        opacity: 0;
+                        transform: scale(0.92);
+                        transform-origin: center;
+                        transform-box: fill-box;
+                        transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+                    }
+                    #consortium.csm-revealed .ng {
+                        opacity: 1; transform: scale(1);
+                        transition-delay: calc(0.9s + var(--idx, 0) * 0.07s);
+                    }
+                    /* NL map: silhouette fades in, cities appear sequentially */
+                    #consortium .csm-map svg > g > path {
+                        opacity: 0;
+                        transition: opacity 0.8s ease-out 0.3s;
+                    }
+                    #consortium.csm-revealed .csm-map svg > g > path { opacity: 1; }
+                    #consortium .csm-map .city-dot-cmp,
+                    #consortium .csm-map .city-dot-tlk,
+                    #consortium .csm-map .city-label,
+                    #consortium .csm-map .city-meta {
+                        opacity: 0;
+                        transition: opacity 0.5s ease-out;
+                    }
+                    #consortium.csm-revealed .csm-map .city-dot-cmp,
+                    #consortium.csm-revealed .csm-map .city-label:not(.city-label-tlk):first-of-type { opacity: 1; transition-delay: 1.0s; }
+                    #consortium.csm-revealed .csm-map .city-dot-tlk:nth-of-type(1),
+                    #consortium.csm-revealed .csm-map .city-label-tlk:nth-of-type(1) { opacity: 1; transition-delay: 1.15s; }
+                    #consortium.csm-revealed .csm-map .city-dot-tlk:nth-of-type(2),
+                    #consortium.csm-revealed .csm-map .city-label-tlk:nth-of-type(2) { opacity: 1; transition-delay: 1.30s; }
+                    #consortium.csm-revealed .csm-map .city-label { opacity: 1; transition-delay: 1.0s; }
+
+                    /* B: Open-slot pulse — only after the reveal settles */
+                    @keyframes csmOpenPulse {
+                        0%, 100% { opacity: 0.50; }
+                        50%      { opacity: 0.95; }
+                    }
+                    #consortium.csm-revealed .m-opn {
+                        animation: csmOpenPulse 4s ease-in-out infinite;
+                        animation-delay: calc(1.5s + var(--pulseDelay, 0) * 0.4s);
+                    }
+                    /* Pause animations when user prefers reduced motion */
+                    @media (prefers-reduced-motion: reduce) {
+                        #consortium .t-cmp, #consortium .t-nat, #consortium .t-int,
+                        #consortium .cw, #consortium .ct, #consortium .ng,
+                        #consortium .csm-map svg > g > path,
+                        #consortium .csm-map .city-dot-cmp, #consortium .csm-map .city-dot-tlk,
+                        #consortium .csm-map .city-label, #consortium .csm-map .city-meta {
+                            opacity: 1 !important;
+                            transform: none !important;
+                            stroke-dashoffset: 0 !important;
+                            transition: none !important;
+                        }
+                        #consortium.csm-revealed .m-opn { animation: none !important; }
+                    }
+
                 </style>
 
                 <h2 class="reveal">An open consortium</h2>
@@ -2600,7 +2681,8 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                     root.appendChild(el('text', { class: 'ct', x: cx, y: cy + 18, 'text-anchor': 'middle', 'font-size': 10 }, consortium.core.tagline));
 
                     // Members
-                    consortium.members.forEach(m => {
+                    const members = consortium.members;
+                    members.forEach(m => {
                         const tier = consortium.tiers.find(t => t.id === m.tier);
                         const r = tier.radius;
                         const a = (m.angle - 90) * Math.PI / 180;  // 0deg = top by convention
@@ -2615,11 +2697,21 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         g.addEventListener('keydown', (e) => {
                             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCsmPanel(m); }
                         });
+                        // Stagger index for entrance reveal
+                        g.style.setProperty('--idx', members.indexOf(m));
+                        // Bring hovered/focused member to top of paint order (SVG z-fix)
+                        g.addEventListener('mouseenter', () => g.parentNode.appendChild(g));
+                        g.addEventListener('focusin',    () => g.parentNode.appendChild(g));
 
                         // Mark
                         const markClass = m.status === 'committed' ? 'm-cmp' : m.status === 'talking' ? 'm-tlk' : 'm-opn';
                         const markR = m.status === 'open' ? 5 : 6;
-                        g.appendChild(el('circle', { cx: mx, cy: my, r: markR, class: markClass }));
+                        const markEl = el('circle', { cx: mx, cy: my, r: markR, class: markClass });
+                        if (m.status === 'open') {
+                            const openIdx = members.filter(x => x.status === 'open').indexOf(m);
+                            markEl.style.setProperty('--pulseDelay', openIdx);
+                        }
+                        g.appendChild(markEl);
 
                         // Labels
                         const labelClass = m.status === 'committed' ? 'ln' : m.status === 'talking' ? 'lt' : 'lo';
@@ -2814,6 +2906,26 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         const target = document.getElementById('contact');
                         if (target) target.scrollIntoView({ behavior: 'smooth' });
                     });
+
+                    // ===== A · Staged reveal trigger (IntersectionObserver) =====
+                    const sectionEl = document.getElementById('consortium');
+                    if (sectionEl && 'IntersectionObserver' in window) {
+                        const io = new IntersectionObserver((entries) => {
+                            entries.forEach(e => {
+                                if (e.isIntersecting) {
+                                    sectionEl.classList.add('csm-revealed');
+                                    io.disconnect();
+                                }
+                            });
+                        }, { threshold: 0.15 });
+                        io.observe(sectionEl);
+                        // Fallback: if section is already visible on initial load, reveal immediately
+                        if (sectionEl.getBoundingClientRect().top < window.innerHeight) {
+                            setTimeout(() => sectionEl.classList.add('csm-revealed'), 60);
+                        }
+                    } else {
+                        sectionEl && sectionEl.classList.add('csm-revealed');
+                    }
                 })();
                 </script>
             </section>
