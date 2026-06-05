@@ -64,111 +64,10 @@
         }
         a[href*="tue-flagship-advanced-materials"]:hover {
             text-decoration-color: var(--tue-red);
-        }
-
-        /* === v2.0 CARD STYLE PREVIEW TOGGLE — pick A/B/C, then we lock === */
-        #cardStyleToggle {
-            position: fixed; bottom: 20px; left: 20px; z-index: 200;
-            background: var(--bg); border: 1px solid var(--tue-light-border);
-            padding: 0.55rem 0.9rem; border-radius: 2px;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.12);
-            display: flex; gap: 0.5rem; align-items: center;
-            font-family: 'Avenir Next LT Pro', 'Avenir Next', Avenir, sans-serif;
-        }
-        #cardStyleToggle .cs-eyebrow {
-            font-size: 0.65rem; letter-spacing: 0.2em;
-            text-transform: uppercase; color: var(--tue-gray);
-            font-weight: 600; padding-right: 0.4rem;
-            border-right: 1px solid var(--tue-light-border);
-            margin-right: 0.2rem;
-        }
-        #cardStyleToggle .cs-btn {
-            background: transparent; border: 1px solid transparent;
-            font-family: inherit; font-size: 0.85rem; font-weight: 600;
-            color: var(--tue-gray); padding: 0.3rem 0.55rem;
-            cursor: pointer; border-radius: 2px;
-            transition: color 0.15s ease, background 0.15s ease;
-        }
-        #cardStyleToggle .cs-btn:hover { color: var(--tue-dark); }
-        #cardStyleToggle .cs-btn.cs-active {
-            background: var(--tue-red); color: white;
-        }
-        #cardStyleToggle .cs-label {
-            font-size: 0.7rem; color: var(--tue-gray);
-            padding-left: 0.5rem; border-left: 1px solid var(--tue-light-border);
-            margin-left: 0.2rem;
-        }
-
-        /* ===== A · TUFTE CANONICAL — eyebrow + hairline + bare typography ===== */
-        html[data-card-style="A"] .challenge-callout,
-        html[data-card-style="A"] .domain-card,
-        html[data-card-style="A"] .consortium-card {
-            background: transparent !important;
-            border: none !important;
-            border-top: 1px solid var(--tue-light-border) !important;
-            border-radius: 0 !important;
-            box-shadow: none !important;
-            padding: 1.5rem 0 1.5rem 0 !important;
-            transform: none !important;
-        }
-        html[data-card-style="A"] .domain-card:hover,
-        html[data-card-style="A"] .consortium-card:hover {
-            background: transparent !important; transform: none !important;
-            box-shadow: none !important;
-        }
-        html[data-card-style="A"] .domain-card h3,
-        html[data-card-style="A"] .consortium-card h3 {
-            padding-top: 0.4rem;
-        }
-
-        /* ===== B · EDITORIAL NUMERAL — 01 · 02 · 03 sigils ===== */
-        html[data-card-style="B"] .domains-grid { counter-reset: dcard; }
-        html[data-card-style="B"] .consortium-grid { counter-reset: ccard; }
-        html[data-card-style="B"] .domain-card,
-        html[data-card-style="B"] .consortium-card {
-            background: transparent !important;
-            border: none !important;
-            border-bottom: 1px solid var(--tue-light-border) !important;
-            border-radius: 0 !important;
-            box-shadow: none !important;
-            padding: 1rem 0 1.5rem 4.5rem !important;
-            position: relative;
-        }
-        html[data-card-style="B"] .domain-card::before {
-            counter-increment: dcard;
-            content: counter(dcard, decimal-leading-zero);
-            position: absolute; top: 0.6rem; left: 0;
-            font-size: 2.4rem; line-height: 1;
-            font-weight: 200; font-family: inherit;
-            color: var(--tue-red);
-            letter-spacing: -0.02em;
-        }
-        html[data-card-style="B"] .consortium-card::before {
-            counter-increment: ccard;
-            content: counter(ccard, decimal-leading-zero);
-            position: absolute; top: 0.6rem; left: 0;
-            font-size: 2.4rem; line-height: 1;
-            font-weight: 200; font-family: inherit;
-            color: var(--tue-red);
-            letter-spacing: -0.02em;
-        }
-        html[data-card-style="B"] .challenge-callout {
-            background: transparent !important;
-            border: none !important;
-            border-top: 1px solid var(--tue-red) !important;
-            border-radius: 0 !important;
-            padding: 1.2rem 0 1.5rem 0 !important;
-        }
-        html[data-card-style="B"] .domain-card:hover,
-        html[data-card-style="B"] .consortium-card:hover {
-            background: transparent !important; transform: none !important;
-            box-shadow: none !important;
-        }
-
-        /* ===== C · TINTED-BORDERLESS panel ===== */
-        html[data-card-style="C"] .challenge-callout,
-        html[data-card-style="C"] .domain-card,
-        html[data-card-style="C"] .consortium-card {
+        }        /* === v2.2 LOCKED CARDS: C (tinted) base · B (numerals) for domains === */
+        /* C base for callout + consortium-card */
+        .challenge-callout,
+        .consortium-card {
             background: rgba(var(--accent-rgb), 0.028) !important;
             border: none !important;
             border-radius: 0 !important;
@@ -176,25 +75,46 @@
             padding: 1.5rem !important;
             transform: none !important;
         }
-        html[data-theme="dark"][data-card-style="C"] .challenge-callout,
-        html[data-theme="dark"][data-card-style="C"] .domain-card,
-        html[data-theme="dark"][data-card-style="C"] .consortium-card {
+        html[data-theme="dark"] .challenge-callout,
+        html[data-theme="dark"] .consortium-card {
             background: rgba(255,255,255,0.03) !important;
         }
-        html[data-card-style="C"] .domain-card h3::before,
-        html[data-card-style="C"] .consortium-card h3::before {
+        .consortium-card h3::before {
             content: ""; display: inline-block;
             width: 7px; height: 7px; border-radius: 50%;
             background: var(--tue-red);
             margin-right: 0.7rem; vertical-align: middle;
         }
-        html[data-card-style="C"] .domain-card:hover,
-        html[data-card-style="C"] .consortium-card:hover {
+        .consortium-card:hover {
             background: rgba(var(--accent-rgb), 0.045) !important;
             transform: none !important; box-shadow: none !important;
         }
+        /* B variant for the domain cards — editorial numeral sigils */
+        .domains-grid { counter-reset: dcard; }
+        .domain-card {
+            background: transparent !important;
+            border: none !important;
+            border-bottom: 1px solid var(--tue-light-border) !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            padding: 1.25rem 0 1.75rem 4.5rem !important;
+            position: relative;
+        }
+        .domain-card::before {
+            counter-increment: dcard;
+            content: counter(dcard, decimal-leading-zero);
+            position: absolute; top: 0.5rem; left: 0;
+            font-size: 2.6rem; line-height: 1;
+            font-weight: 200; font-family: inherit;
+            color: var(--tue-red);
+            letter-spacing: -0.02em;
+        }
+        .domain-card:hover {
+            background: transparent !important; transform: none !important;
+            box-shadow: none !important;
+        }
 
-        /* CSS Variables */
+                /* CSS Variables */
         :root {
             --tue-red: #C8102E;
             --tue-red-light: rgba(200, 16, 46, 0.15);
@@ -1903,7 +1823,7 @@
             <!-- 3b. Discovery Domains -->
             <section id="domains">
                 <h2 class="reveal">Discovery Domains</h2>
-                <p class="domains-intro reveal">Priority research domains where autonomous, closed-loop experimentation can deliver transformative impact in advanced materials, energy, circularity, and soft matter.</p>
+                <p class="domains-intro reveal">Candidate research domains where autonomous, closed-loop experimentation can deliver transformative impact in advanced materials, energy, circularity, and soft matter.</p>
                 <div class="domains-grid reveal-group">
                     <div class="domain-card">
                         <div class="domain-icon">
@@ -1976,7 +1896,26 @@
                             <p>High-throughput exploration of molecular libraries to accelerate discovery in coatings, optoelectronics, and precision functional materials.</p>
                         </div>
                     </div>
-                    <div class="domain-card exploratory">
+                    <div class="domain-card">
+                        <div class="domain-icon">
+                            <!-- LED / optoelectronic emitter with light arrows -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M7 6 L7 18 L15 12 Z"/>
+                                <line x1="15" y1="6" x2="15" y2="18"/>
+                                <line x1="17.5" y1="8" x2="20.5" y2="5" opacity="0.55"/>
+                                <polyline points="18.6,5 20.5,5 20.5,6.9" opacity="0.55"/>
+                                <line x1="17.5" y1="12" x2="21" y2="12" opacity="0.55"/>
+                                <polyline points="19.5,10.5 21,12 19.5,13.5" opacity="0.55"/>
+                                <line x1="17.5" y1="16" x2="20.5" y2="19" opacity="0.55"/>
+                                <polyline points="18.6,19 20.5,19 20.5,17.1" opacity="0.55"/>
+                            </svg>
+                        </div>
+                        <div class="domain-body">
+                            <h3>Optoelectronic Materials</h3>
+                            <p>AI-driven discovery of semiconductors, photonic crystals, and light-emitting compounds. Closed-loop tuning of charge mobility, emission spectra, and quantum coherence for displays, photodetectors, and quantum-information devices.</p>
+                        </div>
+                    </div>
+                                        <div class="domain-card exploratory">
                         <div class="domain-icon">
                             <!-- DNA double helix -->
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -4211,29 +4150,6 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
         }
     })();
 </script>
-
-    <!-- v2.0 card-style preview toggle -->
-    <div id="cardStyleToggle" role="group" aria-label="Card style preview">
-        <span class="cs-eyebrow">Cards</span>
-        <button class="cs-btn cs-active" data-style="A" onclick="window.setCardStyle('A')">A</button>
-        <button class="cs-btn" data-style="B" onclick="window.setCardStyle('B')">B</button>
-        <button class="cs-btn" data-style="C" onclick="window.setCardStyle('C')">C</button>
-        <span class="cs-label">A: Tufte · B: Numerals · C: Tinted</span>
-    </div>
-    <script>
-        window.setCardStyle = function(s) {
-            document.documentElement.setAttribute('data-card-style', s);
-            try { localStorage.setItem('discoverylabnl-card-style', s); } catch(e) {}
-            document.querySelectorAll('#cardStyleToggle .cs-btn').forEach(b => {
-                b.classList.toggle('cs-active', b.dataset.style === s);
-            });
-        };
-        (function() {
-            let saved = 'A';
-            try { saved = localStorage.getItem('discoverylabnl-card-style') || 'A'; } catch(e) {}
-            window.setCardStyle(saved);
-        })();
-    </script>
 
 </body>
 </html>
