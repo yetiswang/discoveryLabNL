@@ -2069,20 +2069,20 @@
                         transform-box: fill-box;
                         transform-origin: center;
                     }
-                    #consortium .ng:hover > text, #consortium .ng:focus > text {
+                    #consortium .ng.is-hover > text {
                         transform: scale(1.18);
                         fill: var(--tue-red);
                         font-weight: 800;
                         filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.35));
                     }
-                    #consortium .ng:hover > text.lo, #consortium .ng:focus > text.lo {
+                    #consortium .ng.is-hover > text.lo {
                         fill: var(--tue-red); opacity: 1; font-weight: 700;
                     }
-                    #consortium .ng:hover > circle, #consortium .ng:focus > circle {
+                    #consortium .ng.is-hover > circle {
                         transform: scale(1.7);
                         filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.55));
                     }
-                    #consortium .ng:hover > circle.m-opn, #consortium .ng:focus > circle.m-opn {
+                    #consortium .ng.is-hover > circle.m-opn {
                         stroke: var(--tue-red);
                         stroke-dasharray: 0;
                         animation: none !important;
@@ -2373,11 +2373,11 @@
                     }
                     /* Touch device: hover effects map to focus (so the visual cue happens on first tap) */
                     @media (hover: none) {
-                        #consortium .ng:active > text {
+                        #consortium .ng:active > text, #consortium .ng.is-hover > text {
                             transform: scale(1.18); fill: var(--tue-red);
                             font-weight: 800;
                         }
-                        #consortium .ng:active > circle {
+                        #consortium .ng:active > circle, #consortium .ng.is-hover > circle {
                             transform: scale(1.7);
                             filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.55));
                         }
@@ -2756,9 +2756,15 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         });
                         // Stagger index for entrance reveal
                         g.style.setProperty('--idx', members.indexOf(m));
-                        // Bring hovered/focused member to top of paint order (SVG z-fix)
-                        g.addEventListener('mouseenter', () => g.parentNode.appendChild(g));
-                        g.addEventListener('focusin',    () => g.parentNode.appendChild(g));
+                        // JS-driven hover state (SVG <g> :hover is unreliable across browsers)
+                        const setHover  = () => { g.classList.add('is-hover'); g.parentNode.appendChild(g); };
+                        const clearHover = () => g.classList.remove('is-hover');
+                        g.addEventListener('mouseenter', setHover);
+                        g.addEventListener('mouseleave', clearHover);
+                        g.addEventListener('focusin',    setHover);
+                        g.addEventListener('focusout',   clearHover);
+                        g.addEventListener('touchstart', setHover, { passive: true });
+                        g.addEventListener('touchend',   () => setTimeout(clearHover, 1500), { passive: true });
 
                         // Mark
                         const markClass = m.status === 'committed' ? 'm-cmp' : m.status === 'talking' ? 'm-tlk' : 'm-opn';
