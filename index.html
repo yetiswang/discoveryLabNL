@@ -2403,7 +2403,7 @@
                             <span><span class="pmk pmk-char"></span><strong>Multimodal characterisation</strong></span>
                             <span><span class="pmk pmk-ai"></span><strong>AI core</strong></span>
                         </div>
-                        <p class="csm-cap">Tap or click any chair for what they bring. Coloured dots show pillar contributions.</p>
+                        <p class="csm-cap">Click on any chair for what they bring. Coloured dots show pillar contributions.</p>
                     </div>
 
                     <!-- NL map: geography companion -->
@@ -2821,68 +2821,6 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                             });
                         }
 
-                        // Tooltip placed ADJACENT to the mark, offset outward from ring center
-                        const tipW = 440, tipH = m.cta ? 200 : 122;
-                        // Outward radial offset from mark
-                        const offset = 30;
-                        const dirX = Math.cos(a), dirY = Math.sin(a);
-                        // Anchor depending on which side of center the mark is
-                        // If mark is on right half (dirX > 0), tip goes to the right of mark
-                        // If on left half, tip goes to the left
-                        // If at top/bottom, tip goes outward vertically with horizontal centring
-                        let tipX, tipY;
-                        if (dirX > 0.3) {
-                            tipX = mx + offset;
-                            tipY = my - tipH / 2;
-                        } else if (dirX < -0.3) {
-                            tipX = mx - offset - tipW;
-                            tipY = my - tipH / 2;
-                        } else {
-                            tipX = mx - tipW / 2;
-                            tipY = dirY > 0 ? my + offset : my - offset - tipH;
-                        }
-                        // Clamp within viewBox
-                        tipX = Math.max(-130, Math.min(1130 - tipW, tipX));
-                        tipY = Math.max(20, Math.min(980 - tipH, tipY));
-
-                        const tipG = el('g', { class: 'tip', transform: `translate(${tipX},${tipY})` });
-                        tipG.appendChild(el('rect', { class: 'tip-bg', x: 0, y: 0, width: tipW, height: tipH, rx: 2 }));
-                        // Monogram logo placeholder — small dark square with institute initials
-                        if (m.status !== 'open') {
-                            const mono = el('g', { transform: 'translate(' + (tipW - 50) + ',12)' });
-                            mono.appendChild(el('rect', { x: 0, y: 0, width: 36, height: 36, rx: 3, fill: 'var(--csm-ink)', opacity: '0.92' }));
-                            // Pull a short monogram from the name (first letters of words, up to 4 chars)
-                            const initials = m.name.split(/[\s\.]+/).map(w => w[0]).join('').slice(0, 5).toUpperCase();
-                            mono.appendChild(el('text', {
-                                x: 18, y: 24, 'text-anchor': 'middle',
-                                fill: 'var(--csm-canvas)',
-                                'font-size': initials.length > 3 ? 9 : 12,
-                                'font-weight': 700,
-                                'font-family': "'Avenir Next LT Pro', 'Avenir Next', Avenir, sans-serif"
-                            }, initials));
-                            tipG.appendChild(mono);
-                        }
-                        tipG.appendChild(el('line', { class: 'tip-rule', x1: 20, y1: 20, x2: 52, y2: 20 }));
-                        const eyebrowText = m.status === 'committed' ? 'What they bring' : 'Capability sought';
-                        tipG.appendChild(el('text', { class: 'tip-eb', x: 20, y: 39 }, eyebrowText));
-                        // Body: word-wrap manually at ~36 chars per line
-                        const lines = wrapText(m.bring, 36);
-                        lines.forEach((line, i) => {
-                            tipG.appendChild(el('text', { class: 'tip-txt', x: 20, y: 62 + i * 24 }, line));
-                        });
-                        if (m.cta) {
-                            const ctaY = 62 + lines.length * 24 + 18;
-                            const ctaLines = wrapText(m.cta, 36);
-                            ctaLines.forEach((line, i) => {
-                                const ctaText = el('text', { class: 'tip-cta', x: 20, y: ctaY + i * 22 }, line);
-                                ctaText.addEventListener('click', () => {
-                                    const target = document.getElementById('contact');
-                                    if (target) target.scrollIntoView({ behavior: 'smooth' });
-                                });
-                                tipG.appendChild(ctaText);
-                            });
-                        }
-                        g.appendChild(tipG);
 
                         root.appendChild(g);
                     });
