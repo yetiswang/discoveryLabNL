@@ -2069,18 +2069,24 @@
                         transform-box: fill-box;
                         transform-origin: center;
                     }
+                    /* Safari-safe: avoid transform:scale on SVG <text>/<circle> (transform-origin drift bug).
+                       Use font-size + stroke + glow instead. */
+                    #consortium .ng.is-hover > text.ln,
+                    #consortium .ng.is-hover > text.lt { font-size: 39px; }
+                    #consortium .ng.is-hover > text.lo { font-size: 34px; }
                     #consortium .ng.is-hover > text {
-                        transform: scale(1.18);
                         fill: var(--tue-red);
                         font-weight: 800;
-                        filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.35));
+                        filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.45));
                     }
                     #consortium .ng.is-hover > text.lo {
                         fill: var(--tue-red); opacity: 1; font-weight: 700;
                     }
                     #consortium .ng.is-hover > circle {
-                        transform: scale(1.7);
-                        filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.55));
+                        fill: var(--tue-red);
+                        stroke: var(--tue-red);
+                        stroke-width: 3;
+                        filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.7));
                     }
                     #consortium .ng.is-hover > circle.m-opn {
                         stroke: var(--tue-red);
@@ -2373,13 +2379,23 @@
                     }
                     /* Touch device: hover effects map to focus (so the visual cue happens on first tap) */
                     @media (hover: none) {
-                        #consortium .ng:active > text, #consortium .ng.is-hover > text {
-                            transform: scale(1.18); fill: var(--tue-red);
+                        #consortium .ng:active > text.ln,
+                        #consortium .ng:active > text.lt,
+                        #consortium .ng.is-hover > text.ln,
+                        #consortium .ng.is-hover > text.lt { font-size: 44px; }
+                        #consortium .ng:active > text.lo,
+                        #consortium .ng.is-hover > text.lo { font-size: 38px; }
+                        #consortium .ng:active > text,
+                        #consortium .ng.is-hover > text {
+                            fill: var(--tue-red);
                             font-weight: 800;
                         }
-                        #consortium .ng:active > circle, #consortium .ng.is-hover > circle {
-                            transform: scale(1.7);
-                            filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.55));
+                        #consortium .ng:active > circle,
+                        #consortium .ng.is-hover > circle {
+                            fill: var(--tue-red);
+                            stroke: var(--tue-red);
+                            stroke-width: 3;
+                            filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.7));
                         }
                     }
 
