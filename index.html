@@ -1234,6 +1234,14 @@
 
         /* Stakeholder PIN gate */
         #stakeholders { position: relative; }
+        /* ============================================================
+           FEATURE FLAG — stakeholder momentum map HIDDEN for the
+           external audience (2026-06-11). The section markup, PIN
+           gate, stakeholder data and zoom/pan JS are all retained.
+           To re-enable for internal use: delete the rule below.
+           (The preview repo, discoverylabnl-preview, still shows it.)
+           ============================================================ */
+        #stakeholders { display: none !important; }
         .stake-gate {
             position: absolute; inset: 0; z-index: 50;
             display: flex; align-items: center; justify-content: center;
