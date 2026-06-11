@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+    <meta name="googlebot" content="noindex,nofollow,noarchive">
     <title>DiscoveryLabNL - Interactive Briefing</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="theme-color" content="#FFFFFF">
@@ -115,6 +117,7 @@
 
                 /* CSS Variables */
         :root {
+            --header-h: 75px;
             --tue-red: #C8102E;
             --tue-red-light: rgba(200, 16, 46, 0.15);
             --tue-dark: #1E1E28;
@@ -154,7 +157,10 @@
 
         /* Reset and base styles */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; scroll-padding-top: 60px; }
+        /* scroll-padding removed: per-element scroll-margins (var(--header-h)) own the
+           anchor offset; a global scroll-padding STACKED with them and every rail jump
+           landed 60px too low ("extra space on top") */
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Avenir Next LT Pro', system-ui, sans-serif;
             color: var(--tue-dark);
@@ -448,7 +454,7 @@
         #landing {
             background: linear-gradient(135deg, var(--inverse-bg) 0%, var(--inverse-bg-deep) 60%, #12060a 100%);
             color: white; position: relative; overflow: hidden;
-            padding: 6rem 4rem; min-height: 100vh;
+            padding: 3.5rem 4rem; min-height: 100vh;
             display: flex; flex-direction: column; justify-content: center;
             align-items: flex-start;
         }
@@ -571,10 +577,29 @@
             position: fixed; bottom: 2rem; left: 50%;
             transform: translateX(-50%);
             z-index: 90;
-            font-size: 0.9rem; color: rgba(255, 255, 255, 0.4);
+            display: flex; align-items: center; gap: 1.15rem;
             opacity: 0;
             animation: scrollEnterThenBounce 3s ease-out 1.2s forwards;
             transition: opacity 0.4s ease;
+        }
+        .landing-cta {
+            font-family: 'Avenir Next LT Pro', 'Avenir Next', sans-serif;
+            font-size: 0.74rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.62);
+            text-decoration: none;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            white-space: nowrap;
+        }
+        .landing-cta-dim { color: rgba(255, 255, 255, 0.4); }
+        .landing-cta:hover { color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.35); }
+        .landing-cta-arrow { display: inline-block; margin-left: 0.25rem; opacity: 0.8; }
+        .landing-cta-sep { width: 1px; height: 13px; background: rgba(255, 255, 255, 0.25); flex-shrink: 0; }
+        @media (max-width: 640px) {
+            .landing-scroll { flex-direction: column; gap: 0.55rem; }
+            .landing-cta-sep { width: 26px; height: 1px; }
         }
         .landing-scroll.fade-out { opacity: 0 !important; pointer-events: none; }
         @keyframes bounce {
@@ -605,15 +630,36 @@
         .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
         .pillar-card {
             background: var(--surface); border: 1px solid var(--tue-light-border);
-            border-radius: 4px; padding: 2rem; transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.3s ease, transform 0.3s ease; cursor: pointer;
+            border-radius: 6px; padding: 2rem; transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.3s ease, transform 0.3s ease; cursor: pointer;
         }
         .pillar-card:hover { box-shadow: 0 8px 24px var(--shadow-mid); border-color: var(--tue-red); }
-        .pillar-card h3 { font-size: 1.3rem; color: var(--tue-red); margin-bottom: 1rem; font-weight: 700; }
+        .pillar-card[id] { scroll-margin-top: 100px; }
+        /* Inline references from the deck to the pillar cards */
+        .pillar-ref {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px dotted var(--tue-red);
+            transition: border-color 0.2s ease;
+        }
+        .pillar-ref:hover { border-bottom-style: solid; }
+        .pillar-ref:hover strong { color: var(--tue-red); }
+        .pillar-card h3 { font-size: 1.2rem; color: var(--tue-red); margin-bottom: 1rem; font-weight: 700; }
         .pillar-card p { font-size: 1rem; line-height: 1.7; color: var(--tue-gray); margin-bottom: 1rem; }
+        /* Tier-2 CTA family, disclosure variant: uppercase + tracking + rotating chevron */
         .pillar-expand-btn {
             background: none; border: none; color: var(--tue-red); cursor: pointer;
-            font-weight: 600; font-size: 0.95rem; padding: 0; transition: color 0.2s ease;
+            font-family: 'Avenir Next LT Pro', 'Avenir Next', sans-serif;
+            font-weight: 700; font-size: 0.72rem; padding: 0;
+            text-transform: uppercase; letter-spacing: 0.12em;
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            transition: color 0.2s ease;
         }
+        .pillar-expand-btn .btn-chevron {
+            display: inline-block;
+            font-size: 0.65rem;
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .pillar-expand-btn.open .btn-chevron { transform: rotate(180deg); }
         .pillar-expand-btn:hover { color: var(--tue-dark); }
         .pillar-expanded { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
         .pillar-expanded.open { max-height: 700px; }
@@ -666,11 +712,15 @@
         #campus h2 { font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--tue-dark); }
         .campus-intro { font-size: 1.1rem; color: var(--tue-gray); margin-bottom: 2.5rem; line-height: 1.7; }
         .consortium-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        /* Campus Partners: fixed symmetric 2x2 (four hosting institutes) */
+        #campus .consortium-grid { grid-template-columns: repeat(2, 1fr); max-width: 980px; margin-left: auto; margin-right: auto; }
         .consortium-card {
-            background: var(--surface); border-left: 4px solid var(--tue-red);
-            padding: 1.5rem; border-radius: 2px; box-shadow: 0 2px 8px var(--shadow-soft);
-            transition: background 0.25s ease;
+            /* Unified card family: thin border + 6px radius (left-accent strip retired) */
+            background: var(--surface); border: 1px solid var(--tue-light-border);
+            padding: 1.5rem; border-radius: 6px; box-shadow: none;
+            transition: background 0.25s ease, border-color 0.25s ease;
         }
+        .consortium-card:hover { border-color: var(--tue-red); }
         .consortium-card h3 { font-size: 1.2rem; color: var(--tue-dark); margin-bottom: 0.5rem; font-weight: 700; }
         .consortium-card p { font-size: 0.95rem; color: var(--tue-gray); line-height: 1.6; }
 
@@ -678,7 +728,7 @@
         #positioning h2 { font-size: 2.5rem; margin-bottom: 2.5rem; color: var(--tue-dark); }
         .positioning-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
         .position-card {
-            background: var(--surface); padding: 2rem; border-radius: 4px; border: 1px solid var(--tue-light-border);
+            background: var(--surface); padding: 2rem; border-radius: 6px; border: 1px solid var(--tue-light-border);
             transition: background 0.25s ease, border-color 0.25s ease;
         }
         .position-card h3 { font-size: 1.2rem; color: var(--tue-red); margin-bottom: 1rem; font-weight: 700; }
@@ -703,7 +753,7 @@
             width: 32px; height: 32px; margin-top: -4px;
         }
         .phase-marker { font-size: 0.85rem; color: var(--tue-gray); font-weight: 600; margin-bottom: 0.5rem; }
-        .phase-title { font-size: 0.95rem; font-weight: 700; color: var(--tue-dark); margin-bottom: 0.5rem; }
+        .phase-title { font-size: 0.95rem; font-weight: 700; color: var(--tue-dark); margin-bottom: 0.5rem; min-height: 2.6em; /* reserves two title lines so all four phase descriptions start on a shared baseline */ }
         .phase-desc { font-size: 0.85rem; color: var(--tue-gray); line-height: 1.5; }
         .phase-here { font-size: 0.75rem; color: var(--tue-red); font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
         .roadmap-phase.done .phase-dot { background-color: var(--tue-dark); border-color: var(--tue-dark); }
@@ -712,19 +762,35 @@
         /* Landscape */
         #landscape h2 { font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--tue-dark); }
         .landscape-intro { font-size: 1rem; color: var(--tue-gray); margin-bottom: 2.5rem; line-height: 1.7; max-width: 820px; }
-        .landscape-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-        .landscape-card { background: var(--surface); border: 1px solid var(--tue-light-border); border-radius: 4px; padding: 1.5rem; transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.25s ease; }
+        /* Global Landscape: fixed symmetric 3x2 (six initiatives, DiscoveryLabNL last) */
+        .landscape-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        @media (max-width: 1024px) and (min-width: 641px) {
+            .landscape-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        .landscape-card { background: var(--surface); border: 1px solid var(--tue-light-border); border-radius: 6px; padding: 1.5rem; transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.25s ease; }
         .landscape-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px var(--shadow-soft); }
-        .landscape-card h3 { font-size: 1.1rem; color: var(--tue-dark); margin-bottom: 0.3rem; }
-        .landscape-meta { font-size: 0.78rem; color: var(--tue-gray); font-weight: 600; letter-spacing: 0.02em; margin-bottom: 0.75rem; text-transform: uppercase; }
+        .landscape-card h3 { font-size: 1.2rem; color: var(--tue-dark); margin-bottom: 0.3rem; }
+        .landscape-meta { font-size: 0.78rem; color: var(--tue-gray); font-weight: 600; letter-spacing: 0.08em; margin-bottom: 0.75rem; text-transform: uppercase; }
         .landscape-card p:last-child { font-size: 0.9rem; color: var(--tue-gray); line-height: 1.55; margin: 0; }
         .landscape-highlight { background: var(--inverse-bg); border-color: var(--inverse-bg); }
         .landscape-highlight h3 { color: #fff; }
         .landscape-highlight .landscape-meta { color: rgba(255,255,255,0.85); }
         .landscape-highlight p:last-child { color: rgba(255,255,255,0.92); }
-        .landscape-cta { margin-top: 2rem; font-size: 0.95rem; color: var(--tue-gray); text-align: center; }
-        .landscape-cta a { color: var(--tue-red); text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--tue-red); padding-bottom: 1px; transition: opacity 0.2s; }
-        .landscape-cta a:hover { opacity: 0.7; }
+        /* Tier-2 standalone CTA (matches .sdl-map-cta treatment) */
+        .landscape-cta { margin-top: 2rem; text-align: center; }
+        .landscape-cta a {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: var(--tue-red);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 1px solid var(--tue-red);
+            padding-bottom: 2px;
+            transition: border-bottom-width 0.15s ease, opacity 0.2s ease;
+        }
+        .landscape-cta a:hover { border-bottom-width: 2px; opacity: 0.85; }
         @media (max-width: 768px) {
             .landscape-grid { grid-template-columns: 1fr; }
         }
@@ -739,15 +805,7 @@
         .team-member { display: flex; align-items: baseline; margin-bottom: 0.75rem; }
         .team-member-name { font-weight: 700; color: var(--tue-dark); margin-right: 0.5rem; }
         .team-member-role { font-size: 0.9rem; color: var(--tue-gray); }
-        .team-bracket { position: relative; padding-left: 1.5rem; margin-left: 1.5rem; }
-        .team-bracket::before {
-            content: ''; position: absolute; left: 0; top: -12px; bottom: -12px;
-            width: 2px; background-color: var(--tue-light-border);
-            border-top: 2px solid var(--tue-light-border);
-            border-bottom: 2px solid var(--tue-light-border);
-            border-left: 2px solid var(--tue-light-border);
-            border-radius: 8px 0 0 8px;
-        }
+        .team-bracket { position: relative; }
 
         /* ============================================ */
         /*  STAKEHOLDER SECTION - Dark map overhaul     */
@@ -1439,6 +1497,7 @@
             .roadmap-line { display: none; }
             .roadmap-phase { text-align: left; display: flex; align-items: flex-start; gap: 1rem; }
             .phase-dot { margin: 0; flex-shrink: 0; }
+            .phase-title { min-height: 0; }  /* vertical list layout: no reserved title space needed */
             .map-container { min-height: 350px; overflow: visible; }
             .detail-panel {
                 position: fixed; top: auto; right: 0; bottom: 0; left: 0;
@@ -1535,6 +1594,821 @@
         .static-mode .scroll-indicator { display: none; }
         .static-mode .animated-rings * { animation: none !important; }
 
+        /* =========================================================
+           NEW SECTIONS — World Today, DLNL Claim, Revolution
+           Theme-aware via semantic tokens (--tue-dark / --tue-red / --bg / --tue-light-border).
+           Section min-heights relaxed so Hero + World Today read as one first impression.
+           ========================================================= */
+
+        /* ---------- World Today (3 cards + SDL map) ---------- */
+        #world-today {
+            padding: 4rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        #world-today > * { max-width: 1200px; width: 100%; margin-left: auto; margin-right: auto; }
+        /* Unified content measure — every downstream section gets the same centered
+           1200px container (the #world-today pattern, applied site-wide). Full-bleed
+           stays full-bleed: landing, photo dividers, stakeholder map, contact bg. */
+        #pillars > *, #campus > *, #consortium > *, #landscape > *,
+        #positioning > *, #roadmap > *, #team > *,
+        #contact > *:not(.contact-bg) {
+            max-width: 1200px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* Prose token: intro paragraphs read at an editorial measure inside the container */
+        .campus-intro, .positioning-intro, .landscape-intro {
+            max-width: 72ch;
+            font-size: clamp(1.02rem, 1.15vw, 1.12rem);
+            line-height: 1.7;
+        }
+        /* One fluid h2 scale site-wide (deck h2s already use this clamp) */
+        main section > h2, #world-today > h2 {
+            font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+            letter-spacing: -0.01em;
+        }
+        #world-today h2 {
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1.7rem, 3.2vw, 2.5rem);  /* unified site-wide h2 scale */
+            margin-bottom: 1.5rem;
+            color: var(--tue-dark);
+            line-height: 1.2;
+        }
+        .world-today-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .world-today-grid-two {
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 920px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .world-today-card {
+            padding: 1.25rem;
+            background: var(--surface);
+            border: 1px solid var(--tue-light-border);
+            border-radius: 6px;
+            transition: border-color 0.25s ease, background 0.25s ease;
+        }
+        .world-today-card h3 {
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            font-weight: 700;
+            font-size: 0.98rem;
+            margin-bottom: 0.7rem;
+            color: var(--tue-red);
+            line-height: 1.3;
+        }
+        .world-today-card p {
+            font-size: 0.88rem;
+            line-height: 1.55;
+            color: var(--tue-dark);
+        }
+        .world-today-card strong { font-weight: 700; color: var(--tue-dark); }
+        .world-today-card em { font-style: italic; }
+
+        /* SDL map embed inside World Today */
+        .sdl-map-block {
+            margin-top: 1.75rem;
+            padding: 1.25rem;
+            border: 1px solid var(--tue-light-border);
+            border-radius: 6px;
+            background: var(--surface);
+        }
+        .sdl-map-block .sdl-map-eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-size: 0.72rem;
+            color: var(--tue-red);
+            font-weight: 700;
+            margin: 0;
+        }
+        .sdl-map-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.5rem;
+        }
+        .sdl-map-favicon {
+            width: 26px;
+            height: 26px;
+            display: block;
+            flex-shrink: 0;
+            object-fit: contain;
+        }
+        .sdl-map-block strong { color: var(--tue-red); font-weight: 700; }
+        .sdl-map-block h3 {
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 0.6rem;
+            color: var(--tue-dark);
+        }
+        .sdl-map-block p {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--tue-dark);
+            margin-bottom: 0.8rem;
+        }
+        .sdl-map-iframe {
+            width: 100%;
+            height: 420px;
+            border: 1px solid var(--tue-light-border);
+            border-radius: 4px;
+            background: var(--bg);
+        }
+        .sdl-map-cta {
+            display: inline-block;
+            margin-top: 0.7rem;
+            font-size: 0.8rem;
+            color: var(--tue-red);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 1px solid var(--tue-red);
+            padding-bottom: 2px;
+        }
+
+        /* ---------- DLNL Claim (hero paragraph section, full width like #challenge, two-slide carousel) ---------- */
+        #dlnl-claim {
+            /* inherits section defaults: min-height 100vh, padding 5rem 4rem, flex column centered */
+        }
+        #dlnl-claim h2 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            margin-bottom: 1.75rem;
+            color: var(--tue-dark);
+            line-height: 1.2;
+            font-weight: 700;
+        }
+        #dlnl-claim .challenge-text {
+            font-size: clamp(1.02rem, 1.15vw, 1.12rem);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            color: var(--tue-gray);
+            max-width: 72ch;
+        }
+        /* Prose slides: constrain content to an editorial measure, centered */
+        #dlnl-claim .hero-slide:not(.hero-slide-revolution):not(.hero-slide-methodology) > h2,
+        #dlnl-claim .hero-slide:not(.hero-slide-revolution):not(.hero-slide-methodology) > .hero-slide-label,
+        #dlnl-claim .hero-slide:not(.hero-slide-revolution):not(.hero-slide-methodology) > .challenge-text,
+        #dlnl-claim .hero-slide:not(.hero-slide-revolution):not(.hero-slide-methodology) > .challenge-callout {
+            width: 100%;
+            max-width: 760px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #dlnl-claim .hero-slide > h2 {
+            font-size: clamp(1.7rem, 3.2vw, 2.35rem);
+            letter-spacing: -0.01em;
+        }
+        #dlnl-claim .challenge-text strong { font-weight: 700; color: var(--tue-dark); }
+        /* Two slides stacked vertically inside the hero; each fills exactly one viewport, content flows from top, footer stuck to bottom */
+        #dlnl-claim { min-height: auto; padding: 0; display: block; }
+        #dlnl-claim h2 { margin-bottom: 0.6rem !important; font-size: clamp(1.7rem, 3.2vw, 2.5rem) !important; }  /* unified site-wide h2 scale */
+        #dlnl-claim .challenge-callout { margin-top: 0.5rem !important; margin-bottom: 0.75rem !important; padding: 1rem 1.25rem !important; }
+        #dlnl-claim .challenge-callout p { font-size: 0.95rem !important; line-height: 1.5 !important; }
+        #dlnl-claim .hero-slide-label { margin-bottom: 0.5rem; }
+        #dlnl-claim .hero-continue { margin-top: 0.75rem !important; }
+        .hero-slide {
+            /* Fill exactly the viewport below the sticky header so rail jumps land clean */
+            min-height: calc(100vh - var(--header-h));
+            padding: 3.5rem 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.6rem;
+            scroll-margin-top: var(--header-h);
+        }
+        /* Slide 3 — Five Frontiers gallery: top-aligned, full-width grid + horizon.
+           Compact treatment so five cards + Horizon 2035 fit a single viewport. */
+        .hero-slide-revolution {
+            justify-content: flex-start;
+            padding-top: 4.5rem;
+        }
+        .hero-slide-revolution > .frontier-grid,
+        .hero-slide-revolution > .frontier-horizon {
+            width: 100%;
+            max-width: 1240px;
+            align-self: center;
+        }
+        .hero-slide-revolution > h2 { margin-bottom: 0.4rem !important; }
+        .hero-slide-revolution .frontier-card { padding: 1rem; gap: 0.5rem; }
+        .hero-slide-revolution .frontier-icon { width: 40px; height: 40px; }
+        .hero-slide-revolution .frontier-headline { font-size: 0.95rem; }
+        .hero-slide-revolution .frontier-vision { font-size: 0.79rem; line-height: 1.5; }
+        .hero-slide-revolution .frontier-outcome-2035 { font-size: 0.78rem; line-height: 1.5; padding-top: 0.55rem; }
+        .hero-slide-revolution > .frontier-horizon {
+            margin-top: 1.4rem;
+            max-width: 1020px;
+        }
+        .hero-slide-revolution .horizon-eyebrow { margin-top: 0.9rem !important; margin-bottom: 0.4rem !important; }
+        .hero-slide-revolution .frontier-horizon p { font-size: 0.94rem; line-height: 1.55; }
+        /* Short LAPTOP screens only (phones scroll naturally — never clamp there) */
+        @media (max-height: 820px) and (min-width: 821px) {
+            .hero-slide-revolution { padding-top: 3.5rem; }
+            .hero-slide-revolution .frontier-card { padding: 0.85rem; gap: 0.4rem; }
+            .hero-slide-revolution .frontier-icon { width: 34px; height: 34px; }
+            .hero-slide-revolution .frontier-vision {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .hero-slide-revolution .frontier-horizon p {
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+        }
+        /* Slide 1 — Wake-up call: give the closing italic tagline a hairline lift */
+        #dlnl-claim-slide-1 .challenge-text[style*="italic"] {
+            margin-top: 0.85rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid var(--tue-light-border);
+            font-size: 0.92em;
+        }
+        /* Sections — uniform scroll-margin so anchored jumps clear the sticky header */
+        section[id] { scroll-margin-top: var(--header-h); }
+        @media (max-width: 820px) { :root { --header-h: 62px; } }
+        /* Continue/Back/nav-row stay PINNED to the bottom of the viewport as long as the slide is in view */
+        .hero-slide > .hero-continue,
+        .hero-slide > .hero-back,
+        .hero-slide > .hero-nav-row {
+            position: sticky;
+            bottom: 1.5rem;
+            z-index: 50;
+            margin-top: 1.5rem;
+            align-self: center;
+        }
+        /* Floating right-side section-nav restored. */
+        .hero-slide-2 { border-top: 1px solid var(--tue-light-border); }
+        /* Push the Continue button (and the slide-2 back link) to the bottom of the viewport so the slide reads as a clean unit */
+        .hero-continue, .hero-back { margin-top: auto; }
+        .hero-slide-label {
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-size: 0.72rem;
+            color: var(--tue-red);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        .hero-continue {
+            margin-top: 2.5rem;
+            display: flex;
+            justify-content: center;
+        }
+        .hero-continue a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.4rem;
+            background: transparent;
+            border: 1px solid var(--tue-light-border);
+            border-radius: 9999px;
+            color: var(--tue-dark);
+            text-decoration: none;
+            font-size: 0.82rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+        .hero-continue a:hover {
+            background: var(--tue-red);
+            color: white;
+            border-color: var(--tue-red);
+        }
+        /* Methodology slide (Slide 2 of 3): dark background, compact SVG so everything fits one viewport */
+        .hero-slide-methodology {
+            background: radial-gradient(ellipse 80% 70% at 50% 50%, #252535 0%, #1E1E28 55%, #16161E 100%);
+            color: rgba(255,255,255,0.92);
+            border-top: 1px solid var(--tue-light-border);
+            border-bottom: 1px solid var(--tue-light-border);
+            padding: 2.5rem 3rem 1.75rem !important;
+        }
+        .hero-slide-label-light { color: rgba(255,255,255,0.65) !important; margin-bottom: 0.6rem !important; }
+        .methodology-title {
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1.35rem, 2.3vw, 1.75rem);
+            color: white;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+        /* Centered text container on the dark methodology stage */
+        .hero-slide-methodology > .hero-slide-label,
+        .hero-slide-methodology > .methodology-title,
+        .hero-slide-methodology > .methodology-text,
+        .hero-slide-methodology > .methodology-text-secondary {
+            width: 100%;
+            max-width: 880px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .methodology-text {
+            font-size: 0.92rem;
+            line-height: 1.55;
+            color: rgba(255,255,255,0.82);
+            max-width: 880px;
+            margin-bottom: 0.85rem;
+        }
+        .methodology-text strong { color: white; font-weight: 700; }
+        .methodology-text em { color: rgba(255,255,255,0.95); font-style: italic; }
+        .methodology-text-secondary {
+            font-size: 0.88rem;
+            line-height: 1.55;
+            color: rgba(255,255,255,0.72);
+            max-width: 880px;
+            margin-bottom: 0.75rem;
+        }
+        .methodology-pull-quote {
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+            color: white;
+            text-align: center;
+            line-height: 1.35;
+            margin: 0.75rem auto 0;
+            max-width: 720px;
+            padding: 0.65rem 1.5rem 0;
+            border-top: 1px solid rgba(255,255,255,0.18);
+            letter-spacing: -0.005em;
+        }
+        .methodology-pull-quote::before {
+            content: '\201C';
+            color: var(--tue-red);
+            font-style: normal;
+            font-weight: 700;
+            margin-right: 0.2em;
+        }
+        .methodology-pull-quote::after {
+            content: '\201D';
+            color: var(--tue-red);
+            font-style: normal;
+            font-weight: 700;
+            margin-left: 0.1em;
+        }
+        .methodology-svg-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin: 0.25rem auto 0;
+        }
+        .methodology-svg-wrap svg {
+            display: block;
+            width: 100%;
+            max-width: 520px;
+            height: auto;
+        }
+        @media (max-width: 900px) {
+            .hero-slide-methodology { padding: 1.75rem 1.5rem !important; }
+            .methodology-svg-wrap svg { max-width: 380px; }
+        }
+        .hero-nav-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 0.5rem;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        /* On the methodology slide the nav row sits at full slide width with buttons pinned to left and right edges,
+           so the centered pull quote above stays readable underneath the sticky bar. */
+        #dlnl-claim-slide-4 > .hero-nav-row { align-self: stretch !important; }
+        /* Default pills: light-slide styling (dark text on light bg) */
+        .hero-nav-row .hero-back,
+        .hero-nav-row .hero-continue-link {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.7rem 1.4rem;
+            background: transparent;
+            border: 1px solid var(--tue-light-border);
+            border-radius: 9999px;
+            color: var(--tue-gray);
+            text-decoration: none;
+            font-size: 0.82rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+        .hero-nav-row .hero-back:hover,
+        .hero-nav-row .hero-continue-link:hover {
+            background: var(--tue-red); color: white; border-color: var(--tue-red);
+        }
+        /* Dark methodology slide keeps the white pill variant */
+        .hero-slide-methodology > .hero-nav-row .hero-back,
+        .hero-slide-methodology > .hero-nav-row .hero-continue-link {
+            border-color: rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.85);
+        }
+        /* Back-to-prev-slide affordance on slide 3 (light slides) */
+        .hero-back { display: flex; justify-content: center; padding-top: 2rem; }
+        .hero-back a {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: transparent;
+            border: 1px solid var(--tue-light-border);
+            border-radius: 9999px;
+            color: var(--tue-gray);
+            text-decoration: none;
+            font-size: 0.78rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+        .hero-back a:hover {
+            background: var(--tue-dark); color: white; border-color: var(--tue-dark);
+        }
+        @media (max-width: 720px) {
+            .hero-slide { padding: 3rem 1.5rem; }
+        }
+
+        /* ---------- Revolution (4-card grid) ---------- */
+        #revolution {
+            padding: 4rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        #revolution > * { max-width: 1200px; width: 100%; margin-left: auto; margin-right: auto; }
+        #revolution h2 {
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1.8rem, 3.4vw, 2.4rem);
+            margin-bottom: 0.4rem;
+            color: var(--tue-dark);
+            line-height: 1.2;
+        }
+        #revolution .section-eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-size: 0.78rem;
+            color: var(--tue-red);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .frontier-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+        }
+        /* Medium screens: symmetric 3 + 2 (quincunx) on a 6-track grid */
+        @media (max-width: 1100px) and (min-width: 641px) {
+            .frontier-grid { grid-template-columns: repeat(6, 1fr); }
+            .frontier-grid .frontier-card { grid-column: span 2; }
+            .frontier-grid .frontier-card:nth-child(4) { grid-column: 2 / 4; }
+            .frontier-grid .frontier-card:nth-child(5) { grid-column: 4 / 6; }
+        }
+        /* Frontier cards match the World Today card design (uniform thin border, no accent strip) */
+        .frontier-card {
+            background: var(--surface);
+            border: 1px solid var(--tue-light-border);
+            border-radius: 6px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            transition: background 0.25s ease, border-color 0.25s ease;
+        }
+        .frontier-card:hover { border-color: var(--tue-red); }
+        .frontier-icon {
+            width: 48px; height: 48px;
+            color: var(--tue-red); opacity: 0.92;
+            flex-shrink: 0;
+        }
+        .frontier-icon svg { width: 100%; height: 100%; }
+        .frontier-domain {
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-size: 0.68rem;
+            color: var(--tue-gray);
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+        .frontier-headline {
+            font-family: 'Avenir Next LT Pro', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--tue-dark);
+            line-height: 1.3;
+            margin: 0;
+        }
+        .frontier-vision {
+            font-size: 0.85rem;
+            line-height: 1.55;
+            color: var(--tue-gray);
+            margin: 0;
+        }
+        .frontier-vision em { font-style: italic; color: var(--tue-dark); }
+        .frontier-vision strong { font-weight: 700; color: var(--tue-red); }
+        .frontier-outcome-2035 {
+            margin: 0.4rem 0 0 0;
+            padding-top: 0.7rem;
+            border-top: 1px dashed var(--tue-light-border);
+            font-size: 0.85rem;
+            line-height: 1.55;
+            color: var(--tue-dark);
+        }
+        .outcome-eyebrow {
+            display: block;
+            font-size: 0.66rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--tue-red);
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            opacity: 0.85;
+        }
+        /* ---------- Floating right-side rail nav (dots + hover-expand labels + progress hairline) ---------- */
+        .dlnl-rail {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 95;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            padding-left: 48px; /* generous hover/touch zone */
+            pointer-events: none;
+        }
+        .dlnl-rail.visible { pointer-events: auto; }
+        .dlnl-rail__line {
+            position: absolute;
+            right: 5.5px;
+            top: 12px;
+            bottom: 12px;
+            width: 1px;
+            background: rgba(127, 127, 140, 0.28);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .dlnl-rail.visible .dlnl-rail__line { transform: scaleY(1); }
+        .dlnl-rail__progress {
+            position: absolute;
+            left: 0; top: 0;
+            width: 1px;
+            height: 0%;
+            background: var(--tue-red);
+            transition: height 0.12s linear;
+        }
+        .dlnl-rail__node {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            padding: 16px 0; /* restores the pre-overlay vertical pitch (labels no longer size the node) */
+            text-decoration: none;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        /* One-by-one reveal, top to bottom (line is child 1; nodes are children 2..10) */
+        .dlnl-rail.visible .dlnl-rail__node { opacity: 1; transform: translateY(0); }
+        .dlnl-rail.visible .dlnl-rail__node:nth-child(2)  { transition-delay: 0.10s; }
+        .dlnl-rail.visible .dlnl-rail__node:nth-child(3)  { transition-delay: 0.20s; }
+        .dlnl-rail.visible .dlnl-rail__node:nth-child(4)  { transition-delay: 0.30s; }
+        .dlnl-rail.visible .dlnl-rail__node:nth-child(5)  { transition-delay: 0.40s; }
+        .dlnl-rail.visible .dlnl-rail__node:nth-child(6)  { transition-delay: 0.50s; }
+        .dlnl-rail.visible .dlnl-rail__node:nth-child(7)  { transition-delay: 0.60s; }
+        .dlnl-rail.visible .dlnl-rail__node:nth-child(8)  { transition-delay: 0.70s; }
+        .dlnl-rail.visible .dlnl-rail__node:nth-child(9)  { transition-delay: 0.80s; }
+        .dlnl-rail.visible .dlnl-rail__node:nth-child(10) { transition-delay: 0.90s; }
+        .dlnl-rail__dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: rgba(127, 127, 140, 0.55);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55);
+            box-sizing: border-box;
+            flex-shrink: 0;
+            transition: background 0.26s ease,
+                        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.3s ease;
+        }
+        .dlnl-rail__label {
+            /* Absolutely positioned overlay: hidden labels take NO layout space, so the
+               node (and the touch zone) is only as wide as the dot — scroll gestures
+               near the text edge no longer get intercepted */
+            position: absolute;
+            right: 28px;
+            top: 50%;
+            font-family: 'Avenir Next LT Pro', 'Avenir Next', sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #fff;
+            background: rgba(22, 22, 30, 0.62);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 0.4rem 0.75rem;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(-50%) translateX(10px);
+            pointer-events: none;
+            transition: opacity 0.3s ease,
+                        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                        font-size 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+                        background 0.26s ease,
+                        filter 0.28s ease,
+                        box-shadow 0.28s ease,
+                        text-shadow 0.28s ease;
+        }
+        /* Hover anywhere on rail (or touch-scrub): labels expand one-by-one, top to bottom */
+        .dlnl-rail:hover .dlnl-rail__label,
+        .dlnl-rail.touching .dlnl-rail__label {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+            pointer-events: auto;
+        }
+        .dlnl-rail:hover .dlnl-rail__node:nth-child(2) .dlnl-rail__label  { transition-delay: 0.00s; }
+        .dlnl-rail:hover .dlnl-rail__node:nth-child(3) .dlnl-rail__label  { transition-delay: 0.05s; }
+        .dlnl-rail:hover .dlnl-rail__node:nth-child(4) .dlnl-rail__label  { transition-delay: 0.10s; }
+        .dlnl-rail:hover .dlnl-rail__node:nth-child(5) .dlnl-rail__label  { transition-delay: 0.15s; }
+        .dlnl-rail:hover .dlnl-rail__node:nth-child(6) .dlnl-rail__label  { transition-delay: 0.20s; }
+        .dlnl-rail:hover .dlnl-rail__node:nth-child(7) .dlnl-rail__label  { transition-delay: 0.25s; }
+        .dlnl-rail:hover .dlnl-rail__node:nth-child(8) .dlnl-rail__label  { transition-delay: 0.30s; }
+        .dlnl-rail:hover .dlnl-rail__node:nth-child(9) .dlnl-rail__label  { transition-delay: 0.35s; }
+        .dlnl-rail:hover .dlnl-rail__node:nth-child(10) .dlnl-rail__label { transition-delay: 0.40s; }
+        .dlnl-rail.touching .dlnl-rail__node:not(.focused) .dlnl-rail__label { opacity: 0.4; }
+        /* Per-node hover uplift — Chrome/Blink path: drop-shadow halo + font growth
+           (mirrors #consortium .ng.is-hover treatment) */
+        .dlnl-rail__node:hover .dlnl-rail__label,
+        .dlnl-rail__node.focused .dlnl-rail__label {
+            font-size: 0.84rem;
+            transition-delay: 0s;
+            background: rgba(22, 22, 30, 0.8);
+            filter: drop-shadow(0 0 6px rgba(200, 16, 46, 0.55))
+                    drop-shadow(0 0 14px rgba(200, 16, 46, 0.3));
+        }
+        .dlnl-rail__node:hover .dlnl-rail__dot {
+            background: var(--tue-red);
+            transform: scale(1.5);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.75),
+                        0 0 8px rgba(200, 16, 46, 0.65),
+                        0 0 18px rgba(200, 16, 46, 0.35);
+        }
+        .dlnl-rail__node.active .dlnl-rail__dot,
+        .dlnl-rail__node.focused .dlnl-rail__dot {
+            background: var(--tue-red);
+            transform: scale(1.4);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.75),
+                        0 0 8px rgba(200, 16, 46, 0.55);
+        }
+        /* ============================================================
+           WebKit (Safari desktop + iOS) overrides — same pattern as
+           #consortium: `filter` on an element that also carries
+           backdrop-filter DISABLES the blur in WebKit, and filter
+           drop-shadow renders anaemically. Use box-shadow + text-shadow
+           for the glow instead; keep the blur intact.
+           ============================================================ */
+        html.webkit .dlnl-rail__node:hover .dlnl-rail__label,
+        html.webkit .dlnl-rail__node.focused .dlnl-rail__label {
+            filter: none;
+            box-shadow: 0 0 8px rgba(200, 16, 46, 0.55),
+                        0 0 18px rgba(200, 16, 46, 0.3);
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.45);
+        }
+        @media (max-width: 820px) {
+            /* Slim touch zone: dot column + 8px halo only */
+            .dlnl-rail { right: 8px; padding-left: 8px; transition: opacity 0.35s ease; }
+            .dlnl-rail__dot { width: 13px; height: 13px; }
+            .dlnl-rail__node { padding: 14px 0; }
+            .dlnl-rail__label { font-size: 0.7rem; }
+            /* Scrollbar behaviour on touch screens: rail fades out while reading,
+               reappears during scroll or when touched at the right edge */
+            .dlnl-rail.visible { opacity: 0; }
+            .dlnl-rail.visible.scrolling,
+            .dlnl-rail.visible.touching { opacity: 1; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .dlnl-rail__line, .dlnl-rail__node, .dlnl-rail__label, .dlnl-rail__dot, .dlnl-rail__progress {
+                transition: none !important;
+            }
+        }
+        /* Bottom-right floating section-flip buttons removed (rail replaces them) */
+        .section-nav { display: none !important; }
+        /* Hide redundant nav mechanisms (replaced by the strip above) */
+        .scroll-progress,
+        .nav-trigger,
+        .sidebar,
+        .sidebar-backdrop,
+        .page-indicator,
+        .bottom-tabs {
+            display: none !important;
+        }
+        .frontier-footnote {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            line-height: 1.55;
+            color: var(--tue-gray);
+            text-align: center;
+            font-style: italic;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .frontier-horizon {
+            margin-top: 3rem;
+            max-width: 880px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0;
+            border-top: 1px solid rgba(0,0,0,0.12);
+        }
+        .frontier-horizon .horizon-eyebrow {
+            font-size: 0.78rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--tue-red);
+            margin-top: 1.4rem;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+        }
+        .frontier-horizon p {
+            font-size: 1.06rem;
+            line-height: 1.65;
+            color: var(--tue-dark);
+            margin: 0;
+        }
+        .frontier-horizon strong {
+            color: var(--tue-dark);
+        }
+
+        /* Page-number indicator (fixed bottom-right) */
+        .page-indicator {
+            position: fixed;
+            right: 1.4rem;
+            bottom: 1.4rem;
+            z-index: 9000;
+            font-family: inherit;
+            font-size: 0.78rem;
+            letter-spacing: 0.18em;
+            font-weight: 600;
+            color: var(--tue-dark);
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 999px;
+            padding: 0.45rem 0.85rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            user-select: none;
+            transition: opacity 0.25s ease;
+        }
+        .page-indicator .pi-current {
+            color: var(--tue-red);
+        }
+        .page-indicator .pi-sep {
+            opacity: 0.4;
+            margin: 0 0.25rem;
+        }
+        .page-indicator .pi-total {
+            opacity: 0.65;
+        }
+        @media (max-width: 640px) {
+            .page-indicator {
+                right: 0.8rem;
+                bottom: 0.8rem;
+                font-size: 0.7rem;
+                padding: 0.35rem 0.7rem;
+            }
+        }
+        @media print {
+            .page-indicator { display: none; }
+        }
+
+        @media (max-width: 1024px) {
+            .world-today-grid { grid-template-columns: 1fr 1fr; }
+            .world-today-card:last-child { grid-column: 1 / -1; }
+        }
+        @media (max-width: 640px) {
+            .world-today-grid { grid-template-columns: 1fr; gap: 0.9rem; }
+            .world-today-card:last-child { grid-column: auto; }
+            .frontier-grid { grid-template-columns: 1fr; gap: 0.9rem; }
+            .sdl-map-iframe { height: 360px; }
+        }
+
     </style>
 </head>
 <body>
@@ -1563,21 +2437,39 @@
         </button>
     </header>
 
+    <!-- Sticky page-wide nav strip (Style B) — unified nav for the whole site -->
+    <nav class="dlnl-rail" id="dlnlRail" aria-label="Page navigation">
+        <div class="dlnl-rail__line"><div class="dlnl-rail__progress" id="dlnlRailProgress"></div></div>
+        <a href="#dlnl-claim-slide-1" class="dlnl-rail__node" data-target="dlnl-claim-slide-1"><span class="dlnl-rail__label">The window</span><span class="dlnl-rail__dot"></span></a>
+        <a href="#dlnl-claim-slide-2" class="dlnl-rail__node" data-target="dlnl-claim-slide-2"><span class="dlnl-rail__label">What we are</span><span class="dlnl-rail__dot"></span></a>
+        <a href="#dlnl-claim-slide-3" class="dlnl-rail__node" data-target="dlnl-claim-slide-3"><span class="dlnl-rail__label">What we deliver</span><span class="dlnl-rail__dot"></span></a>
+        <a href="#dlnl-claim-slide-4" class="dlnl-rail__node" data-target="dlnl-claim-slide-4"><span class="dlnl-rail__label">How it works</span><span class="dlnl-rail__dot"></span></a>
+        <a href="#dlnl-claim-slide-5" class="dlnl-rail__node" data-target="dlnl-claim-slide-5"><span class="dlnl-rail__label">The claim</span><span class="dlnl-rail__dot"></span></a>
+        <a href="#world-today" class="dlnl-rail__node" data-target="world-today"><span class="dlnl-rail__label">World today</span><span class="dlnl-rail__dot"></span></a>
+        <a href="#pillars" class="dlnl-rail__node" data-target="pillars"><span class="dlnl-rail__label">Architecture</span><span class="dlnl-rail__dot"></span></a>
+        <a href="#consortium" class="dlnl-rail__node" data-target="consortium"><span class="dlnl-rail__label">Consortium</span><span class="dlnl-rail__dot"></span></a>
+        <a href="#contact" class="dlnl-rail__node" data-target="contact"><span class="dlnl-rail__label">Contact</span><span class="dlnl-rail__dot"></span></a>
+    </nav>
+
     <!-- Main container -->
-    <!-- Floating contents trigger (desktop only) -->
+    <!-- Floating contents trigger (desktop only, now hidden by sticky strip CSS) -->
     <div class="nav-trigger" id="navTrigger">Contents</div>
     <!-- Sidebar backdrop -->
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <div class="container">
-        <!-- Sidebar navigation — overlay drawer -->
-        <aside class="sidebar" id="sidebar">
+        <!-- Sidebar navigation — DEPRECATED 2026-06-11: replaced by sticky stripnav above (.dlnl-stripnav). Kept in DOM with display:none for JS compatibility; will be removed in a future pass. -->
+        <aside class="sidebar" id="sidebar" style="display:none" aria-hidden="true">
             <nav>
                 <ul class="sidebar-nav">
                     <li class="active"><a href="#landing">Landing</a></li>
-                    <li><a href="#challenge">The Challenge</a></li>
+                    <li><a href="#dlnl-claim-slide-1">The window</a></li>
+                    <li><a href="#dlnl-claim-slide-2">What we are</a></li>
+                    <li><a href="#dlnl-claim-slide-3">What we deliver</a></li>
+                    <li><a href="#dlnl-claim-slide-4">How it works</a></li>
+                    <li><a href="#dlnl-claim-slide-5">The claim</a></li>
+                    <li><a href="#world-today">The World Today</a></li>
                     <li><a href="#pillars">Three Pillars</a></li>
-                    <li><a href="#domains">Discovery Domains</a></li>
                     <li><a href="#campus">Campus Partners</a></li>
                     <li><a href="#consortium">An Open Consortium</a></li>
                     <li><a href="#landscape">Landscape</a></li>
@@ -1589,6 +2481,11 @@
                 </ul>
             </nav>
         </aside>
+
+        <!-- Page-number indicator -->
+        <div class="page-indicator" id="page-indicator" aria-live="polite" aria-atomic="true">
+            <span class="pi-current" id="pi-current">01</span><span class="pi-sep">/</span><span class="pi-total" id="pi-total">15</span>
+        </div>
 
         <!-- Main content -->
         <main class="content" id="content">
@@ -1630,10 +2527,10 @@
                         <!-- Keywords along inner ring (rotating counter-clockwise) -->
                         <g class="text-ring-inner">
                             <text class="ring-keyword" fill="rgba(200,16,46,0.85)">
-                                <textPath href="#ring-inner-path" startOffset="2%">SELF-DRIVING LABS</textPath>
+                                <textPath href="#ring-inner-path" startOffset="2%">FUNCTION DESIGN</textPath>
                             </text>
                             <text class="ring-keyword" fill="rgba(200,16,46,0.85)">
-                                <textPath href="#ring-inner-path" startOffset="38%">AI-GUIDED DISCOVERY</textPath>
+                                <textPath href="#ring-inner-path" startOffset="38%">VERIFIABLE DISCOVERY</textPath>
                             </text>
                             <text class="ring-keyword" fill="rgba(200,16,46,0.85)">
                                 <textPath href="#ring-inner-path" startOffset="72%">CLOSED-LOOP</textPath>
@@ -1643,35 +2540,35 @@
                         <!-- Keywords along middle ring (rotating clockwise) -->
                         <g class="text-ring-mid">
                             <text class="ring-keyword" fill="rgba(200,16,46,0.5)">
-                                <textPath href="#ring-mid-path" startOffset="3%">MULTIMODAL CHARACTERISATION</textPath>
+                                <textPath href="#ring-mid-path" startOffset="3%">MULTIMODAL VERIFICATION</textPath>
                             </text>
                             <text class="ring-keyword" fill="rgba(200,16,46,0.5)">
-                                <textPath href="#ring-mid-path" startOffset="35%">ELECTRON MICROSCOPY</textPath>
+                                <textPath href="#ring-mid-path" startOffset="35%">PHYSICS-INFORMED AI</textPath>
                             </text>
                             <text class="ring-keyword" fill="rgba(200,16,46,0.5)">
-                                <textPath href="#ring-mid-path" startOffset="60%">X-RAY</textPath>
+                                <textPath href="#ring-mid-path" startOffset="60%">DIGITAL TWINS</textPath>
                             </text>
                             <text class="ring-keyword" fill="rgba(200,16,46,0.5)">
-                                <textPath href="#ring-mid-path" startOffset="70%">SPECTROSCOPY</textPath>
+                                <textPath href="#ring-mid-path" startOffset="76%">AUGMENTED LAB</textPath>
                             </text>
                         </g>
 
                         <!-- Keywords along outer ring (rotating counter-clockwise) -->
                         <g class="text-ring-outer">
                             <text class="ring-keyword" fill="rgba(255,255,255,0.25)">
-                                <textPath href="#ring-outer-path" startOffset="4%">FAIR DATA</textPath>
+                                <textPath href="#ring-outer-path" startOffset="2%">FAIR MULTIMODAL DATA</textPath>
                             </text>
                             <text class="ring-keyword" fill="rgba(255,255,255,0.25)">
-                                <textPath href="#ring-outer-path" startOffset="20%">NATIONAL CONSORTIUM</textPath>
+                                <textPath href="#ring-outer-path" startOffset="22%">FIVE FRONTIERS</textPath>
                             </text>
                             <text class="ring-keyword" fill="rgba(255,255,255,0.25)">
-                                <textPath href="#ring-outer-path" startOffset="42%">OPEN INFRASTRUCTURE</textPath>
+                                <textPath href="#ring-outer-path" startOffset="38%">DUTCH MATERIALS GENOME</textPath>
                             </text>
                             <text class="ring-keyword" fill="rgba(255,255,255,0.25)">
-                                <textPath href="#ring-outer-path" startOffset="62%">SOVEREIGNTY</textPath>
+                                <textPath href="#ring-outer-path" startOffset="60%">ADVANCED MATERIALS ACT</textPath>
                             </text>
                             <text class="ring-keyword" fill="rgba(255,255,255,0.25)">
-                                <textPath href="#ring-outer-path" startOffset="80%">NWO LSRI 2027</textPath>
+                                <textPath href="#ring-outer-path" startOffset="82%">NWO LSRI 2027</textPath>
                             </text>
                         </g>
                     </svg>
@@ -1680,68 +2577,167 @@
                 <div class="landing-content">
                     <div class="landing-accent-line anim-entrance delay-1"></div>
                     <h1 class="landing-title anim-entrance delay-2">DiscoveryLabNL</h1>
-                    <p class="landing-subtitle anim-entrance delay-3">Autonomous Closed-Loop Experimentation for Materials Discovery</p>
+                    <p class="landing-subtitle anim-entrance delay-3">Closing the knowledge chain from atom to function, with physics-informed AI and experimental verification.</p>
                     <p class="landing-meta anim-entrance delay-4">A DIFFER &times; TU/e joint initiative &middot; Proposed for NWO Large-Scale Research Infrastructure</p>
-                    <p class="landing-meta anim-entrance delay-5" style="margin-top: 0.3rem; font-style: italic;">Foundational technology platform of the <a href="https://tue-flagship-advanced-materials.nl/" target="_blank" rel="noopener">TU/e Flagship: Advanced Materials</a></p>
+                    <p class="landing-meta anim-entrance delay-5" style="margin-top: 0.3rem; font-style: italic;">Foundational technology platform of the <a href="https://tue-flagship-advanced-materials.nl/" target="_blank" rel="noopener">TU/e Flagship: Advanced Materials</a> &middot; Aligned with the EU Advanced Materials Act</p>
                 </div>
 
             </section>
-            <div class="landing-scroll">&darr; Scroll to explore</div>
+            <div class="landing-scroll">
+                <a href="#dlnl-claim-slide-1" class="landing-cta">Scroll to explore <span class="landing-cta-arrow">&darr;</span></a>
+                <span class="landing-cta-sep" aria-hidden="true"></span>
+                <a href="#dlnl-claim-slide-2" class="landing-cta landing-cta-dim">Jump to: what DiscoveryLabNL is <span class="landing-cta-arrow">&rarr;</span></a>
+            </div>
 
-            <!-- 2. The Challenge -->
-            <section id="challenge">
-                <h2 class="reveal">The Challenge</h2>
-                <p class="challenge-text">Artificial intelligence and high-throughput laboratory automation have the potential to fundamentally transform materials and molecular research, accelerating the optimisation of desired properties, uncovering unique parameter sets, and enabling the design of materials with unprecedented features.</p>
-                <p class="challenge-text">This potential is widely recognised across the broader materials community, yet has also produced fragmentation: parallel, disconnected efforts that fall short of the systemic integration needed to realise AI's full scientific impact.</p>
-                <div class="challenge-callout reveal">
-                    <p>DiscoveryLabNL is a joint DIFFER &times; TU/e initiative: a shared infrastructure for autonomous materials discovery, integrating self-driving laboratories, advanced multimodal characterisation, and an AI Core to accelerate the design, synthesis, and validation of next-generation materials.</p>
-                </div>
-                <p class="challenge-text">DIFFER and TU/e together anchor nationally recognised SDL foundations: DIFFER's autonomous energy-materials discovery capacity led by Suleyman Er anchors the LSRI Materials group pathway, and TU/e's ICMS contributes SDL platforms developed through the NWO Gravitation Programme Interactive Polymer Materials (IPM) and the National Growth Fund programme Big Chemistry, establishing a proven joint platform for this next step.</p>
-                <p class="challenge-text reveal">The stakes extend well beyond the laboratory. The energy transition, the shift toward circular material flows, and the search for sustainable alternatives to critical raw materials are all bottlenecked by the pace of materials discovery. These are not problems that incremental experimentation can solve at the speed society requires. Infrastructure that systematically accelerates the design, synthesis, and validation of new materials is no longer a competitive advantage; it is a societal necessity.</p>
-            </section>
-
-            <section class="photo-divider" aria-hidden="true">
-                <div class="photo-parallax">
-                    <img src="img/hero-pillars.jpg" alt="SDL robot arm at ICMS" loading="lazy">
-                </div>
-                <div class="photo-overlay"></div>
-                <span class="photo-caption">ICMS Self-Driving Laboratory</span>
-            </section>
-
-            <!-- 3. Three Pillars -->
-            <section id="pillars">
-                <h2 class="reveal">Three Pillars</h2>
-                <div class="pillars-grid reveal-group">
-                    <div class="pillar-card">
-                        <h3>Self-Driving Laboratories</h3>
-                        <p>Robotic synthesis and processing platforms, automated sample handling, in-line sensing and feedback systems. AI-guided closed-loop experimentation across a hub-and-spoke network of SDL nodes.</p>
-                        <button class="pillar-expand-btn" onclick="togglePillar(this)">Show more</button>
-                        <div class="pillar-expanded">
-                            <p>Origin: Big Chemistry (National Growth Fund) and IPM (NWO Gravitation) platforms at ICMS. Hub-and-spoke architecture allows distributed SDL nodes across campus and national partners.</p>
-                        </div>
-                    </div>
-                    <div class="pillar-card">
-                        <h3>Advanced Characterisation</h3>
-                        <p>Optical, electron and X-ray microscopy combined with spectroscopic techniques. Serves as the continuous, real-time verification and integration layer of the autonomous discovery loop.</p>
-                        <button class="pillar-expand-btn" onclick="togglePillar(this)">Show more</button>
-                        <div class="pillar-expanded">
-                            <p>Connects to NEMI (national electron microscopy) and XNL (X-ray Netherlands). Key verification and integration layer ensuring experimental results feed back into the AI-driven discovery loop.</p>
-                            <p class="operational-ref"><strong>Operational reference:</strong> <a href="https://superresolution.nl/" target="_blank" rel="noopener">superresolution.nl</a>, the Advanced Microscopy Facility (AMF) at ICMS.</p>
-                        </div>
-                    </div>
-                    <div class="pillar-card">
-                        <h3>AI Core</h3>
-                        <p>FAIR data backbone, curated model catalogue, dedicated AI science team — the experimental data engine and infrastructure for the next generation of materials foundation models. Federated design serving the full consortium and national partners.</p>
-                        <button class="pillar-expand-btn" onclick="togglePillar(this)">Show more</button>
-                        <div class="pillar-expanded">
-                            <p>Aligned with SURF and Netherlands eScience Center standards. EOSC service candidate. Serves as the digital backbone connecting all SDL nodes and characterisation facilities, and as the experimental-data source for training and grounding domain-specific materials foundation models.</p>
-                        </div>
+            <!-- 2. The DLNL Claim (Hero, five slides stacked vertically) -->
+            <section id="dlnl-claim">
+                <!-- The window (wake-up call, Jan's voice — verbatim from his 2026-06-10 draft) -->
+                <div class="hero-slide hero-slide-1" id="dlnl-claim-slide-1">
+                    <h2 class="reveal">A stronghold at a turning point.</h2>
+                    <p class="hero-slide-label">The window</p>
+                    <p class="challenge-text">The chemical and materials industries in the Netherlands and Europe face a crucial <strong>rejuvenation phase</strong>, in which there is a sense of urgency to move from commodity to high-end material applications, such as smart coatings, biomedical materials, energy producing &amp; storage systems and information/communication materials. The Netherlands has been a <strong>stronghold of expertise</strong> over the past decades in the named domains. However, to translate knowledge into effective applications requires an extensive optimization track which has traditionally led to limited commercial success. With the advent of machine learning and self-driving labs, this optimization process has become revolutionized with regard to speed and effectiveness, and it even compensates for a lack of knowledge on intrinsic material features.</p>
+                    <p class="challenge-text"><strong>The Netherlands will therefore lose its leading position if it doesn't quickly embrace this development.</strong> This would endanger the pipeline of newly established innovative high-tech companies that are needed to support our traditional commodity materials industries.</p>
+                    <p class="challenge-text" style="font-style: italic; opacity: 0.78;">DiscoveryLabNL is how the Netherlands embraces it.</p>
+                    <div class="hero-continue">
+                        <a href="#dlnl-claim-slide-2" aria-label="Continue: what DiscoveryLabNL is">Continue: what DiscoveryLabNL is &darr;</a>
                     </div>
                 </div>
-            </section>
-
-            <section class="loop-banner" aria-label="The autonomous discovery loop">
-                <svg viewBox="150 30 600 420" xmlns="http://www.w3.org/2000/svg" class="loop-svg">
+                <!-- What we are (From Atom to Function) -->
+                <div class="hero-slide hero-slide-1" id="dlnl-claim-slide-2">
+                    <h2 class="reveal">From Atom to Function: designing what materials do, not only what they are.</h2>
+                    <p class="hero-slide-label">The core argument</p>
+                    <div class="challenge-callout reveal">
+                        <p>DiscoveryLabNL is a joint DIFFER &times; TU/e initiative: a shared infrastructure for autonomous materials discovery, integrating self-driving laboratories, advanced multimodal characterisation, and an AI Core to accelerate the design, synthesis, and validation of next-generation materials.</p>
+                    </div>
+                    <p class="challenge-text"><strong>DiscoveryLabNL closes the knowledge chain from atom to function.</strong> It extends a Dutch lineage in materials science and engineering into the next decade's open question: how to design what materials do, not only what they are. Machine-learning foundation models have industrialised structure prediction: AlphaFold for proteins, GNoME-class models for inorganic crystals, each trained on decades of shared, computable data. That is what a common data backbone delivers, proven in one slice of materials science. The experimental side of the loop remains open, and autonomous synthesis without rigorous verification has already produced high-profile contested claims. DiscoveryLabNL closes that loop for the classes that drive the next decade (soft, hybrid, hierarchical, and far-from-equilibrium), where <strong>function</strong> emerges through dynamics and across length scales no first-principles model can simulate to ground truth and no foundation model can yet reach.</p>
+                    <p class="challenge-text">DiscoveryLabNL is the federated national infrastructure that answers it. The <a class="pillar-ref" href="#pillar-ai-core"><strong>AI Core</strong></a> proposes candidate designs grounded in quantum-physics-informed digital twins, <a class="pillar-ref" href="#pillar-sdls"><strong>Self-Driving Labs</strong></a> synthesise and execute the experiments at scale, and <a class="pillar-ref" href="#pillar-characterisation"><strong>Advanced Multimodal Characterisation</strong></a> verifies what computation cannot reach. <a class="pillar-ref" href="#dlnl-claim-slide-3"><strong>Information materials, designer catalysts and energy materials, actuating polymers, neuromorphic materials, and recyclable thermosets are five candidate demonstrators</strong></a>, each a domain where Dutch science already leads the world. Five years ago, designing for function was guesswork; five years from now, with DiscoveryLabNL, it becomes <a class="pillar-ref" href="#dlnl-claim-slide-4"><strong>verifiable and explainable</strong></a> closed loops.</p>
+                    <div class="hero-nav-row">
+                        <a class="hero-back" href="#dlnl-claim-slide-1" aria-label="Back: the window">&uarr; The window</a>
+                        <a class="hero-continue-link" href="#dlnl-claim-slide-3" aria-label="Continue: what we deliver">Continue: what we deliver &darr;</a>
+                    </div>
+                </div>
+                <!-- What we deliver (Five Frontiers + Horizon 2035) -->
+                <div class="hero-slide hero-slide-1 hero-slide-revolution" id="dlnl-claim-slide-3">
+                    <h2 class="reveal">The Revolution We Enable</h2>
+                    <p class="hero-slide-label">Five frontiers, one architecture</p>
+                    <div class="frontier-grid reveal-group">
+                        <div class="frontier-card">
+                            <div class="frontier-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="13.5" r="7" stroke-width="1.5"/>
+                                    <circle cx="12" cy="13.5" r="3.8" opacity="0.5" stroke-width="1.1"/>
+                                    <circle cx="15.8" cy="13.5" r="0.6" fill="currentColor"/>
+                                    <circle cx="13" cy="17.2" r="0.6" fill="currentColor"/>
+                                    <circle cx="8.8" cy="15.3" r="0.6" fill="currentColor"/>
+                                    <circle cx="8.4" cy="11.4" r="0.6" fill="currentColor"/>
+                                    <circle cx="11.4" cy="9.8" r="0.6" fill="currentColor"/>
+                                    <line x1="12" y1="1" x2="12" y2="6.5" stroke="#6E7FBA" stroke-width="1.8"/>
+                                    <circle cx="12" cy="1.5" r="0.7" fill="#6E7FBA" stroke="none"/>
+                                </svg>
+                            </div>
+                            <p class="frontier-domain">Frontier A</p>
+                            <h3 class="frontier-headline">Information materials</h3>
+                            <p class="frontier-vision">Materials whose internal state stores and processes information at orders-of-magnitude lower energy than silicon-era computing.</p>
+                            <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Information materials that can store data at a fraction of the energy costs now associated with data centres.</p>
+                        </div>
+                        <div class="frontier-card">
+                            <div class="frontier-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="5" y="8" width="14" height="14" rx="1" stroke-width="1.4"/>
+                                    <path d="M 5 11 Q 9 10.5 12 11 T 19 11" opacity="0.4" stroke-width="0.9"/>
+                                    <line x1="9" y1="22" x2="9" y2="11.5" stroke-width="2"/>
+                                    <line x1="15" y1="22" x2="15" y2="11.5" stroke-width="1.4" opacity="0.55"/>
+                                    <circle cx="10.2" cy="18" r="0.95"/>
+                                    <circle cx="9.2" cy="15.5" r="0.75" opacity="0.85"/>
+                                    <circle cx="10.1" cy="13.3" r="0.55" opacity="0.65"/>
+                                    <line x1="12" y1="2" x2="12" y2="8" stroke="#6E7FBA" stroke-width="1.8"/>
+                                    <circle cx="12" cy="2.5" r="0.7" fill="#6E7FBA" stroke="none"/>
+                                </svg>
+                            </div>
+                            <p class="frontier-domain">Frontier B</p>
+                            <h3 class="frontier-headline">Designer catalysts and energy materials</h3>
+                            <p class="frontier-vision">Catalysts and energy materials designed for target transformations, freeing Europe from critical raw material dependencies.</p>
+                            <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Smart electrodes more effective in hydrogen generation than current systems.</p>
+                        </div>
+                        <div class="frontier-card">
+                            <div class="frontier-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="3" y1="22" x2="11" y2="22" stroke-width="1.8"/>
+                                    <path d="M 7 21 C 7 15, 13 13, 15 10 C 16.5 7.5, 19.5 6.5, 21 5.5" stroke-width="2.4"/>
+                                    <path d="M 8.3 21 C 8.3 15.3, 14 13.6, 16 10.6 C 17.3 8.5, 20 7.8, 21.2 7" stroke-dasharray="0.6 1.4" opacity="0.55" stroke-width="0.9"/>
+                                    <rect x="1.2" y="1.5" width="5" height="4" rx="0.6" stroke="#6E7FBA" stroke-width="1.4"/>
+                                    <circle cx="3.7" cy="3.5" r="1.1" stroke="#6E7FBA" stroke-width="1.2"/>
+                                    <line x1="6.2" y1="4" x2="14.5" y2="10.5" stroke="#6E7FBA" stroke-dasharray="1 1.4" opacity="0.55" stroke-width="0.9"/>
+                                </svg>
+                            </div>
+                            <p class="frontier-domain">Frontier C</p>
+                            <h3 class="frontier-headline">Actuating polymers and soft systems</h3>
+                            <p class="frontier-vision">Polymers and soft matter designed to sense, actuate, and reconfigure across length and time scales, with function emerging through molecular dynamics.</p>
+                            <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Actuating materials applied in medical devices, including soft robotics for precision surgery.</p>
+                        </div>
+                        <div class="frontier-card">
+                            <div class="frontier-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="4" y="6" width="16" height="14" rx="0.8" opacity="0.4" stroke-width="1.1"/>
+                                    <line x1="6" y1="10" x2="18" y2="10" opacity="0.55" stroke-width="1.2"/>
+                                    <line x1="6" y1="14" x2="18" y2="14" opacity="0.55" stroke-width="1.2"/>
+                                    <line x1="6" y1="18" x2="18" y2="18" opacity="0.55" stroke-width="1.2"/>
+                                    <line x1="9" y1="7" x2="9" y2="19.5" opacity="0.55" stroke-width="1.2"/>
+                                    <line x1="13" y1="7" x2="13" y2="19.5" opacity="0.55" stroke-width="1.2"/>
+                                    <line x1="17" y1="7" x2="17" y2="19.5" opacity="0.55" stroke-width="1.2"/>
+                                    <circle cx="9" cy="10" r="0.5" fill="currentColor" opacity="0.4"/>
+                                    <circle cx="13" cy="10" r="0.5" fill="currentColor" opacity="0.4"/>
+                                    <circle cx="17" cy="10" r="0.5" fill="currentColor" opacity="0.4"/>
+                                    <circle cx="9" cy="14" r="0.5" fill="currentColor" opacity="0.4"/>
+                                    <circle cx="17" cy="14" r="0.5" fill="currentColor" opacity="0.4"/>
+                                    <circle cx="9" cy="18" r="0.5" fill="currentColor" opacity="0.4"/>
+                                    <circle cx="13" cy="18" r="0.5" fill="currentColor" opacity="0.4"/>
+                                    <circle cx="17" cy="18" r="0.5" fill="currentColor" opacity="0.4"/>
+                                    <circle cx="13" cy="14" r="1.5" fill="currentColor"/>
+                                    <line x1="22" y1="2.5" x2="14.1" y2="12.9" stroke="#6E7FBA" stroke-width="1.6"/>
+                                    <circle cx="22" cy="2.5" r="0.7" fill="#6E7FBA" stroke="none"/>
+                                </svg>
+                            </div>
+                            <p class="frontier-domain">Frontier D</p>
+                            <h3 class="frontier-headline">Neuromorphic materials</h3>
+                            <p class="frontier-vision">Material systems that compute by their own physics &mdash; synaptic memory, in-materio learning, autonomous decision substrates beyond the von Neumann boundary.</p>
+                            <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Neuromorphic materials that enable devices to operate autonomously.</p>
+                        </div>
+                        <div class="frontier-card">
+                            <div class="frontier-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M 21 12.5 A 9 9 0 1 1 17 5" stroke="#6E7FBA" stroke-width="1.4" opacity="0.7"/>
+                                    <polyline points="21 12.5 18 7 12 8.5" stroke="#6E7FBA" stroke-width="1.4" opacity="0.7"/>
+                                    <circle cx="9" cy="11.5" r="1.4" fill="currentColor"/>
+                                    <circle cx="15" cy="12.2" r="1.4" fill="currentColor"/>
+                                    <circle cx="12" cy="18" r="1.4" fill="currentColor"/>
+                                    <line x1="10.3" y1="11.7" x2="13.7" y2="12" stroke-width="1.5"/>
+                                    <line x1="14.4" y1="13.4" x2="12.6" y2="16.7" stroke-width="1.5"/>
+                                    <line x1="9.5" y1="12.7" x2="11.5" y2="16.7" stroke-dasharray="1 1.4" stroke-width="1.5"/>
+                                </svg>
+                            </div>
+                            <p class="frontier-domain">Frontier E</p>
+                            <h3 class="frontier-headline">Recyclable thermosets and circular materials</h3>
+                            <p class="frontier-vision">High-performance polymers and composites engineered for circularity, breaking the historical trade-off between durability and recyclability.</p>
+                            <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Fully recyclable thermoset materials without loss of mechanical properties.</p>
+                        </div>
+                    </div>
+                    <div class="frontier-horizon reveal">
+                        <p class="horizon-eyebrow">Horizon 2035</p>
+                        <p>By 2035, DiscoveryLabNL is the Dutch interface for designing what materials do: the operational layer on which the Netherlands' information-materials, energy, actuating-soft-matter, neuromorphic, and circular-materials discovery communities run their <strong>autonomous, verifiable, explainable closed loops</strong>. Multimodal characterisation as in-line verification has become standard practice across the five frontiers, the AI Core's physics-grounded models and digital twins are shared community infrastructure, and the Dutch materials-function genome is the foundational dataset of European materials R&amp;D. What was demonstrated in narrow form for individual material classes over the past decade, DiscoveryLabNL industrialises across materials function broadly, becoming the federated national platform on which the next decade of discovery is built.</p>
+                    </div>
+                    <div class="hero-nav-row">
+                        <a class="hero-back" href="#dlnl-claim-slide-2" aria-label="Back: what we are">&uarr; What we are</a>
+                        <a class="hero-continue-link" href="#dlnl-claim-slide-4" aria-label="Continue: how it works">Continue: how it works &darr;</a>
+                    </div>
+                </div>
+                                <div class="hero-slide hero-slide-methodology" id="dlnl-claim-slide-4">
+                    <p class="hero-slide-label hero-slide-label-light">Our methodology</p>
+                    <h3 class="methodology-title">The Autonomous Discovery Loop</h3>
+                    <p class="methodology-text">DiscoveryLabNL operates a continuous loop between <em>exploration</em> and <em>interpretation</em>. The <strong>AI Core</strong> proposes candidate designs grounded in quantum-physics-informed digital twins. <strong>Self-Driving Labs</strong> synthesise and execute at scale. <strong>Advanced Multimodal Characterisation</strong> verifies what computation cannot reach, with multimodal integration and correlation as the core methodology that fuses measurement modalities into actionable, verifiable knowledge. Every turn closes back into the AI Core and lowers the cost of the next discovery.</p>
+                    <p class="methodology-text-secondary">Like a mind that works fast and slow, DiscoveryLabNL pairs fast exploration with slow, careful interpretation. Self-Driving Labs propose and execute at scale; Advanced Multimodal Characterisation verifies what computation cannot reach; the AI Core learns the design rules that close the loop. Discovery requires both speeds, working together, for results to be verifiable.</p>
+                    <div class="methodology-svg-wrap">
+<svg viewBox="150 30 600 420" xmlns="http://www.w3.org/2000/svg" class="loop-svg">
                         <defs>
                             <linearGradient id="gradLeft" gradientUnits="userSpaceOnUse" x1="231" y1="240" x2="450" y2="240">
                                 <stop offset="0%" stop-color="#C8102E"/><stop offset="75%" stop-color="#C8102E"/><stop offset="100%" stop-color="#A04878"/>
@@ -1819,11 +2815,242 @@
 
                         <!-- Subtitle -->
                     </svg>
-                <span class="loop-caption">The Autonomous Discovery Loop</span>
+                    </div>
+                    <p class="methodology-pull-quote">Fast and slow, working together, for verifiable discoveries.</p>
+                    <div class="hero-nav-row">
+                        <a class="hero-back" href="#dlnl-claim-slide-3" aria-label="Back: what we deliver">&uarr; What we deliver</a>
+                        <a class="hero-continue-link" href="#dlnl-claim-slide-5" aria-label="Continue: the claim">Continue: the claim &darr;</a>
+                    </div>
+                </div>
+                <div class="hero-slide hero-slide-1" id="dlnl-claim-slide-5">
+                    <h2 class="reveal">Compound, or fragment.</h2>
+                    <p class="hero-slide-label">The claim</p>
+                    <p class="challenge-text">This potential is widely recognised across the broader materials community, yet has also produced fragmentation: parallel, disconnected efforts that fall short of the systemic integration needed to realise AI's full scientific impact.</p>
+                    <p class="challenge-text">DIFFER and TU/e together hold nationally recognised SDL foundations: DIFFER's autonomous energy-materials discovery capacity underpins the LSRI Materials group pathway, and TU/e's ICMS contributes SDL platforms developed through the NWO Gravitation Programme <a class="pillar-ref" href="https://ipmresearchcenter.nl/" target="_blank" rel="noopener">Interactive Polymer Materials (IPM)</a> and the National Growth Fund programme <a class="pillar-ref" href="https://bigchemistry.nl/" target="_blank" rel="noopener">Big Chemistry</a>, establishing a proven joint platform for this next step.</p>
+                    <p class="challenge-text">DiscoveryLabNL is the <strong>augmented lab</strong>: one infrastructure, one scientific argument, five candidate demonstrators, and the Dutch interface for the global materials genome. Every FAIR multimodal verification lowers the cost of the next discovery. The alternative is <strong>fragmented, hollow labs that do not compound</strong>.</p>
+                    <div class="hero-back">
+                        <a href="#dlnl-claim-slide-4" aria-label="Back: how it works">&uarr; How it works</a>
+                    </div>
+                </div>
             </section>
 
-            <!-- 3b. Discovery Domains -->
-            <section id="domains">
+            <!-- 3. The World Today — two central messages (industrial stakes live on slide 1, policy window in Positioning) -->
+            <section id="world-today">
+                <h2 class="reveal">The World Today</h2>
+                <div class="world-today-grid world-today-grid-two">
+                    <div class="world-today-card reveal">
+                        <h3>The global transformation is underway.</h3>
+                        <p>Between 2023 and 2025, machine-learning foundation models such as DeepMind's GNoME predicted hundreds of thousands of new stable crystalline materials, and self-driving laboratories backed by large-scale funding are multiplying across every major science economy. <strong>The structure-prediction problem is functionally solved for the inorganic case.</strong></p>
+                    </div>
+                    <div class="world-today-card reveal">
+                        <h3>What is missing: function prediction, verified at experimental scale.</h3>
+                        <p><strong>Function emerges in the experiment; it cannot be predicted in vacuum.</strong> Theory cannot substitute for measurement where function emerges through dynamics and across length scales. AlphaFold solved structure prediction because biology had the Protein Data Bank. Materials function discovery has no equivalent yet. Someone has to build it.</p>
+                    </div>
+                </div>
+
+                <div class="sdl-map-block reveal">
+                    <div class="sdl-map-header">
+                        <img class="sdl-map-favicon" src="https://sdl-map.discoverylabs.nl/sdl_favicon.png" alt="" loading="lazy" decoding="async">
+                        <p class="sdl-map-eyebrow">The global SDL landscape</p>
+                    </div>
+                    <p>Global initiatives with large-scale funding are fuelling the materials revolution. The Netherlands needs to wake up, join, and lead the <strong>verifiable discoveries</strong> that shape the next decade.</p>
+                    <a class="sdl-map-cta" href="https://sdl-map.discoverylabs.nl/" target="_blank" rel="noopener">Explore the global SDL landscape map &rarr;</a>
+                </div>
+            </section>
+
+            <!-- 4. The Revolution — content moved into hero deck as slide 3 (#dlnl-claim-slide-3); section retained hidden so anchor #revolution still resolves via JS redirect -->
+            <section id="revolution-OLD-REMOVED" style="display:none !important" aria-hidden="true">
+                <h2 class="reveal">The Revolution We Enable</h2>
+                <p class="section-eyebrow reveal">Five Frontiers, One Architecture</p>
+
+                <div class="frontier-grid reveal-group">
+                    <div class="frontier-card">
+                        <div class="frontier-icon">
+                            <!-- Information materials: wafer with encoded data ring + inline read probe (blue, closed-loop). -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <!-- Wafer substrate -->
+                                <circle cx="12" cy="13.5" r="7" stroke-width="1.5"/>
+                                <!-- Inner data ring -->
+                                <circle cx="12" cy="13.5" r="3.8" opacity="0.5" stroke-width="1.1"/>
+                                <!-- Encoded bit positions -->
+                                <circle cx="15.8" cy="13.5" r="0.6" fill="currentColor"/>
+                                <circle cx="13" cy="17.2" r="0.6" fill="currentColor"/>
+                                <circle cx="8.8" cy="15.3" r="0.6" fill="currentColor"/>
+                                <circle cx="8.4" cy="11.4" r="0.6" fill="currentColor"/>
+                                <circle cx="11.4" cy="9.8" r="0.6" fill="currentColor"/>
+                                <!-- Inline read probe (closed-loop characterisation) -->
+                                <line x1="12" y1="1" x2="12" y2="6.5" stroke="#6E7FBA" stroke-width="1.8"/>
+                                <circle cx="12" cy="1.5" r="0.7" fill="#6E7FBA" stroke="none"/>
+                            </svg>
+                        </div>
+                        <p class="frontier-domain">Frontier A</p>
+                        <h3 class="frontier-headline">Information materials</h3>
+                        <p class="frontier-vision">Materials whose internal state stores and processes information at orders-of-magnitude lower energy than silicon-era computing.</p>
+                        <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Information materials that can store data at a fraction of the energy costs now associated with data centres.</p>
+                    </div>
+
+                    <div class="frontier-card">
+                        <div class="frontier-icon">
+                            <!-- Designer catalysts: electrochemical cell with working + counter electrode, H2 bubbles evolving, inline gas sensor probe (blue). -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <!-- Cell -->
+                                <rect x="5" y="8" width="14" height="14" rx="1" stroke-width="1.4"/>
+                                <!-- Electrolyte meniscus -->
+                                <path d="M 5 11 Q 9 10.5 12 11 T 19 11" opacity="0.4" stroke-width="0.9"/>
+                                <!-- Working electrode (left, prominent) -->
+                                <line x1="9" y1="22" x2="9" y2="11.5" stroke-width="2"/>
+                                <!-- Counter electrode (right, secondary) -->
+                                <line x1="15" y1="22" x2="15" y2="11.5" stroke-width="1.4" opacity="0.55"/>
+                                <!-- H2 bubbles rising from working electrode -->
+                                <circle cx="10.2" cy="18" r="0.95"/>
+                                <circle cx="9.2" cy="15.5" r="0.75" opacity="0.85"/>
+                                <circle cx="10.1" cy="13.3" r="0.55" opacity="0.65"/>
+                                <!-- Inline gas sensor / fiber probe (closed-loop) -->
+                                <line x1="12" y1="2" x2="12" y2="8" stroke="#6E7FBA" stroke-width="1.8"/>
+                                <circle cx="12" cy="2.5" r="0.7" fill="#6E7FBA" stroke="none"/>
+                            </svg>
+                        </div>
+                        <p class="frontier-domain">Frontier B</p>
+                        <h3 class="frontier-headline">Designer catalysts and energy materials</h3>
+                        <p class="frontier-vision">Catalysts and energy materials designed for target transformations, freeing Europe from critical raw material dependencies.</p>
+                        <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Smart electrodes more effective in hydrogen generation than current systems.</p>
+                    </div>
+
+                    <div class="frontier-card">
+                        <div class="frontier-icon">
+                            <!-- Actuating polymers: soft actuator mid-curl with internal pneumatic channel; machine-vision camera observing along a sight line (blue). -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <!-- Mounting base -->
+                                <line x1="3" y1="22" x2="11" y2="22" stroke-width="1.8"/>
+                                <!-- Soft actuator curling (S-curve, prominent stroke for tactile body) -->
+                                <path d="M 7 21 C 7 15, 13 13, 15 10 C 16.5 7.5, 19.5 6.5, 21 5.5" stroke-width="2.4"/>
+                                <!-- Internal pneumatic channel (dashed parallel inside the body) -->
+                                <path d="M 8.3 21 C 8.3 15.3, 14 13.6, 16 10.6 C 17.3 8.5, 20 7.8, 21.2 7" stroke-dasharray="0.6 1.4" opacity="0.55" stroke-width="0.9"/>
+                                <!-- Machine-vision camera (closed-loop observer) -->
+                                <rect x="1.2" y="1.5" width="5" height="4" rx="0.6" stroke="#6E7FBA" stroke-width="1.4"/>
+                                <circle cx="3.7" cy="3.5" r="1.1" stroke="#6E7FBA" stroke-width="1.2"/>
+                                <!-- Sight line to actuator -->
+                                <line x1="6.2" y1="4" x2="14.5" y2="10.5" stroke="#6E7FBA" stroke-dasharray="1 1.4" opacity="0.55" stroke-width="0.9"/>
+                            </svg>
+                        </div>
+                        <p class="frontier-domain">Frontier C</p>
+                        <h3 class="frontier-headline">Actuating polymers and soft systems</h3>
+                        <p class="frontier-vision">Polymers and soft matter designed to sense, actuate, and reconfigure across length and time scales, with function emerging through molecular dynamics.</p>
+                        <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Actuating materials applied in medical devices, including soft robotics for precision surgery.</p>
+                    </div>
+
+                    <div class="frontier-card">
+                        <div class="frontier-icon">
+                            <!-- Neuromorphic materials: 3x3 memristor crossbar array with one active synaptic junction highlighted; autonomous probe needle (blue) landed on the active junction. -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <!-- Substrate outline (subtle) -->
+                                <rect x="4" y="6" width="16" height="14" rx="0.8" opacity="0.4" stroke-width="1.1"/>
+                                <!-- Crossbar horizontal lines (bottom layer) -->
+                                <line x1="6" y1="10" x2="18" y2="10" opacity="0.55" stroke-width="1.2"/>
+                                <line x1="6" y1="14" x2="18" y2="14" opacity="0.55" stroke-width="1.2"/>
+                                <line x1="6" y1="18" x2="18" y2="18" opacity="0.55" stroke-width="1.2"/>
+                                <!-- Crossbar vertical lines (top layer) -->
+                                <line x1="9" y1="7" x2="9" y2="19.5" opacity="0.55" stroke-width="1.2"/>
+                                <line x1="13" y1="7" x2="13" y2="19.5" opacity="0.55" stroke-width="1.2"/>
+                                <line x1="17" y1="7" x2="17" y2="19.5" opacity="0.55" stroke-width="1.2"/>
+                                <!-- Inactive synaptic junctions (faint) -->
+                                <circle cx="9" cy="10" r="0.5" fill="currentColor" opacity="0.4"/>
+                                <circle cx="13" cy="10" r="0.5" fill="currentColor" opacity="0.4"/>
+                                <circle cx="17" cy="10" r="0.5" fill="currentColor" opacity="0.4"/>
+                                <circle cx="9" cy="14" r="0.5" fill="currentColor" opacity="0.4"/>
+                                <circle cx="17" cy="14" r="0.5" fill="currentColor" opacity="0.4"/>
+                                <circle cx="9" cy="18" r="0.5" fill="currentColor" opacity="0.4"/>
+                                <circle cx="13" cy="18" r="0.5" fill="currentColor" opacity="0.4"/>
+                                <circle cx="17" cy="18" r="0.5" fill="currentColor" opacity="0.4"/>
+                                <!-- Active synaptic junction (centre, highlighted) -->
+                                <circle cx="13" cy="14" r="1.5" fill="currentColor"/>
+                                <!-- Autonomous probe needle landed on the active junction -->
+                                <line x1="22" y1="2.5" x2="14.1" y2="12.9" stroke="#6E7FBA" stroke-width="1.6"/>
+                                <circle cx="22" cy="2.5" r="0.7" fill="#6E7FBA" stroke="none"/>
+                            </svg>
+                        </div>
+                        <p class="frontier-domain">Frontier D</p>
+                        <h3 class="frontier-headline">Neuromorphic materials</h3>
+                        <p class="frontier-vision">Material systems that compute by their own physics &mdash; synaptic memory, in-materio learning, autonomous decision substrates beyond the von Neumann boundary.</p>
+                        <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Neuromorphic materials that enable devices to operate autonomously.</p>
+                    </div>
+
+                    <div class="frontier-card">
+                        <div class="frontier-icon">
+                            <!-- Recyclable thermosets: triangular polymer network with two static crosslinks + one dynamic (dashed) covalent bond; enclosing closed-loop arrow (blue) signals reversibility. -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <!-- Closed-loop reformulation arrow -->
+                                <path d="M 21 12.5 A 9 9 0 1 1 17 5" stroke="#6E7FBA" stroke-width="1.4" opacity="0.7"/>
+                                <polyline points="21 12.5 18 7 12 8.5" stroke="#6E7FBA" stroke-width="1.4" opacity="0.7"/>
+                                <!-- Polymer network: three crosslinker nodes -->
+                                <circle cx="9" cy="11.5" r="1.4" fill="currentColor"/>
+                                <circle cx="15" cy="12.2" r="1.4" fill="currentColor"/>
+                                <circle cx="12" cy="18" r="1.4" fill="currentColor"/>
+                                <!-- Static covalent bonds (solid) -->
+                                <line x1="10.3" y1="11.7" x2="13.7" y2="12" stroke-width="1.5"/>
+                                <line x1="14.4" y1="13.4" x2="12.6" y2="16.7" stroke-width="1.5"/>
+                                <!-- Dynamic covalent bond (dashed: breaks and reforms) -->
+                                <line x1="9.5" y1="12.7" x2="11.5" y2="16.7" stroke-dasharray="1 1.4" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <p class="frontier-domain">Frontier E</p>
+                        <h3 class="frontier-headline">Recyclable thermosets and circular materials</h3>
+                        <p class="frontier-vision">High-performance polymers and composites engineered for circularity, breaking the historical trade-off between durability and recyclability.</p>
+                        <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Fully recyclable thermoset materials without loss of mechanical properties.</p>
+                    </div>
+                </div>
+                <div class="frontier-horizon reveal">
+                    <p class="horizon-eyebrow">Horizon 2035</p>
+                    <p>By 2035, DiscoveryLabNL is the Dutch interface for designing what materials do: the operational layer on which the Netherlands' information-materials, energy, actuating-soft-matter, neuromorphic, and circular-materials discovery communities run their <strong>autonomous, verifiable, explainable closed loops</strong>. Multimodal characterisation as in-line verification has become standard practice across the five frontiers, the AI Core's physics-grounded models and digital twins are shared community infrastructure, and the Dutch materials-function genome is the foundational dataset of European materials R&amp;D. What was demonstrated in narrow form for individual material classes over the past decade, DiscoveryLabNL industrialises across materials function broadly, becoming the federated national platform on which the next decade of discovery is built.</p>
+                </div>
+
+                <p class="frontier-footnote reveal">The detailed scientific challenges and research plans for each frontier are being scoped with consortium principal investigators and will appear in the full LSRI proposal.</p>
+            </section>
+
+            <section class="photo-divider" aria-hidden="true">
+                <div class="photo-parallax">
+                    <img src="img/hero-pillars.jpg" alt="SDL robot arm at ICMS" loading="lazy">
+                </div>
+                <div class="photo-overlay"></div>
+                <span class="photo-caption">ICMS Self-Driving Laboratory</span>
+            </section>
+
+            <!-- 3. Three Pillars -->
+            <section id="pillars">
+                <h2 class="reveal">Three Pillars</h2>
+                <div class="pillars-grid reveal-group">
+                    <div class="pillar-card" id="pillar-sdls">
+                        <h3>Self-Driving Laboratories</h3>
+                        <p>Robotic synthesis and processing platforms, automated sample handling, in-line sensing and feedback systems. AI-guided closed-loop experimentation across a hub-and-spoke network of SDL nodes.</p>
+                        <button class="pillar-expand-btn" onclick="togglePillar(this)"><span class="btn-label">Show more</span><span class="btn-chevron">&#9662;</span></button>
+                        <div class="pillar-expanded">
+                            <p>Origin: <a class="pillar-ref" href="https://bigchemistry.nl/" target="_blank" rel="noopener">Big Chemistry</a> (National Growth Fund) and <a class="pillar-ref" href="https://ipmresearchcenter.nl/" target="_blank" rel="noopener">IPM</a> (NWO Gravitation) platforms at ICMS. Hub-and-spoke architecture allows distributed SDL nodes across campus and national partners.</p>
+                        </div>
+                    </div>
+                    <div class="pillar-card" id="pillar-characterisation">
+                        <h3>Advanced Characterisation</h3>
+                        <p>Optical, electron and X-ray microscopy combined with spectroscopic techniques. Serves as the continuous, real-time verification and integration layer of the autonomous discovery loop.</p>
+                        <button class="pillar-expand-btn" onclick="togglePillar(this)"><span class="btn-label">Show more</span><span class="btn-chevron">&#9662;</span></button>
+                        <div class="pillar-expanded">
+                            <p>Connects to NEMI (national electron microscopy) and XNL (X-ray Netherlands). Key verification and integration layer ensuring experimental results feed back into the AI-driven discovery loop.</p>
+                            <p class="operational-ref"><strong>Operational reference:</strong> <a href="https://superresolution.nl/" target="_blank" rel="noopener">superresolution.nl</a>, the Advanced Microscopy Facility (AMF) at ICMS.</p>
+                        </div>
+                    </div>
+                    <div class="pillar-card" id="pillar-ai-core">
+                        <h3>AI Core</h3>
+                        <p>FAIR data backbone, curated model catalogue, dedicated AI science team — the experimental data engine and infrastructure for the next generation of materials foundation models. Federated design serving the full consortium and national partners.</p>
+                        <button class="pillar-expand-btn" onclick="togglePillar(this)"><span class="btn-label">Show more</span><span class="btn-chevron">&#9662;</span></button>
+                        <div class="pillar-expanded">
+                            <p>Aligned with SURF and Netherlands eScience Center standards. EOSC service candidate. Serves as the digital backbone connecting all SDL nodes and characterisation facilities, and as the experimental-data source for training and grounding domain-specific materials foundation models.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- loop-banner moved to hero slide 2 of 3 (methodology) -->
+
+            <!-- 3b. Discovery Domains [REMOVED 2026-06-09 — frontier cards in #revolution carry this content] -->
+            <section id="domains" style="display:none;" aria-hidden="true">
                 <h2 class="reveal">Discovery Domains</h2>
                 <p class="domains-intro reveal">Candidate research domains where autonomous, closed-loop experimentation can deliver transformative impact in advanced materials, energy, circularity, and soft matter.</p>
                 <div class="domains-grid reveal-group">
@@ -1947,7 +3174,7 @@
 
             <section id="campus">
                 <h2 class="reveal">Campus Partners</h2>
-                <p class="campus-intro reveal">DiscoveryLabNL is hosted as a joint initiative between <strong>DIFFER</strong> (NWO) and <strong>TU/e</strong> (ICMS, EIRES, Casimir), with EAISI (Eindhoven AI Systems Institute) providing the AI Core methodological foundation. Scientific leadership: Suleyman Er (DIFFER), Jan van Hest (ICMS / TU/e), Luc Brunsveld (ICMS / TU/e). Governance: equal partners across the four hosting institutes.</p>
+                <p class="campus-intro reveal">DiscoveryLabNL is hosted as a joint initiative between <strong>DIFFER</strong> (NWO) and <strong>TU/e</strong> (ICMS, EIRES, Casimir), with EAISI (Eindhoven AI Systems Institute) providing the AI Core methodological foundation. Scientific leadership: Jan van Hest (Scientific Director &amp; Lead PI, TU/e), Suleyman Er (DIFFER), Luc Brunsveld (ICMS / TU/e). Governance: equal partners across the four hosting institutes.</p>
                 <div class="consortium-grid reveal-group">
                     <div class="consortium-card">
                         <h3>DIFFER</h3>
@@ -2010,7 +3237,9 @@
                         color: var(--tue-gray);
                         margin-bottom: 1.8rem;
                         line-height: 1.6;
-                        max-width: 820px;
+                        max-width: 72ch;
+                        margin-left: 0;   /* left-align with the section title */
+                        margin-right: auto;
                     }
                     #consortium h2 { margin-bottom: 0.8rem; }
                     #consortium .csm-layout {
@@ -2040,7 +3269,14 @@
                         #consortium .csm-intro { font-size: 1rem; }
                         #consortium { padding: 4rem 1.5rem; }
                     }
-                    #consortium .csm-rings-wrap, #consortium .csm-map-wrap { width: 100%; }
+                    #consortium .csm-rings-wrap, #consortium .csm-map-wrap { width: 100%; min-width: 0; }
+                    /* Narrow-desktop band (941-1300px): height-driven SVG widths overflow the
+                       grid and clip the map at the viewport edge — switch to width-driven sizing */
+                    @media (max-width: 1300px) and (min-width: 941px) {
+                        #consortium .csm-layout { max-height: none; }
+                        #consortium .csm-rings { width: 100%; height: auto; max-height: none; }
+                        #consortium .csm-map   { width: 100%; height: auto; max-height: none; }
+                    }
                     #consortium .csm-rings { width: auto; height: 100%; aspect-ratio: 1.3; max-width: 100%; max-height: calc(100vh - 18rem); margin: 0 auto; overflow: visible; display: block; }
                     #consortium .csm-rings svg { overflow: visible; width: 100%; height: 100%; }
                     #consortium .csm-map { width: auto; height: 100%; aspect-ratio: 0.85; max-width: 100%; max-height: calc(100vh - 18rem); margin: 0 auto; display: block; }
@@ -2385,10 +3621,12 @@
                     }
                     #consortium.csm-revealed .csm-map .city-dot-cmp,
                     #consortium.csm-revealed .csm-map .city-label:not(.city-label-tlk):first-of-type { opacity: 1; transition-delay: 1.1s; }
-                    #consortium.csm-revealed .csm-map .city-dot-tlk:nth-of-type(1),
-                    #consortium.csm-revealed .csm-map .city-label-tlk:nth-of-type(1) { opacity: 1; transition-delay: 1.265s; }
+                    /* nth-of-type counts ALL circles/texts among siblings (Eindhoven=1, Delft=2,
+                       Nijmegen=3) — not just .city-dot-tlk ones. Indices must match document order. */
                     #consortium.csm-revealed .csm-map .city-dot-tlk:nth-of-type(2),
-                    #consortium.csm-revealed .csm-map .city-label-tlk:nth-of-type(2) { opacity: 1; transition-delay: 1.43s; }
+                    #consortium.csm-revealed .csm-map .city-label-tlk:nth-of-type(2) { opacity: 1; transition-delay: 1.265s; }
+                    #consortium.csm-revealed .csm-map .city-dot-tlk:nth-of-type(3),
+                    #consortium.csm-revealed .csm-map .city-label-tlk:nth-of-type(3) { opacity: 1; transition-delay: 1.43s; }
                     #consortium.csm-revealed .csm-map .city-label { opacity: 1; transition-delay: 1.1s; }
 
                     /* B: Open-slot pulse — only after the reveal settles */
@@ -2722,17 +3960,19 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
 -39 -16 -68 -2 -18 8 -60 37 -94 64 -54 41 -71 49 -122 55 -48 6 -68 14 -101
 41 -38 32 -153 76 -191 74 -8 0 -41 -13 -74 -29z"/>
 </g>
-                            <!-- Eindhoven cluster: 4 TU/e institutes + DIFFER co-located -->
-                            <circle cx="575" cy="680" r="13" class="city-dot-cmp"/>
-                            <text x="592" y="690" text-anchor="start" class="city-label">Eindhoven</text>
-                            
-                            <!-- Delft (TU Delft) -->
-                            <circle cx="375" cy="475" r="11" class="city-dot-tlk"/>
-                            <text x="360" y="465" text-anchor="end" class="city-label city-label-tlk">Delft</text>
-                            
-                            <!-- Nijmegen (Radboud) -->
-                            <circle cx="640" cy="555" r="11" class="city-dot-tlk"/>
-                            <text x="656" y="545" text-anchor="start" class="city-label city-label-tlk">Nijmegen</text>
+                            <!-- City markers: linear lat/lon projection onto the outline bbox
+                                 (x 74-951, y 0-1024 = lon 3.358-7.227E, lat 53.555-50.750N) -->
+                            <!-- Eindhoven cluster: 4 TU/e institutes + DIFFER co-located (51.44N, 5.47E) -->
+                            <circle cx="553" cy="771" r="13" class="city-dot-cmp"/>
+                            <text x="570" y="781" text-anchor="start" class="city-label">Eindhoven</text>
+
+                            <!-- Delft (TU Delft) (52.01N, 4.36E) -->
+                            <circle cx="300" cy="563" r="11" class="city-dot-tlk"/>
+                            <text x="285" y="553" text-anchor="end" class="city-label city-label-tlk">Delft</text>
+
+                            <!-- Nijmegen (Radboud) (51.81N, 5.84E) -->
+                            <circle cx="636" cy="636" r="11" class="city-dot-tlk"/>
+                            <text x="652" y="626" text-anchor="start" class="city-label city-label-tlk">Nijmegen</text>
                             
                         </svg></div>
                         <p class="csm-map-cap">Named NL partners by city.</p>
@@ -3100,13 +4340,13 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                         <p>Correlated multimodal characterisation. Cross-domain. Permanent research infrastructure.</p>
                     </div>
                 </div>
-                <p class="landscape-cta reveal">For a global SDL landscape scan, <a href="https://sdl-map.discoverylabs.nl" target="_blank" rel="noopener">explore the interactive SDL map</a>.</p>
+                <p class="landscape-cta reveal"><a href="https://sdl-map.discoverylabs.nl" target="_blank" rel="noopener">Compare all six initiatives on the interactive map &rarr;</a></p>
             </section>
 
             <!-- 5. Positioning -->
             <section id="positioning">
                 <h2 class="reveal">Positioning</h2>
-                <p class="positioning-intro reveal">DiscoveryLabNL is led jointly by DIFFER and TU/e. DIFFER hosts the initiative as an NWO institute and anchors the LSRI Materials group pathway via Suleyman Er. TU/e's ICMS contributes established self-driving lab capacity, campus-wide materials expertise, and national characterisation and digital infrastructure connections, coordinated by Jan van Hest and Luc Brunsveld.</p>
+                <p class="positioning-intro reveal">DiscoveryLabNL is led jointly by DIFFER and TU/e. DIFFER hosts the initiative as an NWO institute and anchors the LSRI Materials group pathway. TU/e's ICMS contributes established self-driving lab capacity, campus-wide materials expertise, and national characterisation and digital infrastructure connections, coordinated by Luc Brunsveld; scientific direction across TU/e is led by Jan van Hest.</p>
                 <div class="positioning-grid reveal-group">
                     <div class="position-card position-dark">
                         <h3>Within TU/e</h3>
@@ -3165,16 +4405,16 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                 <div class="team-group reveal-group">
                     <h3>Core Leadership</h3>
                     <div class="team-member">
+                        <span class="team-member-name">Jan van Hest</span>
+                        <span class="team-member-role">Scientific Director &amp; Lead Principal Investigator &mdash; scientific vision and delivery, institutional representation, EB &amp; NWO communications, TU/e</span>
+                    </div>
+                    <div class="team-member">
                         <span class="team-member-name">Suleyman Er</span>
                         <span class="team-member-role">Scientific Lead &mdash; LSRI Materials group pathway, autonomous energy-materials discovery, DIFFER</span>
                     </div>
                     <div class="team-member">
-                        <span class="team-member-name">Jan van Hest</span>
-                        <span class="team-member-role">Scientific Lead &mdash; institutional representation, EB &amp; NWO communications, ICMS / TU/e</span>
-                    </div>
-                    <div class="team-member">
                         <span class="team-member-name">Luc Brunsveld</span>
-                        <span class="team-member-role">Scientific Lead &mdash; ICMS scientific direction, LSRI submission, ICMS / TU/e</span>
+                        <span class="team-member-role">Scientific Lead &mdash; ICMS scientific direction, ICMS / TU/e</span>
                     </div>
                     <div class="team-member">
                         <span class="team-member-name">Yuyang Wang</span>
@@ -3435,8 +4675,8 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                 </div>
                 <div class="contact-info reveal" style="padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.10);">
                     <p><strong>General enquiries:</strong> <a href="mailto:discoverylabnl@tue.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">discoverylabnl@tue.nl</a></p>
+                    <p><strong>Scientific Director &amp; Lead PI:</strong> Jan van Hest <a href="mailto:j.c.m.v.hest@tue.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">&#9993; email</a></p>
                     <p><strong>Scientific Lead (DIFFER):</strong> Suleyman Er <a href="mailto:s.er@differ.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">&#9993; email</a></p>
-                    <p><strong>Scientific Lead (TU/e):</strong> Jan van Hest <a href="mailto:j.c.m.v.hest@tue.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">&#9993; email</a></p>
                     <p><strong>Scientific Lead (TU/e):</strong> Luc Brunsveld <a href="mailto:l.brunsveld@tue.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">&#9993; email</a></p>
                     <p><strong>Initiative Lead:</strong> Yuyang Wang <a href="mailto:y.wang8@tue.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">&#9993; email</a></p>
                     <p><strong>Organisations:</strong> DIFFER &middot; ICMS &middot; TU/e</p>
@@ -3447,7 +4687,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
 
     <!-- Footer -->
     <footer>
-        <p>March 2026 &middot; DIFFER &middot; ICMS &middot; TU/e &middot; <a href="https://tue-flagship-advanced-materials.nl/" target="_blank" rel="noopener">TU/e Flagship: Advanced Materials</a></p>
+        <p>June 2026 &middot; DIFFER &middot; ICMS &middot; TU/e &middot; <a href="https://tue-flagship-advanced-materials.nl/" target="_blank" rel="noopener">TU/e Flagship: Advanced Materials</a></p>
     </footer>
 
     <!-- Floating section nav (next/prev) -->
@@ -3495,10 +4735,151 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
         const HEADER_OFFSET = 56;
 
         // ==========================================
+        //  Floating right rail — visibility, scroll-spy, progress, mobile scrub
+        // ==========================================
+        (function() {
+            const rail = document.getElementById('dlnlRail');
+            if (!rail) return;
+            const progressEl = document.getElementById('dlnlRailProgress');
+            const nodes = Array.from(rail.querySelectorAll('.dlnl-rail__node'));
+            const targets = nodes.map(n => ({ node: n, target: document.getElementById(n.dataset.target) })).filter(t => t.target);
+            if (!targets.length) return;
+            const landing = document.getElementById('landing');
+
+            let ticking = false;
+            let mouseNearEdge = false;
+            function update() {
+                const scrollY = window.scrollY;
+                // Visibility: appear after scrolling ~60% past the landing section,
+                // OR (while still on the landing) when the mouse approaches the right edge
+                const landingH = landing ? landing.offsetHeight : window.innerHeight;
+                rail.classList.toggle('visible', scrollY > landingH * 0.6 || mouseNearEdge);
+
+                // Scroll-spy: last target whose top crosses the 1/3-viewport reference line
+                const refLine = window.innerHeight * 0.34 + scrollY;
+                const tops = targets.map(t => t.target.getBoundingClientRect().top + window.scrollY);
+                let activeIdx = -1;
+                for (let i = 0; i < targets.length; i++) {
+                    if (tops[i] <= refLine) activeIdx = i;
+                }
+                nodes.forEach((n, i) => n.classList.toggle('active', i === activeIdx));
+
+                // Progress fill follows the DOTS, not raw page percentage:
+                // fill to the active dot's centre, interpolating toward the next
+                // dot by scroll fraction between their target sections.
+                if (progressEl) {
+                    const line = progressEl.parentElement;
+                    const lineRect = line.getBoundingClientRect();
+                    const dotCentre = (i) => {
+                        const r = targets[i].node.querySelector('.dlnl-rail__dot').getBoundingClientRect();
+                        return (r.top + r.height / 2) - lineRect.top;
+                    };
+                    let fillPx = 0;
+                    if (activeIdx >= 0) {
+                        const cur = dotCentre(activeIdx);
+                        if (activeIdx < targets.length - 1) {
+                            const span = tops[activeIdx + 1] - tops[activeIdx];
+                            const f = span > 0 ? Math.min(1, Math.max(0, (refLine - tops[activeIdx]) / span)) : 0;
+                            fillPx = cur + f * (dotCentre(activeIdx + 1) - cur);
+                        } else {
+                            // Past the last target: ease to the line's end by remaining page scroll
+                            const docEnd = document.documentElement.scrollHeight;
+                            const span = docEnd - tops[activeIdx];
+                            const f = span > 0 ? Math.min(1, Math.max(0, (refLine - tops[activeIdx]) / span)) : 1;
+                            fillPx = cur + f * (lineRect.height - cur);
+                        }
+                    }
+                    progressEl.style.height = Math.max(0, fillPx) + 'px';
+                }
+                ticking = false;
+            }
+            // Mobile scrollbar behaviour: mark the rail as 'scrolling' during scroll,
+            // drop the class ~900ms after the last scroll event (CSS fades it out on touch screens)
+            let idleTimer = null;
+            window.addEventListener('scroll', () => {
+                if (!ticking) { window.requestAnimationFrame(update); ticking = true; }
+                rail.classList.add('scrolling');
+                clearTimeout(idleTimer);
+                idleTimer = setTimeout(() => rail.classList.remove('scrolling'), 900);
+            }, { passive: true });
+            window.addEventListener('resize', update);
+            // Mouse-approach reveal: within 90px of the right edge the rail appears,
+            // even on the landing where it is otherwise hidden
+            window.addEventListener('mousemove', (e) => {
+                const near = e.clientX > window.innerWidth - 90;
+                if (near !== mouseNearEdge) {
+                    mouseNearEdge = near;
+                    if (!ticking) { window.requestAnimationFrame(update); ticking = true; }
+                }
+            }, { passive: true });
+            update();
+
+            // ---- Mobile scrub: touch-drag along the rail previews labels; release commits ----
+            let focusedIdx = -1;
+            let fadeTimer = null;
+            function nearestNode(clientY) {
+                let best = -1, bestDist = Infinity;
+                nodes.forEach((n, i) => {
+                    const r = n.getBoundingClientRect();
+                    const mid = r.top + r.height / 2;
+                    const d = Math.abs(clientY - mid);
+                    if (d < bestDist) { bestDist = d; best = i; }
+                });
+                return best;
+            }
+            function setFocus(idx) {
+                focusedIdx = idx;
+                nodes.forEach((n, i) => n.classList.toggle('focused', i === idx));
+            }
+            rail.addEventListener('touchstart', (e) => {
+                if (!rail.classList.contains('visible')) return;
+                clearTimeout(fadeTimer);
+                rail.classList.add('touching');
+                setFocus(nearestNode(e.touches[0].clientY));
+                e.preventDefault();
+            }, { passive: false });
+            rail.addEventListener('touchmove', (e) => {
+                if (!rail.classList.contains('touching')) return;
+                setFocus(nearestNode(e.touches[0].clientY));
+                e.preventDefault();
+            }, { passive: false });
+            rail.addEventListener('touchend', () => {
+                if (focusedIdx >= 0 && targets[focusedIdx]) {
+                    targets[focusedIdx].target.scrollIntoView({ behavior: 'smooth' });
+                }
+                fadeTimer = setTimeout(() => {
+                    rail.classList.remove('touching');
+                    nodes.forEach(n => n.classList.remove('focused'));
+                    focusedIdx = -1;
+                }, 550);
+            });
+            rail.addEventListener('touchcancel', () => {
+                rail.classList.remove('touching');
+                nodes.forEach(n => n.classList.remove('focused'));
+                focusedIdx = -1;
+            });
+        })();
+
+        // Redirect legacy #revolution anchor to slide 3
+        (function() {
+            function maybeRedirect() {
+                if (window.location.hash === '#revolution') {
+                    const target = document.getElementById('dlnl-claim-slide-3');
+                    if (target) {
+                        history.replaceState(null, '', '#dlnl-claim-slide-3');
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
+            window.addEventListener('DOMContentLoaded', maybeRedirect);
+            window.addEventListener('hashchange', maybeRedirect);
+        })();
+
+        // ==========================================
         //  Stakeholder data
         // ==========================================
         const stakeholders = {
-            jh: { name: 'Jan van Hest', role: 'Scientific Lead, ICMS / TU/e', org: 'ICMS / TU/e', tier: 'core', note: 'Scientific Lead of DiscoveryLabNL on the TU/e side; Dean, Biomedical Engineering, TU/e; founding Scientific Director, ICMS.' },
+            jh: { name: 'Jan van Hest', role: 'Scientific Director & Lead PI, TU/e', org: 'TU/e', tier: 'core', note: 'Scientific Director and Lead Principal Investigator of DiscoveryLabNL; Dean, Biomedical Engineering, TU/e; founding Scientific Director, ICMS.' },
             yw: { name: 'Yuyang Wang', role: 'Initiative Lead', org: 'ICMS / TU/e', tier: 'core', note: 'Initiative lead and programme manager: charter, consortium formation, infrastructure architecture.' },
             mb: { name: 'Monique Bruining', role: 'Initiative Co-lead & Flagship Co-lead', org: 'ICMS / TU/e', tier: 'core', note: 'Initiative co-lead; Managing Director, ICMS; co-lead of the TU/e Materials Flagship.' },
             nt: { name: 'Nicholas Tito', role: 'Flagship Strategy & Operations', org: 'ICMS', tier: 'committed', note: 'Strategy and operations for the TU/e Materials Flagship; alignment with the 10-year Intelligent Materials Labs vision.' },
@@ -3514,7 +4895,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
             se: { name: 'S\u00fcleyman Er', role: 'Scientific Lead, DIFFER', org: 'DIFFER', tier: 'core', note: 'Scientific Lead of DiscoveryLabNL on the DIFFER side; Head of the Chemical Energy department, DIFFER; LSRI Materials group lead pathway; autonomous energy-materials discovery.' },
             st: { name: 'Shuxia Tao', role: 'Department Head', org: 'DIFFER', tier: 'committed', note: 'Computational materials physics at DIFFER; machine learning for energy materials.' },
             eb: { name: 'Erik Bakkers', role: 'Group Leader', org: 'Applied Photonics and Semiconductor Engineering', tier: 'committed', note: 'Quantum and energy materials; semiconductor nanowire devices.' },
-            lb: { name: 'Luc Brunsveld', role: 'Scientific Lead, ICMS / TU/e', org: 'ICMS / TU/e', tier: 'core', note: 'Scientific Lead of DiscoveryLabNL on the TU/e side; Scientific Director, Institute for Complex Molecular Systems (ICMS); LSRI questionnaire main submitter.' },
+            lb: { name: 'Luc Brunsveld', role: 'Scientific Lead, ICMS / TU/e', org: 'ICMS / TU/e', tier: 'core', note: 'Scientific Lead of DiscoveryLabNL on the TU/e side; Scientific Director, Institute for Complex Molecular Systems (ICMS).' },
             tn: { name: 'Timothy No\u00ebl', role: 'Professor, Flow Chemistry', org: 'University of Amsterdam', tier: 'planned', note: 'Professor of Flow Chemistry, UvA (HIMS); continuous-flow photochemistry and SDL.' },
             fs: { name: 'Francesco Staps', role: 'Business Developer', org: 'Big Chemistry', tier: 'dialogue', note: 'Business Developer, Big Chemistry — the national SDL programme hosted at TU/e.' },
             ap: { name: 'Anja Palmans', role: 'Full Professor, Supramolecular Chemistry & Catalysis', org: 'ICMS / TU/e', tier: 'dialogue', note: 'Supramolecular chemistry and single-chain polymeric nanoparticles, ICMS.' },
@@ -3540,7 +4921,10 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
         function togglePillar(button) {
             const expanded = button.nextElementSibling;
             expanded.classList.toggle('open');
-            button.textContent = expanded.classList.contains('open') ? 'Show less' : 'Show more';
+            const isOpen = expanded.classList.contains('open');
+            button.classList.toggle('open', isOpen);
+            const label = button.querySelector('.btn-label');
+            if (label) label.textContent = isOpen ? 'Show less' : 'Show more';
         }
 
         // ==========================================
@@ -3896,7 +5280,8 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
         // ==========================================
         const prevBtn = document.getElementById('prevSection');
         const nextBtn = document.getElementById('nextSection');
-        const navSections = Array.from(document.querySelectorAll('section[id]'));
+        const navSections = Array.from(document.querySelectorAll('section[id]:not([style*="display:none"]), .hero-slide[id]'))
+            .sort((a, b) => a.getBoundingClientRect().top + window.pageYOffset - (b.getBoundingClientRect().top + window.pageYOffset));
 
         function getCurrentSectionIndex() {
             let idx = 0;
@@ -3920,10 +5305,22 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
             }
         }
 
+        // Page-number indicator (bottom-right)
+        const piCurrent = document.getElementById('pi-current');
+        const piTotal = document.getElementById('pi-total');
+        if (piTotal) {
+            piTotal.textContent = String(navSections.length).padStart(2, '0');
+        }
+        function updatePageIndicator(idx) {
+            if (!piCurrent) return;
+            piCurrent.textContent = String(idx + 1).padStart(2, '0');
+        }
+
         function updateSectionNavState() {
             const idx = getCurrentSectionIndex();
             prevBtn.disabled = idx === 0;
             nextBtn.disabled = idx >= navSections.length - 1;
+            updatePageIndicator(idx);
         }
 
         prevBtn.addEventListener('click', () => {
