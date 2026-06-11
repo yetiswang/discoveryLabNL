@@ -1235,13 +1235,19 @@
         /* Stakeholder PIN gate */
         #stakeholders { position: relative; }
         /* ============================================================
-           FEATURE FLAG — stakeholder momentum map HIDDEN for the
-           external audience (2026-06-11). The section markup, PIN
-           gate, stakeholder data and zoom/pan JS are all retained.
-           To re-enable for internal use: delete the rule below.
-           (The preview repo, discoverylabnl-preview, still shows it.)
+           FEATURE FLAGS — sections HIDDEN for the external audience
+           (2026-06-11). All markup, data and JS retained in the repo.
+           To re-enable a section internally: remove it from the rule
+           below (and restore its entry in the sidebar list, marked
+           with matching FEATURE FLAG comments).
+           - #stakeholders: momentum map (PIN gate, zoom/pan, data)
+           - #positioning: content redundant with Campus Partners +
+             Open Consortium + Landscape; investment card carries
+             internal EB-negotiation posture
+           (The preview repo, discoverylabnl-preview, shows both.)
            ============================================================ */
-        #stakeholders { display: none !important; }
+        #stakeholders,
+        #positioning { display: none !important; }
         .stake-gate {
             position: absolute; inset: 0; z-index: 50;
             display: flex; align-items: center; justify-content: center;
@@ -2481,10 +2487,12 @@
                     <li><a href="#campus">Campus Partners</a></li>
                     <li><a href="#consortium">An Open Consortium</a></li>
                     <li><a href="#landscape">Landscape</a></li>
+                    <!-- FEATURE FLAG (2026-06-11): Positioning + Stakeholders hidden for external audience — restore these entries when re-enabling the sections:
                     <li><a href="#positioning">Positioning</a></li>
+                    <li><a href="#stakeholders">Stakeholders</a></li>
+                    -->
                     <li><a href="#roadmap">Roadmap</a></li>
                     <li><a href="#team">Team</a></li>
-                    <li><a href="#stakeholders">Stakeholders</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
