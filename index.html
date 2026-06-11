@@ -1626,7 +1626,9 @@
         /* Unified content measure — every downstream section gets the same centered
            1200px container (the #world-today pattern, applied site-wide). Full-bleed
            stays full-bleed: landing, photo dividers, stakeholder map, contact bg. */
-        #pillars > *, #campus > *, #consortium > *, #landscape > *,
+        /* #consortium excluded — it has its own bespoke flush-left rings/map layout;
+           the centered 1200px container indented its h2 while intro/rings stayed flush-left. */
+        #pillars > *, #campus > *, #landscape > *,
         #positioning > *, #roadmap > *, #team > *,
         #contact > *:not(.contact-bg) {
             max-width: 1200px;
@@ -3230,12 +3232,22 @@
                         --csm-faint: rgba(30,30,40,0.20);
                         --csm-tip-bg: #FFFFFF;
                         --csm-tip-border: rgba(30,30,40,0.18);
-                        padding: 4rem 4rem;
+                        padding: 3.5rem 4rem;
                         background: var(--bg);
                         color: var(--tue-dark);
                         display: flex;
                         flex-direction: column;
-                        justify-content: center;
+                        justify-content: flex-start;
+                    }
+                    /* All three blocks share one flush-left inner measure, so the title,
+                       intro and rings/map align to the same left edge. */
+                    #consortium h2,
+                    #consortium .csm-intro,
+                    #consortium .csm-layout {
+                        width: 100%;
+                        max-width: 1280px;
+                        margin-left: 0;
+                        margin-right: auto;
                     }
                     html[data-theme="dark"] #consortium {
                         --csm-ink: var(--tue-dark);
@@ -3268,13 +3280,10 @@
                         display: grid;
                         grid-template-columns: 1.4fr 0.6fr;
                         gap: 3rem;
-                        align-items: center;
-                        max-width: none;
-                        margin: 0;
+                        align-items: stretch;   /* columns fill the row height */
                         padding: 0;
-                        flex: 1 1 auto;
+                        flex: 1 1 auto;         /* fill the viewport height left after title + intro */
                         min-height: 0;
-                        max-height: calc(100vh - 16rem);
                     }
                     @media (max-width: 940px) {
                         #consortium { display: block; padding: 3rem 1.5rem; min-height: auto; }
@@ -3291,18 +3300,21 @@
                         #consortium .csm-intro { font-size: 1rem; }
                         #consortium { padding: 4rem 1.5rem; }
                     }
-                    #consortium .csm-rings-wrap, #consortium .csm-map-wrap { width: 100%; min-width: 0; }
-                    /* Narrow-desktop band (941-1300px): height-driven SVG widths overflow the
-                       grid and clip the map at the viewport edge — switch to width-driven sizing */
-                    @media (max-width: 1300px) and (min-width: 941px) {
-                        #consortium .csm-layout { max-height: none; }
-                        #consortium .csm-rings { width: 100%; height: auto; max-height: none; }
-                        #consortium .csm-map   { width: 100%; height: auto; max-height: none; }
+                    /* Each column is a flex stack: the SVG box takes the space left after the
+                       legends/caption, and the SVG scales to fit it via preserveAspectRatio=meet.
+                       This fits any viewport without clipping in either dimension. */
+                    #consortium .csm-rings-wrap, #consortium .csm-map-wrap {
+                        width: 100%; min-width: 0; min-height: 0;
+                        display: flex; flex-direction: column; justify-content: center;
                     }
-                    #consortium .csm-rings { width: auto; height: 100%; aspect-ratio: 1.3; max-width: 100%; max-height: calc(100vh - 18rem); margin: 0 auto; overflow: visible; display: block; }
-                    #consortium .csm-rings svg { overflow: visible; width: 100%; height: 100%; }
-                    #consortium .csm-map { width: auto; height: 100%; aspect-ratio: 0.85; max-width: 100%; max-height: calc(100vh - 18rem); margin: 0 auto; display: block; }
-                    #consortium .csm-rings svg, #consortium .csm-map svg { width: 100%; height: 100%; display: block; }
+                    #consortium .csm-rings, #consortium .csm-map {
+                        flex: 1 1 auto; min-height: 0; width: 100%; margin: 0 auto; display: block; overflow: visible;
+                    }
+                    #consortium .csm-rings svg, #consortium .csm-map svg {
+                        width: 100%; height: 100%; display: block; overflow: visible;
+                    }
+                    #consortium .csm-key, #consortium .pillar-key,
+                    #consortium .csm-cap, #consortium .csm-map-title { flex: 0 0 auto; }
 
                     /* Rings */
                     #consortium .t-int { fill: none; stroke: var(--csm-hairline); stroke-width: 1; stroke-dasharray: 6 5; }
