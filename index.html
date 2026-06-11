@@ -1472,6 +1472,16 @@
         .reveal-group.visible > :nth-child(7) { transition-delay: 0.6s; }
         .reveal-group.visible > :nth-child(8) { transition-delay: 0.7s; }
 
+        /* Accessibility — honour reduced-motion: show content instantly, no slide/fade */
+        @media (prefers-reduced-motion: reduce) {
+            .reveal,
+            .reveal-group > * {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+        }
+
         /* Responsive — tablet */
         @media (max-width: 1024px) {
             section { padding: 4rem 2.5rem; }
@@ -2874,7 +2884,7 @@
 
                 <div class="sdl-map-block reveal">
                     <div class="sdl-map-header">
-                        <img class="sdl-map-favicon" src="https://sdl-map.discoverylabs.nl/sdl_favicon.png" alt="" loading="lazy" decoding="async">
+                        <img class="sdl-map-favicon" src="https://sdl-map.discoverylabs.nl/sdl_favicon.png" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'">
                         <p class="sdl-map-eyebrow">The global SDL landscape</p>
                     </div>
                     <p>Global initiatives with large-scale funding are fuelling the materials revolution. The Netherlands needs to wake up, join, and lead the <strong>verifiable discoveries</strong> that shape the next decade.</p>
@@ -5715,6 +5725,82 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
         } else {
             targets.forEach(el => el.classList.add('visible'));
         }
+    })();
+
+    // ==========================================
+    //  Replay reveals on in-page anchor navigation
+    // ------------------------------------------
+    //  Rail nav, ToC, and the slide back/continue links scroll via CSS
+    //  smooth-scroll. The first-pass observer above fires *during* that
+    //  transit, so the 0.5–0.6s reveal is spent before the reader settles
+    //  on the destination — the section looks static on arrival. Here we
+    //  re-arm the reveals that land in the viewport once the scroll comes
+    //  to rest, so the animation is actually witnessed where the eye lands.
+    // ==========================================
+    (function() {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
+
+        // Web Animations API replays cleanly from the hidden state regardless of
+        // the element's current opacity, and releases back to the CSS resting
+        // state (visible) when done — no reflow hacks, no permanent style changes.
+        function play(el, duration, delay) {
+            if (!el.animate) return;
+            el.animate(
+                [
+                    { opacity: 0, transform: 'translateY(20px)' },
+                    { opacity: 1, transform: 'translateY(0)' }
+                ],
+                { duration: duration, delay: delay, easing: EASE, fill: 'backwards' }
+            );
+        }
+
+        function replayInView() {
+            if (reduceMotion.matches) return;
+            const vh = window.innerHeight;
+            document.querySelectorAll('.reveal, .reveal-group').forEach(el => {
+                const r = el.getBoundingClientRect();
+                if (r.height === 0) return;
+                // Only the elements the reader is actually arriving at
+                if (r.top >= vh * 0.92 || r.bottom <= vh * 0.08) return;
+                el.classList.add('visible');
+                if (el.classList.contains('reveal-group')) {
+                    // Stagger the children, mirroring the CSS nth-child delays
+                    Array.prototype.forEach.call(el.children, (child, i) => {
+                        play(child, 550, Math.min(i, 7) * 100);
+                    });
+                } else {
+                    play(el, 600, 0);
+                }
+            });
+        }
+
+        // Replay once the post-navigation smooth scroll has settled.
+        let settle = null;
+        function scheduleReplay() {
+            if (reduceMotion.matches) return;
+            let lastY = window.scrollY, stableFrames = 0;
+            const startedAt = Date.now();
+            clearInterval(settle);
+            settle = setInterval(() => {
+                const y = window.scrollY;
+                if (Math.abs(y - lastY) < 2) stableFrames++; else stableFrames = 0;
+                lastY = y;
+                if (stableFrames >= 3 || Date.now() - startedAt > 1400) {
+                    clearInterval(settle);
+                    replayInView();
+                }
+            }, 80);
+        }
+
+        // Fires for rail nodes, ToC links and slide back/continue links.
+        window.addEventListener('hashchange', scheduleReplay);
+        // Same-hash clicks (e.g. tapping the already-active rail node) don't
+        // emit hashchange — catch them directly.
+        document.addEventListener('click', (e) => {
+            const a = e.target.closest('a[href^="#"]');
+            if (a && a.getAttribute('href').length > 1) scheduleReplay();
+        });
     })();
 
     // ==========================================
