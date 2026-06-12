@@ -787,6 +787,20 @@
         .landscape-meta { font-size: 0.78rem; color: var(--tue-gray); font-weight: 600; letter-spacing: 0.08em; margin-bottom: 0.75rem; text-transform: uppercase; }
         .landscape-card p:last-child { font-size: 0.9rem; color: var(--tue-gray); line-height: 1.55; margin: 0; }
         .landscape-highlight { background: var(--inverse-bg); border-color: var(--inverse-bg); }
+        /* Competitors arrive quickly; the DLNL card lands last and ignites */
+        .landscape-grid.visible > :nth-child(6) { transition-delay: 0.75s; }
+        @keyframes igniteGlow {
+            0%   { box-shadow: 0 0 0 rgba(200, 16, 46, 0); }
+            35%  { box-shadow: 0 0 28px rgba(200, 16, 46, 0.45); }
+            100% { box-shadow: 0 0 18px rgba(200, 16, 46, 0.15); }
+        }
+        .landscape-grid.visible .landscape-highlight {
+            border-color: var(--tue-red);
+            animation: igniteGlow 1.2s ease-out 1.5s backwards;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .landscape-grid.visible .landscape-highlight { animation: none !important; }
+        }
         .landscape-highlight h3 { color: #fff; }
         .landscape-highlight .landscape-meta { color: rgba(255,255,255,0.85); }
         .landscape-highlight p:last-child { color: rgba(255,255,255,0.92); }
@@ -4390,32 +4404,32 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                 <div class="landscape-grid reveal-group">
                     <div class="landscape-card">
                         <h3>Acceleration Consortium</h3>
-                        <p class="landscape-meta">Canada &middot; Can$500M</p>
+                        <p class="landscape-meta">Canada &middot; Can$<span data-count="500">500</span>M</p>
                         <p>50 robots, 7 SDLs. World&rsquo;s largest SDL programme. No characterisation pillar.</p>
                     </div>
                     <div class="landscape-card">
                         <h3>Korea 500 SDL</h3>
-                        <p class="landscape-meta">Korea &middot; $125M+</p>
+                        <p class="landscape-meta">Korea &middot; $<span data-count="125">125</span>M+</p>
                         <p>500 labs by 2030. National scale. XRD only, no multimodal characterisation.</p>
                     </div>
                     <div class="landscape-card">
                         <h3>DIADEM</h3>
-                        <p class="landscape-meta">France &middot; &euro;85M</p>
+                        <p class="landscape-meta">France &middot; &euro;<span data-count="85">85</span>M</p>
                         <p>Synchrotron + EM + spectroscopy. Advanced but not yet integrated into SDL loops.</p>
                     </div>
                     <div class="landscape-card">
                         <h3>CAPeX</h3>
-                        <p class="landscape-meta">DTU, Denmark &middot; 300M DKK (~&euro;45M)</p>
+                        <p class="landscape-meta">DTU, Denmark &middot; <span data-count="300">300</span>M DKK (~&euro;45M)</p>
                         <p>Synchrotron PDF in SDL loop. Battery-only, single-technique per workflow.</p>
                     </div>
                     <div class="landscape-card">
                         <h3>Big Chemistry</h3>
-                        <p class="landscape-meta">Netherlands &middot; &euro;207M</p>
+                        <p class="landscape-meta">Netherlands &middot; &euro;<span data-count="207">207</span>M</p>
                         <p>Inline techniques (tensiometry, confocal microscopy, nanoindenter). Chemistry-specific, not cross-domain.</p>
                     </div>
                     <div class="landscape-card landscape-highlight">
                         <h3>DiscoveryLabNL</h3>
-                        <p class="landscape-meta">Netherlands &middot; &euro;30M planned</p>
+                        <p class="landscape-meta">Netherlands &middot; &euro;<span data-count="30">30</span>M planned</p>
                         <p>Correlated multimodal characterisation. Cross-domain. Permanent research infrastructure.</p>
                     </div>
                 </div>
