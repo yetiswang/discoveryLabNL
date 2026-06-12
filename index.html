@@ -1442,19 +1442,35 @@
         /* Section-level reveal (triggered by IntersectionObserver) */
         .reveal {
             opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-                        transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transform: translateY(36px);
+            transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1),
+                        transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
         }
         .reveal.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
+        /* Choreography delay utilities (one-way reveals, so plain delay is safe) */
+        .reveal.rd-1 { transition-delay: 0.1s; }
+        .reveal.rd-2 { transition-delay: 0.22s; }
+        .reveal.rd-3 { transition-delay: 0.34s; }
+        .reveal.rd-4 { transition-delay: 0.46s; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal, .reveal-group > * {
+                opacity: 1 !important; transform: none !important; transition: none !important;
+            }
+            .anim-entrance { animation: none !important; opacity: 1 !important; }
+            .photo-divider.in-view img { animation: none !important; }
+            .roadmap-line { transform: none !important; transition: none !important; }
+            .phase-here, .phase-dot { animation: none !important; }
+        }
+
         /* Staggered group reveal — parent observed, children animate */
         .reveal-group > * {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(28px);
             transition: opacity 0.55s cubic-bezier(0.23, 1, 0.32, 1),
                         transform 0.55s cubic-bezier(0.23, 1, 0.32, 1);
         }
@@ -4330,6 +4346,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                             const io = new IntersectionObserver((entries) => {
                                 entries.forEach(e => {
                                     if (e.isIntersecting) {
+                                        if (window.dlnlAutoScrollActive) return; // flown past: reveal engine settles it
                                         sectionEl.classList.add('csm-revealed');
                                         io.disconnect();
                                     }
@@ -5699,21 +5716,83 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
     <script>
     // ==========================================
     //  IntersectionObserver — reveal on scroll
+    //  v2: suppresses reveals during programmatic (rail/anchor) scrolls so
+    //  sections flown past keep their animation for later organic scrolling.
     // ==========================================
     (function() {
-        const targets = document.querySelectorAll('.reveal, .reveal-group');
-        if ('IntersectionObserver' in window) {
-            const obs = new IntersectionObserver((entries) => {
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const targets = Array.from(document.querySelectorAll('.reveal, .reveal-group'))
+            .filter(el => { const sec = el.closest('section'); return !sec || getComputedStyle(sec).display !== 'none'; });
+
+        function startCounts(scope) {
+            scope.querySelectorAll('[data-count]').forEach(span => {
+                if (span.dataset.counted) return;
+                span.dataset.counted = '1';
+                const end = parseFloat(span.dataset.count);
+                if (!isFinite(end)) return;
+                if (prefersReduced) { span.textContent = String(end); return; }
+                const dur = 900, t0 = performance.now();
+                (function tick(now) {
+                    const p = Math.min(1, (now - t0) / dur);
+                    span.textContent = String(Math.round(end * (1 - Math.pow(1 - p, 3))));
+                    if (p < 1) requestAnimationFrame(tick);
+                })(t0);
+            });
+        }
+
+        function reveal(el) {
+            el.classList.add('visible');
+            if (el.classList.contains('roadmap-phases')) {
+                const t = el.closest('.roadmap-timeline');
+                if (t) t.classList.add('line-drawn');
+            }
+            startCounts(el);
+        }
+
+        // --- Programmatic-scroll suppression ---
+        window.dlnlAutoScrollActive = false;
+        let settleTimer = null;
+        function markAutoScroll() {
+            window.dlnlAutoScrollActive = true;
+            clearTimeout(settleTimer);
+            settleTimer = setTimeout(settle, 300); // re-armed by scroll events below
+        }
+        function settle() {
+            window.dlnlAutoScrollActive = false;
+            clearTimeout(settleTimer);
+            targets.forEach(el => {
+                if (el.classList.contains('visible')) return;
+                const r = el.getBoundingClientRect();
+                if (r.top < window.innerHeight - 40 && r.bottom > 0) { reveal(el); if (obs) obs.unobserve(el); }
+            });
+            const cs = document.getElementById('consortium');
+            if (cs && !cs.classList.contains('csm-revealed')) {
+                const r = cs.getBoundingClientRect();
+                if (r.top < window.innerHeight * 0.85 && r.bottom > 0) cs.classList.add('csm-revealed');
+            }
+        }
+        window.addEventListener('scroll', () => {
+            if (!window.dlnlAutoScrollActive) return;
+            clearTimeout(settleTimer);
+            settleTimer = setTimeout(settle, 180);
+        }, { passive: true });
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('a[href^="#"], .dlnl-rail__node, .tab-item, .section-nav button')) markAutoScroll();
+        }, true);
+
+        let obs = null;
+        if ('IntersectionObserver' in window && !prefersReduced) {
+            obs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
-                    if (e.isIntersecting) {
-                        e.target.classList.add('visible');
-                        obs.unobserve(e.target);
-                    }
+                    if (!e.isIntersecting) return;
+                    if (window.dlnlAutoScrollActive) return; // mid-flight: settle() reveals the destination
+                    reveal(e.target);
+                    obs.unobserve(e.target);
                 });
             }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
             targets.forEach(el => obs.observe(el));
         } else {
-            targets.forEach(el => el.classList.add('visible'));
+            targets.forEach(el => reveal(el));
         }
     })();
 
