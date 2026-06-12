@@ -5822,6 +5822,11 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
         } else {
             targets.forEach(el => reveal(el));
         }
+
+        // Initial load with a #hash: the browser's own (smooth) jump to the
+        // anchor is not click-initiated, so treat it as a programmatic scroll
+        // too — sections flown past keep their reveals.
+        if (location.hash) markAutoScroll();
     })();
 
     // ==========================================
