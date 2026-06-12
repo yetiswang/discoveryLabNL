@@ -740,7 +740,21 @@
         /* Roadmap */
         #roadmap h2 { font-size: 2.5rem; margin-bottom: 3rem; color: var(--tue-dark); }
         .roadmap-timeline { display: flex; justify-content: space-between; align-items: flex-start; position: relative; padding: 2rem 0; }
-        .roadmap-line { position: absolute; top: 60px; left: 0; right: 0; height: 2px; background-color: var(--tue-light-border); z-index: 0; }
+        .roadmap-line { position: absolute; top: 60px; left: 0; right: 0; height: 2px; background-color: var(--tue-light-border); z-index: 0;
+            transform: scaleX(0); transform-origin: left center;
+            transition: transform 1.4s cubic-bezier(0.23, 1, 0.32, 1) 0.1s; }
+        .roadmap-timeline.line-drawn .roadmap-line { transform: scaleX(1); }
+        /* Phases light up left-to-right as the line passes them */
+        .roadmap-phases.visible > :nth-child(1) { transition-delay: 0.2s; }
+        .roadmap-phases.visible > :nth-child(2) { transition-delay: 0.55s; }
+        .roadmap-phases.visible > :nth-child(3) { transition-delay: 0.9s; }
+        .roadmap-phases.visible > :nth-child(4) { transition-delay: 1.25s; }
+        @keyframes hereBeat {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.08); opacity: 0.8; }
+        }
+        .roadmap-phases.visible .phase-here,
+        .roadmap-phases.visible .roadmap-phase.active .phase-dot { animation: hereBeat 1.8s ease-in-out 1.7s 3; }
         .roadmap-phases { display: flex; width: 100%; justify-content: space-between; position: relative; z-index: 1; }
         .roadmap-phase { flex: 1; text-align: center; position: relative; }
         .phase-dot {
