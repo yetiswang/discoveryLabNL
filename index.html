@@ -744,11 +744,13 @@
             transform: scaleX(0); transform-origin: left center;
             transition: transform 1.4s cubic-bezier(0.23, 1, 0.32, 1) 0.1s; }
         .roadmap-timeline.line-drawn .roadmap-line { transform: scaleX(1); }
-        /* Phases light up left-to-right as the line passes them */
-        .roadmap-phases.visible > :nth-child(1) { transition-delay: 0.2s; }
-        .roadmap-phases.visible > :nth-child(2) { transition-delay: 0.55s; }
-        .roadmap-phases.visible > :nth-child(3) { transition-delay: 0.9s; }
-        .roadmap-phases.visible > :nth-child(4) { transition-delay: 1.25s; }
+        /* Phases light up left-to-right as the line passes them.
+           Extra .roadmap-timeline ancestor outranks the generic group stagger,
+           which appears later in the stylesheet at equal specificity. */
+        .roadmap-timeline .roadmap-phases.visible > :nth-child(1) { animation-delay: 0.2s; }
+        .roadmap-timeline .roadmap-phases.visible > :nth-child(2) { animation-delay: 0.55s; }
+        .roadmap-timeline .roadmap-phases.visible > :nth-child(3) { animation-delay: 0.9s; }
+        .roadmap-timeline .roadmap-phases.visible > :nth-child(4) { animation-delay: 1.25s; }
         @keyframes hereBeat {
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.08); opacity: 0.8; }
@@ -787,16 +789,18 @@
         .landscape-meta { font-size: 0.78rem; color: var(--tue-gray); font-weight: 600; letter-spacing: 0.08em; margin-bottom: 0.75rem; text-transform: uppercase; }
         .landscape-card p:last-child { font-size: 0.9rem; color: var(--tue-gray); line-height: 1.55; margin: 0; }
         .landscape-highlight { background: var(--inverse-bg); border-color: var(--inverse-bg); }
-        /* Competitors arrive quickly; the DLNL card lands last and ignites */
-        .landscape-grid.visible > :nth-child(6) { transition-delay: 0.75s; }
+        /* Competitors arrive quickly; the DLNL card lands last and ignites.
+           This rule outranks the generic .reveal-group child rule, so it must
+           declare BOTH the entry animation (delayed to land last) and the glow. */
         @keyframes igniteGlow {
             0%   { box-shadow: 0 0 0 rgba(200, 16, 46, 0); }
             35%  { box-shadow: 0 0 28px rgba(200, 16, 46, 0.45); }
             100% { box-shadow: 0 0 18px rgba(200, 16, 46, 0.15); }
         }
-        .landscape-grid.visible .landscape-highlight {
+        .landscape-grid.visible > .landscape-highlight {
             border-color: var(--tue-red);
-            animation: igniteGlow 1.2s ease-out 1.5s backwards;
+            animation: groupIn 0.55s cubic-bezier(0.23, 1, 0.32, 1) 0.75s backwards,
+                       igniteGlow 1.2s ease-out 1.5s backwards;
         }
         @media (prefers-reduced-motion: reduce) {
             .landscape-grid.visible .landscape-highlight { animation: none !important; }
@@ -1487,7 +1491,7 @@
 
         @media (prefers-reduced-motion: reduce) {
             .reveal, .reveal-group > * {
-                opacity: 1 !important; transform: none !important; transition: none !important;
+                opacity: 1 !important; transform: none !important; transition: none !important; animation: none !important;
             }
             .anim-entrance { animation: none !important; opacity: 1 !important; }
             .photo-divider.in-view img { animation: none !important; }
@@ -1495,26 +1499,30 @@
             .phase-here, .phase-dot { animation: none !important; }
         }
 
-        /* Staggered group reveal — parent observed, children animate */
-        .reveal-group > * {
+        /* Staggered group reveal — parent observed, children animate.
+           Children use a keyframe animation (not a transition) so cards' own
+           hover transition rules (.frontier-card, .landscape-card, ...) can't
+           override the reveal's opacity/transform. No forward fill: once the
+           entry finishes, hover transitions behave natively again. */
+        .reveal-group:not(.visible) > * {
             opacity: 0;
             transform: translateY(28px);
-            transition: opacity 0.55s cubic-bezier(0.23, 1, 0.32, 1),
-                        transform 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        @keyframes groupIn {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: none; }
         }
         .reveal-group.visible > * {
-            opacity: 1;
-            transform: translateY(0);
+            animation: groupIn 0.55s cubic-bezier(0.23, 1, 0.32, 1) backwards;
         }
         /* Stagger delays via nth-child — up to 8 children */
-        .reveal-group.visible > :nth-child(1) { transition-delay: 0s; }
-        .reveal-group.visible > :nth-child(2) { transition-delay: 0.1s; }
-        .reveal-group.visible > :nth-child(3) { transition-delay: 0.2s; }
-        .reveal-group.visible > :nth-child(4) { transition-delay: 0.3s; }
-        .reveal-group.visible > :nth-child(5) { transition-delay: 0.4s; }
-        .reveal-group.visible > :nth-child(6) { transition-delay: 0.5s; }
-        .reveal-group.visible > :nth-child(7) { transition-delay: 0.6s; }
-        .reveal-group.visible > :nth-child(8) { transition-delay: 0.7s; }
+        .reveal-group.visible > :nth-child(2) { animation-delay: 0.1s; }
+        .reveal-group.visible > :nth-child(3) { animation-delay: 0.2s; }
+        .reveal-group.visible > :nth-child(4) { animation-delay: 0.3s; }
+        .reveal-group.visible > :nth-child(5) { animation-delay: 0.4s; }
+        .reveal-group.visible > :nth-child(6) { animation-delay: 0.5s; }
+        .reveal-group.visible > :nth-child(7) { animation-delay: 0.6s; }
+        .reveal-group.visible > :nth-child(8) { animation-delay: 0.7s; }
 
         /* Responsive — tablet */
         @media (max-width: 1024px) {
@@ -5759,7 +5767,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                 const end = parseFloat(span.dataset.count);
                 if (!isFinite(end)) return;
                 if (prefersReduced) { span.textContent = String(end); return; }
-                const dur = 900, t0 = performance.now();
+                const dur = 2000, t0 = performance.now();
                 (function tick(now) {
                     const p = Math.min(1, (now - t0) / dur);
                     span.textContent = String(Math.round(end * (1 - Math.pow(1 - p, 3))));
