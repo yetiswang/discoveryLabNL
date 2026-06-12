@@ -3642,22 +3642,22 @@
                         transition: opacity 0.5s ease-out;
                     }
                     #consortium.csm-revealed .t-cmp { opacity: 1; transition-delay: 0s; }
-                    #consortium.csm-revealed .t-nat { opacity: 1; transition-delay: 0.275s; }
-                    #consortium.csm-revealed .t-int { opacity: 1; transition-delay: 0.55s; }
+                    #consortium.csm-revealed .t-nat { opacity: 1; transition-delay: 0.165s; }
+                    #consortium.csm-revealed .t-int { opacity: 1; transition-delay: 0.33s; }
                     /* Optional: draw-in stroke effect for rings (works in modern browsers) */
                     #consortium .t-cmp { stroke-dasharray: 1200; stroke-dashoffset: 1200; transition: stroke-dashoffset 0.77s ease-out, opacity 0.44s; }
                     #consortium .t-nat { stroke-dasharray: 2020; stroke-dashoffset: 2020; transition: stroke-dashoffset 0.94s ease-out, opacity 0.44s; }
                     #consortium .t-int { stroke-dasharray: 2800; stroke-dashoffset: 2800; transition: stroke-dashoffset 1.1s ease-out, opacity 0.44s; }
                     #consortium.csm-revealed .t-cmp { stroke-dashoffset: 0; transition-delay: 0s; }
-                    #consortium.csm-revealed .t-nat { stroke-dashoffset: 0; transition-delay: 0.275s; }
-                    #consortium.csm-revealed .t-int { stroke-dashoffset: 0; transition-delay: 0.55s; }
+                    #consortium.csm-revealed .t-nat { stroke-dashoffset: 0; transition-delay: 0.165s; }
+                    #consortium.csm-revealed .t-int { stroke-dashoffset: 0; transition-delay: 0.33s; }
                     /* Core wordmark + tagline fade in after rings */
                     #consortium .cw, #consortium .ct {
                         opacity: 0;
                         transition: opacity 0.5s ease-out;
                     }
-                    #consortium.csm-revealed .cw { opacity: 1; transition-delay: 0.77s; }
-                    #consortium.csm-revealed .ct { opacity: 0.85; transition-delay: 0.94s; }
+                    #consortium.csm-revealed .cw { opacity: 1; transition-delay: 0.46s; }
+                    #consortium.csm-revealed .ct { opacity: 0.85; transition-delay: 0.56s; }
                     /* Members: stagger fade-in using --idx CSS variable set in JS */
                     #consortium .ng {
                         opacity: 0;
@@ -3668,12 +3668,12 @@
                     }
                     #consortium.csm-revealed .ng {
                         opacity: 1; transform: scale(1);
-                        transition-delay: calc(0.99s + var(--idx, 0) * 0.077s);
+                        transition-delay: calc(0.6s + var(--idx, 0) * 0.05s);
                     }
                     /* NL map: silhouette fades in, cities appear sequentially */
                     #consortium .csm-map svg > g > path {
                         opacity: 0;
-                        transition: opacity 0.88s ease-out 0.33s;
+                        transition: opacity 0.88s ease-out 0.2s;
                     }
                     #consortium.csm-revealed .csm-map svg > g > path { opacity: 1; }
                     #consortium .csm-map .city-dot-cmp,
@@ -3684,14 +3684,14 @@
                         transition: opacity 0.5s ease-out;
                     }
                     #consortium.csm-revealed .csm-map .city-dot-cmp,
-                    #consortium.csm-revealed .csm-map .city-label:not(.city-label-tlk):first-of-type { opacity: 1; transition-delay: 1.1s; }
+                    #consortium.csm-revealed .csm-map .city-label:not(.city-label-tlk):first-of-type { opacity: 1; transition-delay: 0.66s; }
                     /* nth-of-type counts ALL circles/texts among siblings (Eindhoven=1, Delft=2,
                        Nijmegen=3) — not just .city-dot-tlk ones. Indices must match document order. */
                     #consortium.csm-revealed .csm-map .city-dot-tlk:nth-of-type(2),
-                    #consortium.csm-revealed .csm-map .city-label-tlk:nth-of-type(2) { opacity: 1; transition-delay: 1.265s; }
+                    #consortium.csm-revealed .csm-map .city-label-tlk:nth-of-type(2) { opacity: 1; transition-delay: 0.76s; }
                     #consortium.csm-revealed .csm-map .city-dot-tlk:nth-of-type(3),
-                    #consortium.csm-revealed .csm-map .city-label-tlk:nth-of-type(3) { opacity: 1; transition-delay: 1.43s; }
-                    #consortium.csm-revealed .csm-map .city-label { opacity: 1; transition-delay: 1.1s; }
+                    #consortium.csm-revealed .csm-map .city-label-tlk:nth-of-type(3) { opacity: 1; transition-delay: 0.86s; }
+                    #consortium.csm-revealed .csm-map .city-label { opacity: 1; transition-delay: 0.66s; }
 
                     /* B: Open-slot pulse — only after the reveal settles */
                     @keyframes csmOpenPulse {
@@ -3700,7 +3700,7 @@
                     }
                     #consortium.csm-revealed .m-opn {
                         animation: csmOpenPulse 4.4s ease-in-out infinite;
-                        animation-delay: calc(1.65s + var(--pulseDelay, 0) * 0.44s);
+                        animation-delay: calc(1.0s + var(--pulseDelay, 0) * 0.3s);
                     }
                     /* Pause animations when user prefers reduced motion */
                     @media (prefers-reduced-motion: reduce) {
