@@ -194,7 +194,6 @@
         }
         html[data-theme="dark"] .sidebar-backdrop { background: rgba(0,0,0,0.5); }
         /* Cards: lift surface 1 step, soften borders */
-        html[data-theme="dark"] .pillar-card,
         html[data-theme="dark"] .domain-card,
         html[data-theme="dark"] .consortium-card,
         html[data-theme="dark"] .position-card,
@@ -203,6 +202,8 @@
             background: var(--surface);
             border-color: var(--tue-light-border);
         }
+        /* Pillar cards stay dark photo tiles in both themes (like #contact) */
+        html[data-theme="dark"] .pillar-card { background: var(--inverse-bg); border-color: transparent; }
         html[data-theme="dark"] .pillar-card:hover { border-color: var(--tue-red); }
         /* Domain badge — subtle on dark */
         html[data-theme="dark"] .domain-badge {
@@ -563,6 +564,12 @@
             font-size: 3.5rem; font-weight: 700;
             line-height: 1.1; margin-bottom: 1rem; letter-spacing: -1px;
         }
+        .landing-promise {
+            font-size: 1.55rem; font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.75rem; line-height: 1.45;
+            max-width: 46ch;
+        }
         .landing-subtitle {
             font-size: 1.25rem; font-weight: 500;
             color: rgba(255, 255, 255, 0.85);
@@ -628,11 +635,22 @@
         /* Pillars */
         #pillars h2 { font-size: 2.5rem; margin-bottom: 3rem; color: var(--tue-dark); }
         .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+        /* Lab-photo tiles — mirror the #contact card treatment (dark surface in both
+           themes, faint desaturated photo behind, light text) for visual consistency. */
         .pillar-card {
-            background: var(--surface); border: 1px solid var(--tue-light-border);
+            position: relative; overflow: hidden;
+            background: var(--inverse-bg); border: 1px solid transparent;
             border-radius: 6px; padding: 2rem; transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.3s ease, transform 0.3s ease; cursor: pointer;
         }
+        .pillar-card .pillar-bg {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; object-position: center;
+            opacity: 0.18; filter: saturate(0.5);
+            z-index: 0; pointer-events: none;
+        }
+        .pillar-card > *:not(.pillar-bg) { position: relative; z-index: 1; }
         .pillar-card:hover { box-shadow: 0 8px 24px var(--shadow-mid); border-color: var(--tue-red); }
+        .pillar-card:hover .pillar-bg { opacity: 0.26; }
         .pillar-card[id] { scroll-margin-top: 100px; }
         /* Inline references from the deck to the pillar cards */
         .pillar-ref {
@@ -644,7 +662,8 @@
         .pillar-ref:hover { border-bottom-style: solid; }
         .pillar-ref:hover strong { color: var(--tue-red); }
         .pillar-card h3 { font-size: 1.2rem; color: var(--tue-red); margin-bottom: 1rem; font-weight: 700; }
-        .pillar-card p { font-size: 1rem; line-height: 1.7; color: var(--tue-gray); margin-bottom: 1rem; }
+        .pillar-card p { font-size: 1rem; line-height: 1.7; color: rgba(255,255,255,0.8); margin-bottom: 1rem; }
+        .pillar-card .operational-ref, .pillar-card .operational-ref strong { color: rgba(255,255,255,0.72); }
         /* Tier-2 CTA family, disclosure variant: uppercase + tracking + rotating chevron */
         .pillar-expand-btn {
             background: none; border: none; color: var(--tue-red); cursor: pointer;
@@ -667,8 +686,8 @@
         /* exact open height is set in px by togglePillar() from scrollHeight */
         .pillar-expanded p {
             margin-top: 1rem; padding-top: 1rem;
-            border-top: 1px solid var(--tue-light-border);
-            font-size: 0.95rem; color: var(--tue-gray); line-height: 1.7;
+            border-top: 1px solid rgba(255,255,255,0.16);
+            font-size: 0.95rem; color: rgba(255,255,255,0.82); line-height: 1.7;
         }
         .pillar-expanded p.operational-ref {
             border-top: none; padding-top: 0; margin-top: 0.6rem;
@@ -1254,6 +1273,12 @@
         .contact-info { margin-bottom: 2rem; }
         .contact-info p { font-size: 1rem; color: rgba(255,255,255,0.75); margin-bottom: 0.5rem; line-height: 1.7; }
         .contact-info strong { color: rgba(255,255,255,0.9); }
+        /* Team elements folded into #contact: white-on-dark overrides */
+        #contact .team-group h3 { color: rgba(255,255,255,0.55); }
+        #contact .team-member-name { color: #ffffff; flex: 0 0 220px; }
+        #contact .team-member-role { color: rgba(255,255,255,0.7); flex: 1; }
+        #contact .team-member-email { color: var(--tue-red); text-decoration: none; margin-left: 0.4rem; font-size: 1.25rem; vertical-align: -0.05em; }
+        #contact .team-member-email:hover { color: #ffffff; }
         .next-steps { margin-top: 2rem; }
         .next-steps h3 { font-size: 1.1rem; color: var(--tue-red); margin-bottom: 1rem; font-weight: 700; }
         .next-steps ul { list-style: none; padding-left: 0; }
@@ -1567,6 +1592,7 @@
             section { padding: 2.5rem 1.25rem; min-height: auto; }
             h2 { font-size: 2rem !important; }
             .landing-title { font-size: 2.2rem; }
+            .landing-promise { font-size: 1.2rem; }
             .landing-subtitle { font-size: 1rem; }
             #landing { padding: 3rem 1.25rem; }
             .landing-ring-container {
@@ -1579,6 +1605,9 @@
             .pillars-grid, .consortium-grid, .positioning-grid { grid-template-columns: 1fr; }
             .roadmap-phases { flex-direction: column; gap: 1.5rem; }
             .roadmap-line { display: none; }
+            /* h2 margin-bottom shrinks on mobile; the subtitle's desktop -1.5rem pull
+               drags it onto the red accent dash. Reset to a small positive gap. */
+            #roadmap > p.reveal { margin-top: 0.4rem !important; }
             .roadmap-phase { text-align: left; display: flex; align-items: flex-start; gap: 1rem; }
             .phase-dot { margin: 0; flex-shrink: 0; }
             .phase-title { min-height: 0; }  /* vertical list layout: no reserved title space needed */
@@ -1619,6 +1648,7 @@
             section { padding: 2rem 1rem; }
             h2 { font-size: 1.65rem !important; margin-bottom: 1.25rem !important; }
             .landing-title { font-size: 1.85rem; line-height: 1.15; }
+            .landing-promise { font-size: 1.1rem; line-height: 1.4; }
             .landing-subtitle { font-size: 0.9rem; line-height: 1.5; }
             .landing-meta { font-size: 0.8rem; }
             .landing-accent-line { margin-bottom: 1.25rem; }
@@ -1647,6 +1677,10 @@
             .team-group h3 { font-size: 0.9rem; }
             .team-member-name { font-size: 0.95rem; }
             .team-member-role { font-size: 0.85rem; }
+            #contact .team-member { flex-direction: column; gap: 0.15rem; }
+            #contact .team-member-name { flex: none; }
+            #contact .team-member-role { flex: none; }
+            #contact .team-bracket { padding-left: 0; margin-left: 0; }
             .team-bracket { padding-left: 1rem; margin-left: 0.75rem; }
             .map-container { min-height: 300px; }
             .detail-panel { padding: 1.25rem 1.25rem 1.75rem; max-height: 55vh; }
@@ -1706,6 +1740,8 @@
             margin-left: auto;
             margin-right: auto;
         }
+        /* Team & Contact reads as a flush-left list, not a centered measure */
+        #contact > *:not(.contact-bg) { margin-left: 0; margin-right: 0; max-width: 1000px; }
         /* Prose token: intro paragraphs read at an editorial measure inside the container */
         .campus-intro, .positioning-intro, .landscape-intro {
             max-width: 72ch;
@@ -2568,7 +2604,7 @@
         <a href="#consortium" class="dlnl-rail__node" data-target="consortium"><span class="dlnl-rail__label">Consortium</span><span class="dlnl-rail__dot"></span></a>
         <a href="#landscape" class="dlnl-rail__node" data-target="landscape"><span class="dlnl-rail__label">Landscape</span><span class="dlnl-rail__dot"></span></a>
         <a href="#roadmap" class="dlnl-rail__node" data-target="roadmap"><span class="dlnl-rail__label">Roadmap</span><span class="dlnl-rail__dot"></span></a>
-        <a href="#contact" class="dlnl-rail__node" data-target="contact"><span class="dlnl-rail__label">Contact</span><span class="dlnl-rail__dot"></span></a>
+        <a href="#contact" class="dlnl-rail__node" data-target="contact"><span class="dlnl-rail__label">Team &amp; Contact</span><span class="dlnl-rail__dot"></span></a>
     </nav>
 
     <!-- Main container -->
@@ -2590,7 +2626,6 @@
                     <li><a href="#dlnl-claim-slide-5">The claim</a></li>
                     <li><a href="#world-today">The World Today</a></li>
                     <li><a href="#pillars">Three Pillars</a></li>
-                    <li><a href="#campus">Campus Partners</a></li>
                     <li><a href="#consortium">An Open Consortium</a></li>
                     <li><a href="#landscape">Landscape</a></li>
                     <!-- FEATURE FLAG (2026-06-11): Positioning + Stakeholders hidden for external audience — restore these entries when re-enabling the sections:
@@ -2598,8 +2633,7 @@
                     <li><a href="#stakeholders">Stakeholders</a></li>
                     -->
                     <li><a href="#roadmap">Roadmap</a></li>
-                    <li><a href="#team">Team</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#contact">Team &amp; Contact</a></li>
                 </ul>
             </nav>
         </aside>
@@ -2699,9 +2733,9 @@
                 <div class="landing-content">
                     <div class="landing-accent-line anim-entrance delay-1"></div>
                     <h1 class="landing-title anim-entrance delay-2">DiscoveryLabNL</h1>
-                    <p class="landing-subtitle anim-entrance delay-3">Closing the knowledge chain from atom to function, with physics-informed AI and experimental verification.</p>
-                    <p class="landing-meta anim-entrance delay-4">A DIFFER &times; TU/e joint initiative &middot; Proposed for NWO Large-Scale Research Infrastructure</p>
-                    <p class="landing-meta anim-entrance delay-5" style="margin-top: 0.3rem; font-style: italic;">Foundational technology platform of the <a href="https://tue-flagship-advanced-materials.nl/" target="_blank" rel="noopener">TU/e Flagship: Advanced Materials</a> &middot; Aligned with the EU Advanced Materials Act</p>
+                    <p class="landing-promise anim-entrance delay-3">The Netherlands is at a turning point to pivot toward advanced materials for industrial leadership in the next decade. The moment to act on it is now.</p>
+                    <p class="landing-subtitle anim-entrance delay-4">Closing the knowledge chain from atom to function, with physics-informed AI and experimental verification.</p>
+                    <p class="landing-meta anim-entrance delay-5">A DIFFER &times; TU/e joint initiative &middot; Proposed for NWO Large-Scale Research Infrastructure</p>
                 </div>
 
             </section>
@@ -2718,7 +2752,7 @@
                     <h2 class="reveal">A stronghold at a turning point.</h2>
                     <p class="hero-slide-label reveal rd-1">The window</p>
                     <p class="challenge-text reveal rd-2">The chemical and materials industries in the Netherlands and Europe face a crucial <strong>rejuvenation phase</strong>, in which there is a sense of urgency to move from commodity to high-end material applications, such as smart coatings, biomedical materials, energy producing &amp; storage systems and information/communication materials. The Netherlands has been a <strong>stronghold of expertise</strong> over the past decades in the named domains. However, to translate knowledge into effective applications requires an extensive optimization track which has traditionally led to limited commercial success. With the advent of machine learning and self-driving labs, this optimization process has become revolutionized with regard to speed and effectiveness, and it even compensates for a lack of knowledge on intrinsic material features.</p>
-                    <p class="challenge-text reveal rd-3"><strong>The Netherlands will therefore lose its leading position if it doesn't quickly embrace this development.</strong> This would endanger the pipeline of newly established innovative high-tech companies that are needed to support our traditional commodity materials industries.</p>
+                    <p class="challenge-text reveal rd-3">This is Europe's agenda too. Advanced materials underpin <strong>European strategic autonomy and industrial leadership</strong>, and resilient value chains less exposed to critical-raw-material dependencies. Together with the EU's drive for <a class="pillar-ref" href="https://research-and-innovation.ec.europa.eu/research-area/industrial-research-and-innovation/chemicals-and-advanced-materials/advanced-materials-industrial-leadership_en" target="_blank" rel="noopener">advanced materials for industrial leadership</a>, <strong>the Netherlands is positioned to lead, but only if it acts now: hesitate, and it loses its leading position</strong> and the pipeline of innovative high-tech companies its industries depend on.</p>
                     <p class="challenge-text reveal rd-4" style="font-style: italic; opacity: 0.78;">DiscoveryLabNL is how the Netherlands embraces it.</p>
                     <div class="hero-continue">
                         <a href="#dlnl-claim-slide-2" aria-label="Continue: what DiscoveryLabNL is">Continue: what DiscoveryLabNL is &darr;</a>
@@ -2732,8 +2766,8 @@
                         <p>DiscoveryLabNL is a joint DIFFER &times; TU/e initiative: a shared infrastructure for autonomous materials discovery, integrating self-driving laboratories, advanced multimodal characterisation, and an AI Core to accelerate the design, synthesis, and validation of next-generation materials.</p>
                     </div>
                     <div class="atom-cols">
-                    <p class="challenge-text reveal rd-3"><strong>DiscoveryLabNL closes the knowledge chain from atom to function.</strong> It extends a Dutch lineage in materials science and engineering into the next decade's open question: how to design what materials do, not only what they are. Machine-learning foundation models have industrialised structure prediction: AlphaFold for proteins, GNoME-class models for inorganic crystals, each trained on decades of shared, computable data. That is what a common data backbone delivers, proven in one slice of materials science. The experimental side of the loop remains open, and autonomous synthesis without rigorous verification has already produced high-profile contested claims. DiscoveryLabNL closes that loop for the classes that drive the next decade (soft, hybrid, hierarchical, and far-from-equilibrium), where <strong>function</strong> emerges through dynamics and across length scales no first-principles model can simulate to ground truth and no foundation model can yet reach.</p>
-                    <p class="challenge-text reveal rd-4">DiscoveryLabNL is the federated national infrastructure that answers it. The <a class="pillar-ref" href="#pillar-ai-core"><strong>AI Core</strong></a> proposes candidate designs grounded in quantum-physics-informed digital twins, <a class="pillar-ref" href="#pillar-sdls"><strong>Self-Driving Labs</strong></a> synthesise and execute the experiments at scale, and <a class="pillar-ref" href="#pillar-characterisation"><strong>Advanced Multimodal Characterisation</strong></a> verifies what computation cannot reach. <a class="pillar-ref" href="#dlnl-claim-slide-3"><strong>Information materials, designer catalysts and energy materials, actuating polymers, neuromorphic materials, and recyclable thermosets are five candidate demonstrators</strong></a>, each a domain where Dutch science already leads the world. Five years ago, designing for function was guesswork; five years from now, with DiscoveryLabNL, it becomes <a class="pillar-ref" href="#dlnl-claim-slide-4"><strong>verifiable and explainable</strong></a> closed loops.</p>
+                    <p class="challenge-text reveal rd-3"><strong>DiscoveryLabNL will shape materials research across many domains for decades to come.</strong> The Netherlands holds deep materials expertise; by joining forces nationally it strengthens that core, and where AI-first efforts have the models but not the experimental depth, DiscoveryLabNL supplies exactly that. <strong>It closes the knowledge chain from atom to function</strong>, extending a Dutch lineage in materials science into the next decade's open question: how to design what materials do, not only what they are. Foundation models have industrialised structure prediction (AlphaFold for proteins, GNoME-class models for inorganic crystals), proven on decades of shared, computable data. The experimental side of the loop remains open, and autonomous synthesis without rigorous verification has already produced contested claims. DiscoveryLabNL closes that loop for the materials that drive the next decade (soft, hybrid, hierarchical, far-from-equilibrium), where <strong>function</strong> emerges through dynamics and across scales no model can yet reach.</p>
+                    <p class="challenge-text reveal rd-4">The <a class="pillar-ref" href="#pillar-ai-core"><strong>AI Core</strong></a> proposes designs grounded in physics-informed digital twins, <a class="pillar-ref" href="#pillar-sdls"><strong>Self-Driving Labs</strong></a> synthesise and run experiments at scale, and <a class="pillar-ref" href="#pillar-characterisation"><strong>Advanced Multimodal Characterisation</strong></a> verifies what computation cannot. Its <a class="pillar-ref" href="#dlnl-claim-slide-3"><strong>five demonstrators (information materials, designer catalysts and energy materials, actuating polymers, neuromorphic materials, recyclable thermosets)</strong></a> are each a domain where Dutch science already leads. Five years ago, designing for function was guesswork; with DiscoveryLabNL it becomes <a class="pillar-ref" href="#dlnl-claim-slide-4"><strong>verifiable, explainable closed loops</strong></a>.</p>
                     </div>
                     <div class="hero-nav-row">
                         <a class="hero-back" href="#dlnl-claim-slide-1" aria-label="Back: the window">&uarr; The window</a>
@@ -2743,7 +2777,7 @@
                 <!-- What we deliver (Five Frontiers + Horizon 2035) -->
                 <div class="hero-slide hero-slide-1 hero-slide-revolution" id="dlnl-claim-slide-3">
                     <h2 class="reveal">The Revolution We Enable</h2>
-                    <p class="hero-slide-label reveal rd-1">Five frontiers, one architecture</p>
+                    <p class="hero-slide-label reveal rd-1" style="margin-bottom:1.6rem; max-width:64ch;">DiscoveryLabNL will establish breakthroughs on five key frontiers, with one architecture.</p>
                     <div class="frontier-grid reveal-group">
                         <div class="frontier-card">
                             <div class="frontier-icon">
@@ -2848,7 +2882,7 @@
                     </div>
                     <div class="frontier-horizon reveal">
                         <p class="horizon-eyebrow">Horizon 2035</p>
-                        <p>By 2035, DiscoveryLabNL is the Dutch interface for designing what materials do: the operational layer on which the Netherlands' information-materials, energy, actuating-soft-matter, neuromorphic, and circular-materials discovery communities run their <strong>autonomous, verifiable, explainable closed loops</strong>. Multimodal characterisation as in-line verification has become standard practice across the five frontiers, the AI Core's physics-grounded models and digital twins are shared community infrastructure, and the Dutch materials-function genome is the foundational dataset of European materials R&amp;D. What was demonstrated in narrow form for individual material classes over the past decade, DiscoveryLabNL industrialises across materials function broadly, becoming the federated national platform on which the next decade of discovery is built.</p>
+                        <p>By 2035, DiscoveryLabNL is the Dutch interface for designing what materials do: the operational layer on which all five frontier communities run their <strong>autonomous, verifiable, explainable closed loops</strong>. In-line multimodal verification is standard practice, the AI Core's physics-grounded models are shared community infrastructure, and the Dutch materials-function genome is the foundational dataset of European materials R&amp;D. What was demonstrated in narrow form over the past decade, DiscoveryLabNL industrialises into the federated national platform on which the next decade of discovery is built.</p>
                     </div>
                     <div class="hero-nav-row">
                         <a class="hero-back" href="#dlnl-claim-slide-2" aria-label="Back: what we are">&uarr; What we are</a>
@@ -2858,7 +2892,7 @@
                                 <div class="hero-slide hero-slide-methodology" id="dlnl-claim-slide-4">
                     <p class="hero-slide-label hero-slide-label-light reveal rd-1">Our methodology</p>
                     <h3 class="methodology-title">The Autonomous Discovery Loop</h3>
-                    <p class="methodology-text">DiscoveryLabNL operates a continuous loop between <em>exploration</em> and <em>interpretation</em>. The <strong>AI Core</strong> proposes candidate designs grounded in quantum-physics-informed digital twins. <strong>Self-Driving Labs</strong> synthesise and execute at scale. <strong>Advanced Multimodal Characterisation</strong> verifies what computation cannot reach, with multimodal integration and correlation as the core methodology that fuses measurement modalities into actionable, verifiable knowledge. Every turn closes back into the AI Core and lowers the cost of the next discovery.</p>
+                    <p class="methodology-text">DiscoveryLabNL operates a continuous loop between <em>exploration</em> and <em>interpretation</em>. The <strong>AI Core</strong> proposes candidate designs grounded in quantum-physics-informed digital twins. <strong>Self-Driving Labs</strong> synthesise and execute at scale. <strong>Advanced Multimodal Characterisation</strong> verifies what computation cannot reach. Every turn closes back into the AI Core and lowers the cost of the next discovery.</p>
                     <p class="methodology-text-secondary">Like a mind that works fast and slow, DiscoveryLabNL pairs fast exploration with slow, careful interpretation. Self-Driving Labs propose and execute at scale; Advanced Multimodal Characterisation verifies what computation cannot reach; the AI Core learns the design rules that close the loop. Discovery requires both speeds, working together, for results to be verifiable.</p>
                     <div class="methodology-svg-wrap">
 <svg viewBox="150 30 600 420" xmlns="http://www.w3.org/2000/svg" class="loop-svg">
@@ -2939,6 +2973,15 @@
 
 <path id="loopTravelPath" d="M 669.2,240.0 L 669.1,243.4 L 668.9,246.9 L 668.5,250.3 L 667.9,253.7 L 667.2,257.0 L 666.3,260.4 L 665.3,263.6 L 664.1,266.8 L 662.8,270.0 L 661.3,273.1 L 659.7,276.1 L 658.0,279.0 L 656.2,281.8 L 654.2,284.5 L 652.1,287.2 L 650.0,289.7 L 647.7,292.2 L 645.3,294.5 L 642.8,296.7 L 640.3,298.8 L 637.7,300.8 L 635.0,302.7 L 632.3,304.4 L 629.5,306.1 L 626.6,307.6 L 623.8,309.0 L 620.8,310.3 L 617.9,311.5 L 614.9,312.6 L 611.9,313.5 L 608.9,314.4 L 605.9,315.1 L 602.9,315.7 L 599.8,316.3 L 596.8,316.7 L 593.8,317.0 L 590.8,317.3 L 587.8,317.4 L 584.8,317.5 L 581.8,317.5 L 578.8,317.4 L 575.9,317.2 L 573.0,316.9 L 570.1,316.6 L 567.2,316.1 L 564.4,315.7 L 561.6,315.1 L 558.8,314.5 L 556.1,313.8 L 553.3,313.1 L 550.6,312.3 L 548.0,311.4 L 545.4,310.5 L 542.8,309.6 L 540.2,308.6 L 537.7,307.6 L 535.2,306.5 L 532.7,305.4 L 530.3,304.2 L 527.9,303.0 L 525.5,301.8 L 523.2,300.5 L 520.9,299.2 L 518.6,297.9 L 516.3,296.5 L 514.1,295.2 L 511.9,293.8 L 509.7,292.3 L 507.6,290.9 L 505.5,289.4 L 503.4,287.9 L 501.3,286.4 L 499.3,284.9 L 497.3,283.4 L 495.3,281.8 L 493.3,280.2 L 491.3,278.7 L 489.4,277.1 L 487.5,275.4 L 485.6,273.8 L 483.7,272.2 L 481.8,270.6 L 480.0,268.9 L 478.1,267.2 L 476.3,265.6 L 474.5,263.9 L 472.7,262.2 L 470.9,260.5 L 469.1,258.8 L 467.4,257.1 L 465.6,255.4 L 463.8,253.7 L 462.1,252.0 L 460.4,250.3 L 458.6,248.6 L 456.9,246.9 L 455.2,245.2 L 453.4,243.4 L 451.7,241.7 L 450.0,240.0 L 448.3,238.3 L 446.6,236.6 L 444.8,234.8 L 443.1,233.1 L 441.4,231.4 L 439.6,229.7 L 437.9,228.0 L 436.2,226.3 L 434.4,224.6 L 432.6,222.9 L 430.9,221.2 L 429.1,219.5 L 427.3,217.8 L 425.5,216.1 L 423.7,214.4 L 421.9,212.8 L 420.0,211.1 L 418.2,209.4 L 416.3,207.8 L 414.4,206.2 L 412.5,204.6 L 410.6,202.9 L 408.7,201.3 L 406.7,199.8 L 404.7,198.2 L 402.7,196.6 L 400.7,195.1 L 398.7,193.6 L 396.6,192.1 L 394.5,190.6 L 392.4,189.1 L 390.3,187.7 L 388.1,186.2 L 385.9,184.8 L 383.7,183.5 L 381.4,182.1 L 379.1,180.8 L 376.8,179.5 L 374.5,178.2 L 372.1,177.0 L 369.7,175.8 L 367.3,174.6 L 364.8,173.5 L 362.3,172.4 L 359.8,171.4 L 357.2,170.4 L 354.6,169.5 L 352.0,168.6 L 349.4,167.7 L 346.7,166.9 L 343.9,166.2 L 341.2,165.5 L 338.4,164.9 L 335.6,164.3 L 332.8,163.9 L 329.9,163.4 L 327.0,163.1 L 324.1,162.8 L 321.2,162.6 L 318.2,162.5 L 315.2,162.5 L 312.2,162.6 L 309.2,162.7 L 306.2,163.0 L 303.2,163.3 L 300.2,163.7 L 297.1,164.3 L 294.1,164.9 L 291.1,165.6 L 288.1,166.5 L 285.1,167.4 L 282.1,168.5 L 279.2,169.7 L 276.2,171.0 L 273.4,172.4 L 270.5,173.9 L 267.7,175.6 L 265.0,177.3 L 262.3,179.2 L 259.7,181.2 L 257.2,183.3 L 254.7,185.5 L 252.3,187.8 L 250.0,190.3 L 247.9,192.8 L 245.8,195.5 L 243.8,198.2 L 242.0,201.0 L 240.3,203.9 L 238.7,206.9 L 237.2,210.0 L 235.9,213.2 L 234.7,216.4 L 233.7,219.6 L 232.8,223.0 L 232.1,226.3 L 231.5,229.7 L 231.1,233.1 L 230.9,236.6 L 230.8,240.0 L 230.9,243.4 L 231.1,246.9 L 231.5,250.3 L 232.1,253.7 L 232.8,257.0 L 233.7,260.4 L 234.7,263.6 L 235.9,266.8 L 237.2,270.0 L 238.7,273.1 L 240.3,276.1 L 242.0,279.0 L 243.8,281.8 L 245.8,284.5 L 247.9,287.2 L 250.0,289.7 L 252.3,292.2 L 254.7,294.5 L 257.2,296.7 L 259.7,298.8 L 262.3,300.8 L 265.0,302.7 L 267.7,304.4 L 270.5,306.1 L 273.4,307.6 L 276.2,309.0 L 279.2,310.3 L 282.1,311.5 L 285.1,312.6 L 288.1,313.5 L 291.1,314.4 L 294.1,315.1 L 297.1,315.7 L 300.2,316.3 L 303.2,316.7 L 306.2,317.0 L 309.2,317.3 L 312.2,317.4 L 315.2,317.5 L 318.2,317.5 L 321.2,317.4 L 324.1,317.2 L 327.0,316.9 L 329.9,316.6 L 332.8,316.1 L 335.6,315.7 L 338.4,315.1 L 341.2,314.5 L 343.9,313.8 L 346.7,313.1 L 349.4,312.3 L 352.0,311.4 L 354.6,310.5 L 357.2,309.6 L 359.8,308.6 L 362.3,307.6 L 364.8,306.5 L 367.3,305.4 L 369.7,304.2 L 372.1,303.0 L 374.5,301.8 L 376.8,300.5 L 379.1,299.2 L 381.4,297.9 L 383.7,296.5 L 385.9,295.2 L 388.1,293.8 L 390.3,292.3 L 392.4,290.9 L 394.5,289.4 L 396.6,287.9 L 398.7,286.4 L 400.7,284.9 L 402.7,283.4 L 404.7,281.8 L 406.7,280.2 L 408.7,278.7 L 410.6,277.1 L 412.5,275.4 L 414.4,273.8 L 416.3,272.2 L 418.2,270.6 L 420.0,268.9 L 421.9,267.2 L 423.7,265.6 L 425.5,263.9 L 427.3,262.2 L 429.1,260.5 L 430.9,258.8 L 432.6,257.1 L 434.4,255.4 L 436.2,253.7 L 437.9,252.0 L 439.6,250.3 L 441.4,248.6 L 443.1,246.9 L 444.8,245.2 L 446.6,243.4 L 448.3,241.7 L 450.0,240.0 L 451.7,238.3 L 453.4,236.6 L 455.2,234.8 L 456.9,233.1 L 458.6,231.4 L 460.4,229.7 L 462.1,228.0 L 463.8,226.3 L 465.6,224.6 L 467.4,222.9 L 469.1,221.2 L 470.9,219.5 L 472.7,217.8 L 474.5,216.1 L 476.3,214.4 L 478.1,212.8 L 480.0,211.1 L 481.8,209.4 L 483.7,207.8 L 485.6,206.2 L 487.5,204.6 L 489.4,202.9 L 491.3,201.3 L 493.3,199.8 L 495.3,198.2 L 497.3,196.6 L 499.3,195.1 L 501.3,193.6 L 503.4,192.1 L 505.5,190.6 L 507.6,189.1 L 509.7,187.7 L 511.9,186.2 L 514.1,184.8 L 516.3,183.5 L 518.6,182.1 L 520.9,180.8 L 523.2,179.5 L 525.5,178.2 L 527.9,177.0 L 530.3,175.8 L 532.7,174.6 L 535.2,173.5 L 537.7,172.4 L 540.2,171.4 L 542.8,170.4 L 545.4,169.5 L 548.0,168.6 L 550.6,167.7 L 553.3,166.9 L 556.1,166.2 L 558.8,165.5 L 561.6,164.9 L 564.4,164.3 L 567.2,163.9 L 570.1,163.4 L 573.0,163.1 L 575.9,162.8 L 578.8,162.6 L 581.8,162.5 L 584.8,162.5 L 587.8,162.6 L 590.8,162.7 L 593.8,163.0 L 596.8,163.3 L 599.8,163.7 L 602.9,164.3 L 605.9,164.9 L 608.9,165.6 L 611.9,166.5 L 614.9,167.4 L 617.9,168.5 L 620.8,169.7 L 623.8,171.0 L 626.6,172.4 L 629.5,173.9 L 632.3,175.6 L 635.0,177.3 L 637.7,179.2 L 640.3,181.2 L 642.8,183.3 L 645.3,185.5 L 647.7,187.8 L 650.0,190.3 L 652.1,192.8 L 654.2,195.5 L 656.2,198.2 L 658.0,201.0 L 659.7,203.9 L 661.3,206.9 L 662.8,210.0 L 664.1,213.2 L 665.3,216.4 L 666.3,219.6 L 667.2,223.0 L 667.9,226.3 L 668.5,229.7 L 668.9,233.1 L 669.1,236.6 L 669.2,240.0 Z" fill="none" stroke="none"/><circle id="scrubDot" r="7" fill="white" opacity="0"></circle>
                         <!-- Subtitle -->
+                        <!-- Material generated from the loop: one white arrow, revealed in sync with the loop animation (Monique 2026-06-15) -->
+                        <defs>
+                            <marker id="loopArrowOut" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#ffffff"/></marker>
+                        </defs>
+                        <g id="loopArrow" opacity="0">
+                            <path id="loopArrowLine" d="M 450 318 L 450 372" stroke="#ffffff" stroke-width="3" fill="none" marker-end="url(#loopArrowOut)"/>
+                            <rect x="402" y="384" width="96" height="30" rx="6" fill="#1a1a24" stroke="#ffffff" stroke-width="1.4" opacity="0.96"/>
+                            <text x="450" y="404" fill="#ffffff" font-size="12.5" font-weight="600" letter-spacing="0.12em" text-anchor="middle" font-family="'Avenir Next LT Pro', 'Avenir Next', system-ui, sans-serif">MATERIAL</text>
+                        </g>
                     </svg>
                     </div>
                     <p class="methodology-pull-quote">Fast and slow, working together, for verifiable discoveries.</p>
@@ -2969,7 +3012,7 @@
                     </div>
                     <div class="world-today-card reveal">
                         <h3>What is missing: function prediction, verified at experimental scale.</h3>
-                        <p><strong>Function emerges in the experiment; it cannot be predicted in vacuum.</strong> Theory cannot substitute for measurement where function emerges through dynamics and across length scales. AlphaFold solved structure prediction because biology had the Protein Data Bank. Materials function discovery has no equivalent yet. Someone has to build it.</p>
+                        <p><strong>Function emerges in the experiment.</strong> Theory cannot substitute for measurement where function emerges through dynamics and across length scales. AlphaFold solved structure prediction because biology had the Protein Data Bank. Materials function discovery has no equivalent yet. Someone has to build it.</p>
                     </div>
                 </div>
 
@@ -3132,19 +3175,14 @@
                 <p class="frontier-footnote reveal">The detailed scientific challenges and research plans for each frontier are being scoped with consortium principal investigators and will appear in the full LSRI proposal.</p>
             </section>
 
-            <section class="photo-divider" aria-hidden="true">
-                <div class="photo-parallax">
-                    <img src="img/hero-pillars.jpg" alt="SDL robot arm at ICMS" loading="lazy">
-                </div>
-                <div class="photo-overlay"></div>
-                <span class="photo-caption">ICMS Self-Driving Laboratory</span>
-            </section>
+            <!-- Full-width photo divider removed 2026-06-15 — lab photos now live in the pillar cards. -->
 
             <!-- 3. Three Pillars -->
             <section id="pillars">
                 <h2 class="reveal">Three Pillars</h2>
                 <div class="pillars-grid reveal-group">
                     <div class="pillar-card" id="pillar-sdls">
+                        <img class="pillar-bg" src="img/pillar-sdl.jpg" alt="" loading="lazy">
                         <h3>Self-Driving Laboratories</h3>
                         <p>Robotic synthesis and processing platforms, automated sample handling, in-line sensing and feedback systems. AI-guided closed-loop experimentation across a hub-and-spoke network of SDL nodes.</p>
                         <button class="pillar-expand-btn" onclick="togglePillar(this)"><span class="btn-label">Show more</span><span class="btn-chevron">&#9662;</span></button>
@@ -3153,6 +3191,7 @@
                         </div>
                     </div>
                     <div class="pillar-card" id="pillar-characterisation">
+                        <img class="pillar-bg" src="img/pillar-char.jpg" alt="" loading="lazy">
                         <h3>Advanced Characterisation</h3>
                         <p>Optical, electron and X-ray microscopy combined with spectroscopic techniques. Serves as the continuous, real-time verification and integration layer of the autonomous discovery loop.</p>
                         <button class="pillar-expand-btn" onclick="togglePillar(this)"><span class="btn-label">Show more</span><span class="btn-chevron">&#9662;</span></button>
@@ -3162,6 +3201,7 @@
                         </div>
                     </div>
                     <div class="pillar-card" id="pillar-ai-core">
+                        <img class="pillar-bg" src="img/pillar-ai.jpg" alt="" loading="lazy">
                         <h3>AI Core</h3>
                         <p>FAIR data backbone, curated model catalogue, dedicated AI science team — the experimental data engine and infrastructure for the next generation of materials foundation models. Federated design serving the full consortium and national partners.</p>
                         <button class="pillar-expand-btn" onclick="togglePillar(this)"><span class="btn-label">Show more</span><span class="btn-chevron">&#9662;</span></button>
@@ -3289,36 +3329,9 @@
             </section>
 
             <!-- 4. Campus Partners -->
-            <section class="photo-divider" aria-hidden="true">
-                <div class="photo-parallax">
-                    <img src="img/hero-domains.jpg" alt="Researchers in advanced characterisation lab" loading="lazy">
-                </div>
-                <div class="photo-overlay"></div>
-                <span class="photo-caption">Advanced Characterisation</span>
-            </section>
+            <!-- Full-width photo divider removed 2026-06-15 — lab photos now live in the pillar cards. -->
 
-            <section id="campus">
-                <h2 class="reveal">Campus Partners</h2>
-                <p class="campus-intro reveal">DiscoveryLabNL is hosted as a joint initiative between <strong>DIFFER</strong> (NWO) and <strong>TU/e</strong> (ICMS, EIRES, Casimir), with EAISI (Eindhoven AI Systems Institute) providing the AI Core methodological foundation. Scientific leadership: Jan van Hest (Scientific Director &amp; Lead PI, TU/e), Suleyman Er (DIFFER), Luc Brunsveld (ICMS / TU/e). Governance: equal partners across the four hosting institutes.</p>
-                <div class="consortium-grid reveal-group">
-                    <div class="consortium-card">
-                        <h3>DIFFER</h3>
-                        <p><strong>Dutch Institute for Fundamental Energy Research (NWO).</strong> Energy materials, autonomous energy-materials discovery, plasma physics, fusion materials, energy conversion.</p>
-                    </div>
-                    <div class="consortium-card">
-                        <h3>ICMS</h3>
-                        <p><strong>Institute for Complex Molecular Systems.</strong> Soft Matter, Supramolecular Chemistry, Synthetic Biology.</p>
-                    </div>
-                    <div class="consortium-card">
-                        <h3>EIRES</h3>
-                        <p><strong>Eindhoven Institute for Renewable Energy Systems.</strong> Energy Materials, Electrochemistry, Battery Technology.</p>
-                    </div>
-                    <div class="consortium-card">
-                        <h3>Casimir</h3>
-                        <p><strong>Casimir Research Institute.</strong> Semiconductors, Photonics, Quantum Technology.</p>
-                    </div>
-                </div>
-            </section>
+            <!-- Campus Partners section merged into the Open Consortium below (Monique 2026-06-15): the consortium rings carry the partner story; the standalone campus grid read as too internal. -->
 
             <!-- 5b. An Open Consortium - org-tier rings + Dutch geography companion -->
             <section id="consortium">
@@ -3863,6 +3876,14 @@
                         html.webkit #consortium .ng.is-hover > circle.pillar-ai { r: 6; transform: scale(1.5); }
                     }
 
+                    /* Title lines left-aligned on a shared indent — consortium, roadmap, global landscape (Monique 2026-06-15) */
+                    #consortium h2, #consortium .csm-intro,
+                    #roadmap > h2, #roadmap > p.reveal,
+                    #landscape h2, #landscape .landscape-intro {
+                        text-align: left;
+                        margin-left: 0;
+                        margin-right: 0;
+                    }
                 </style>
 
                 <h2 class="reveal">An open consortium</h2>
@@ -4550,45 +4571,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
             </section>
 
             <!-- 7. Team -->
-            <section id="team">
-                <h2 class="reveal">Team</h2>
-                <div class="team-group reveal-group">
-                    <h3>Core Leadership</h3>
-                    <div class="team-member">
-                        <span class="team-member-name">Jan van Hest</span>
-                        <span class="team-member-role">Scientific Director &amp; Lead Principal Investigator &mdash; scientific vision and delivery, institutional representation, EB &amp; NWO communications, TU/e</span>
-                    </div>
-                    <div class="team-member">
-                        <span class="team-member-name">Suleyman Er</span>
-                        <span class="team-member-role">Scientific Lead &mdash; LSRI Materials group pathway, autonomous energy-materials discovery, DIFFER</span>
-                    </div>
-                    <div class="team-member">
-                        <span class="team-member-name">Luc Brunsveld</span>
-                        <span class="team-member-role">Scientific Lead &mdash; ICMS scientific direction, ICMS / TU/e</span>
-                    </div>
-                    <div class="team-member">
-                        <span class="team-member-name">Yuyang Wang</span>
-                        <span class="team-member-role">Initiative Lead &mdash; programme operations, consortium formation, NWO positioning, ICMS / TU/e</span>
-                    </div>
-                    <div class="team-member">
-                        <span class="team-member-name">Monique Bruining</span>
-                        <span class="team-member-role">Initiative Co-lead &amp; Flagship Co-lead &mdash; senior communications, Flagship liaison, ICMS / TU/e</span>
-                    </div>
-                </div>
-                <div class="team-group reveal-group">
-                    <h3>Flagship Contributing Partners</h3>
-                    <div class="team-bracket">
-                        <div class="team-member">
-                            <span class="team-member-name">Nicholas Tito</span>
-                            <span class="team-member-role">Flagship Strategy &amp; Operations &mdash; Flagship liaison, consortium positioning, ICMS</span>
-                        </div>
-                        <div class="team-member">
-                            <span class="team-member-name">Marc Geers</span>
-                            <span class="team-member-role">Materials Flagship Lead &mdash; strategic advisory, TU/e</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <!-- Team section merged into #contact ("Team & Contact") per Monique 2026-06-15 -->
 
             <!-- 8. Stakeholders - Full overhaul with responsive SVG, zoom/pan, sliding panel -->
             <section id="stakeholders">
@@ -4819,17 +4802,49 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
             <!-- 9. Contact -->
             <section id="contact">
                 <img class="contact-bg" src="img/hero-contact.jpg" alt="" loading="lazy">
-                <h2 class="reveal">We'd Love to Hear from You</h2>
-                <div class="contact-info reveal" style="margin-bottom: 2.5rem;">
-                    <p style="color: rgba(255,255,255,0.7); font-size: 1.05rem; line-height: 1.8; max-width: 640px;">This briefing is shared with TU/e internal stakeholders. We welcome colleagues who wish to contribute to shaping DiscoveryLabNL, whether scientifically or organisationally. Members of the LSRI Groups Technology, Materials, and Life Sciences &amp; Enabling Technology are particularly encouraged to reach out so we can explore alignment and collaboration opportunities together.</p>
+                <h2 class="reveal">Team &amp; Contact</h2>
+                <p class="reveal" style="color: rgba(255,255,255,0.7); font-size: 1.05rem; line-height: 1.8; max-width: 640px; margin-bottom: 2.5rem;">This briefing is shared with DiscoveryLabNL stakeholders. We welcome colleagues who wish to contribute to shaping DiscoveryLabNL, whether scientifically or organisationally. Members of the LSRI Groups Technology, Materials, and Life Sciences &amp; Enabling Technology are particularly encouraged to reach out so we can explore alignment and collaboration opportunities together.</p>
+
+                <div class="team-group reveal-group">
+                    <h3>Core Leadership</h3>
+                    <div class="team-member">
+                        <span class="team-member-name">Jan van Hest <a href="mailto:j.c.m.v.hest@tue.nl" class="team-member-email">&#9993;</a></span>
+                        <span class="team-member-role">Scientific Director &amp; Lead Principal Investigator &mdash; scientific vision and delivery, institutional representation, EB &amp; NWO communications, TU/e</span>
+                    </div>
+                    <div class="team-member">
+                        <span class="team-member-name">Suleyman Er <a href="mailto:s.er@differ.nl" class="team-member-email">&#9993;</a></span>
+                        <span class="team-member-role">Scientific Lead &mdash; LSRI Materials group pathway, autonomous energy-materials discovery, DIFFER</span>
+                    </div>
+                    <div class="team-member">
+                        <span class="team-member-name">Luc Brunsveld <a href="mailto:l.brunsveld@tue.nl" class="team-member-email">&#9993;</a></span>
+                        <span class="team-member-role">Scientific Lead &mdash; ICMS scientific direction, ICMS / TU/e</span>
+                    </div>
+                    <div class="team-member">
+                        <span class="team-member-name">Yuyang Wang <a href="mailto:y.wang8@tue.nl" class="team-member-email">&#9993;</a></span>
+                        <span class="team-member-role">Initiative Lead &mdash; programme operations, consortium formation, NWO positioning, ICMS / TU/e</span>
+                    </div>
+                    <div class="team-member">
+                        <span class="team-member-name">Monique Bruining <a href="mailto:m.j.bruining@tue.nl" class="team-member-email">&#9993;</a></span>
+                        <span class="team-member-role">Initiative Co-lead &amp; Flagship Co-lead &mdash; senior communications, Flagship liaison, ICMS / TU/e</span>
+                    </div>
                 </div>
-                <div class="contact-info reveal" style="padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.10);">
+                <div class="team-group reveal-group">
+                    <h3>Flagship Contributing Partners</h3>
+                    <div class="team-bracket">
+                        <div class="team-member">
+                            <span class="team-member-name">Nicholas Tito <a href="mailto:n.b.tito@tue.nl" class="team-member-email">&#9993;</a></span>
+                            <span class="team-member-role">Flagship Strategy &amp; Operations &mdash; Flagship liaison, consortium positioning, ICMS</span>
+                        </div>
+                        <div class="team-member">
+                            <span class="team-member-name">Marc Geers <a href="mailto:M.G.D.Geers@tue.nl" class="team-member-email">&#9993;</a></span>
+                            <span class="team-member-role">Materials Flagship Lead &mdash; strategic advisory, TU/e</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-info reveal" style="padding-top: 1.5rem; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.10);">
                     <p><strong>General enquiries:</strong> <a href="mailto:discoverylabnl@tue.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">discoverylabnl@tue.nl</a></p>
-                    <p><strong>Scientific Director &amp; Lead PI:</strong> Jan van Hest <a href="mailto:j.c.m.v.hest@tue.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">&#9993; email</a></p>
-                    <p><strong>Scientific Lead (DIFFER):</strong> Suleyman Er <a href="mailto:s.er@differ.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">&#9993; email</a></p>
-                    <p><strong>Scientific Lead (TU/e):</strong> Luc Brunsveld <a href="mailto:l.brunsveld@tue.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">&#9993; email</a></p>
-                    <p><strong>Initiative Lead:</strong> Yuyang Wang <a href="mailto:y.wang8@tue.nl" style="color: var(--tue-red); text-decoration: none; border-bottom: 1px dotted var(--tue-red);">&#9993; email</a></p>
-                    <p><strong>Organisations:</strong> DIFFER &middot; ICMS &middot; TU/e</p>
+                    <p><strong>Organisations:</strong> DIFFER &middot; TU/e</p>
                 </div>
             </section>
         </main>
@@ -4837,7 +4852,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
 
     <!-- Footer -->
     <footer>
-        <p>June 2026 &middot; DIFFER &middot; ICMS &middot; TU/e &middot; <a href="https://tue-flagship-advanced-materials.nl/" target="_blank" rel="noopener">TU/e Flagship: Advanced Materials</a></p>
+        <p>June 2026 &middot; DIFFER &middot; TU/e &middot; <a href="https://tue-flagship-advanced-materials.nl/" target="_blank" rel="noopener">TU/e Flagship: Advanced Materials</a></p>
     </footer>
 
     <!-- Floating section nav (next/prev) -->
@@ -4863,20 +4878,15 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
             <svg viewBox="0 0 24 24"><path d="M9 3h6"/><path d="M10 3v6.5L4.5 18a1.5 1.5 0 0 0 1.3 2.2h12.4a1.5 1.5 0 0 0 1.3-2.2L14 9.5V3"/><path d="M7.5 15h9"/></svg>
             <span>Science</span>
         </a>
-        <a href="#campus" class="tab-item" data-tab="plan">
+        <a href="#consortium" class="tab-item" data-tab="plan">
             <!-- Phosphor Light: Path / Route -->
             <svg viewBox="0 0 24 24"><path d="M4 19h4a4 4 0 0 0 4-4V9a4 4 0 0 1 4-4h4"/><circle cx="4" cy="19" r="1.5"/><circle cx="20" cy="5" r="1.5"/></svg>
             <span>Plan</span>
         </a>
-        <a href="#team" class="tab-item" data-tab="people">
+        <a href="#contact" class="tab-item" data-tab="people">
             <!-- Phosphor Light: Users -->
             <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M1.5 21v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 21v-.5a4.5 4.5 0 0 1 6 0v.5"/></svg>
-            <span>People</span>
-        </a>
-        <a href="#contact" class="tab-item" data-tab="contact">
-            <!-- Phosphor Light: Envelope -->
-            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 5l9 7 9-7"/></svg>
-            <span>Contact</span>
+            <span>Team</span>
         </a>
     </nav>
 
@@ -5523,9 +5533,8 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
         const tabSections = {
             landing: ['landing', 'challenge'],
             science: ['pillars', 'domains'],
-            plan: ['campus', 'landscape', 'positioning', 'roadmap'],
-            people: ['team', 'stakeholders'],
-            contact: ['contact']
+            plan: ['consortium', 'landscape', 'positioning', 'roadmap'],
+            people: ['stakeholders', 'contact']
         };
 
         // Tab click handler — offset-aware smooth scroll
@@ -6060,20 +6069,30 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
         // Ambient loop — the same dot keeps circling with the fast/slow pacing
         // (slow through Interpret, fast through Explore). The scrub circuit ends
         // where this path begins, so the handoff is seamless.
+        const arrow = document.getElementById('loopArrow');
+        const arrowLine = document.getElementById('loopArrowLine');
         let ambientLoop = null;
         function startAmbient() {
             if (ambientLoop) return;
             gsap.set(dot, { opacity: 0.9 });
+            if (arrow) gsap.set(arrow, { opacity: 1 });
+            // The material-arrow flash lives INSIDE this timeline (explicit positions),
+            // so it is guaranteed locked to the circling dot — one material per lap.
             ambientLoop = gsap.timeline({ repeat: -1 });
             ambientLoop
-              .to(dot, { motionPath: { path: '#loopTravelPath', align: '#loopTravelPath', alignOrigin: [0.5, 0.5], start: 0, end: 0.25 }, ease: 'none', duration: 2.6 })
-              .to(dot, { motionPath: { path: '#loopTravelPath', align: '#loopTravelPath', alignOrigin: [0.5, 0.5], start: 0.25, end: 0.75 }, ease: 'none', duration: 1.0 })
-              .to(dot, { motionPath: { path: '#loopTravelPath', align: '#loopTravelPath', alignOrigin: [0.5, 0.5], start: 0.75, end: 1 }, ease: 'none', duration: 2.6 });
+              .to(dot, { motionPath: { path: '#loopTravelPath', align: '#loopTravelPath', alignOrigin: [0.5, 0.5], start: 0, end: 0.25 }, ease: 'none', duration: 2.6 }, 0)
+              .to(dot, { motionPath: { path: '#loopTravelPath', align: '#loopTravelPath', alignOrigin: [0.5, 0.5], start: 0.25, end: 0.75 }, ease: 'none', duration: 1.0 }, 2.6)
+              .to(dot, { motionPath: { path: '#loopTravelPath', align: '#loopTravelPath', alignOrigin: [0.5, 0.5], start: 0.75, end: 1 }, ease: 'none', duration: 2.6 }, 3.6);
+            if (arrowLine) {
+                ambientLoop
+                  .fromTo(arrowLine, { opacity: 0.25 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 5.0)
+                  .to(arrowLine, { opacity: 0.25, duration: 0.6, ease: 'power1.in' }, 5.5);
+            }
         }
         function stopAmbient() {
-            if (!ambientLoop) return;
-            ambientLoop.kill();
-            ambientLoop = null;
+            if (ambientLoop) { ambientLoop.kill(); ambientLoop = null; }
+            if (arrow) gsap.set(arrow, { opacity: 0 });
+            if (arrowLine) gsap.set(arrowLine, { opacity: 1 });
         }
 
         // --- Small screens, touch devices, reduced motion: no pin. The slide is
@@ -6083,6 +6102,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
         const small = window.matchMedia('(max-width: 1023px), (pointer: coarse)').matches;
         if (reduced || small) {
             gsap.set(icons, { opacity: 1 });
+            if (arrow) gsap.set(arrow, { opacity: 1 });
             if (!reduced) startAmbient();
             return;
         }
@@ -6096,6 +6116,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
         gsap.set(icons, { scale: 0.4, opacity: 0, transformOrigin: 'center center', transformBox: 'fill-box' });
         gsap.set([lblE, lblI], { opacity: 0 });
         gsap.set(quote, { opacity: 0, y: 24 });
+        gsap.set(arrow, { opacity: 0, y: 0 });
 
         // Scroll hint: at scrub progress 0 the stage is intentionally empty,
         // which reads as broken unless we tell the viewer to keep scrolling.
@@ -6160,6 +6181,8 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
           .to(dot, { motionPath: { path: '#loopTravelPath', align: '#loopTravelPath', alignOrigin: [0.5, 0.5], start: 0, end: 0.25 }, ease: 'none', duration: 1.1 }, 6.2)
           .to(dot, { motionPath: { path: '#loopTravelPath', align: '#loopTravelPath', alignOrigin: [0.5, 0.5], start: 0.25, end: 0.75 }, ease: 'none', duration: 0.35 }, 7.3)
           .to(dot, { motionPath: { path: '#loopTravelPath', align: '#loopTravelPath', alignOrigin: [0.5, 0.5], start: 0.75, end: 1 }, ease: 'none', duration: 1.1 }, 7.65)
+        // Material emitted as the circuit completes (synced to the loop)
+          .to(arrow, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 7.9)
         // Act 4 — the takeaway lands
           .to(quote, { opacity: 1, y: 0, duration: 0.7 }, 8.8);
 
