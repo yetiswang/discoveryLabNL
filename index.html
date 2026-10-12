@@ -2253,6 +2253,8 @@
             transition: background 0.25s ease, border-color 0.25s ease;
         }
         .frontier-card:hover { border-color: var(--tue-red); }
+        .frontier-card.priority { border-color: var(--tue-red); }
+        .frontier-card.priority .frontier-domain { color: var(--tue-red); }
         .frontier-icon {
             width: 48px; height: 48px;
             color: var(--tue-red); opacity: 0.92;
@@ -2730,7 +2732,7 @@
                                 <textPath href="#ring-outer-path" startOffset="2%">FAIR MULTIMODAL DATA</textPath>
                             </text>
                             <text class="ring-keyword" fill="rgba(255,255,255,0.25)">
-                                <textPath href="#ring-outer-path" startOffset="22%">FIVE FRONTIERS</textPath>
+                                <textPath href="#ring-outer-path" startOffset="22%">CANDIDATE DOMAINS</textPath>
                             </text>
                             <text class="ring-keyword" fill="rgba(255,255,255,0.25)">
                                 <textPath href="#ring-outer-path" startOffset="38%">DUTCH MATERIALS GENOME</textPath>
@@ -2782,18 +2784,37 @@
                     </div>
                     <div class="atom-cols">
                     <p class="challenge-text reveal rd-3"><strong>DiscoveryLabNL will shape materials research across many domains for decades to come.</strong> The Netherlands holds deep materials expertise; by joining forces nationally it strengthens that core, and where AI-first efforts have the models but not the experimental depth, DiscoveryLabNL supplies exactly that. <strong>It closes the knowledge chain from atom to function</strong>, extending a Dutch lineage in materials science into the next decade's open question: how to design what materials do, not only what they are. Foundation models have industrialised structure prediction (AlphaFold for proteins, GNoME-class models for inorganic crystals), proven on decades of shared, computable data. The experimental side of the loop remains open, and autonomous synthesis without rigorous verification has already produced contested claims. DiscoveryLabNL closes that loop for the materials that drive the next decade (soft, hybrid, hierarchical, far-from-equilibrium), where <strong>function</strong> emerges through dynamics and across scales no model can yet reach.</p>
-                    <p class="challenge-text reveal rd-4">The <a class="pillar-ref" href="#pillar-ai-core"><strong>AI Core</strong></a> proposes designs grounded in physics-informed digital twins, <a class="pillar-ref" href="#pillar-sdls"><strong>Self-Driving Labs</strong></a> synthesise and run experiments at scale, and <a class="pillar-ref" href="#pillar-characterisation"><strong>Advanced Multimodal Characterisation</strong></a> verifies what computation cannot. Its <a class="pillar-ref" href="#dlnl-claim-slide-3"><strong>five demonstrators (information materials, designer catalysts and energy materials, actuating polymers, neuromorphic materials, recyclable thermosets)</strong></a> are each a domain where Dutch science already leads. Five years ago, designing for function was guesswork; with DiscoveryLabNL it becomes <a class="pillar-ref" href="#dlnl-claim-slide-4"><strong>verifiable, explainable closed loops</strong></a>.</p>
+                    <p class="challenge-text reveal rd-4">The <a class="pillar-ref" href="#pillar-ai-core"><strong>AI Core</strong></a> proposes designs grounded in physics-informed digital twins, <a class="pillar-ref" href="#pillar-sdls"><strong>Self-Driving Labs</strong></a> synthesise and run experiments at scale, and <a class="pillar-ref" href="#pillar-characterisation"><strong>Advanced Multimodal Characterisation</strong></a> verifies what computation cannot. Its <a class="pillar-ref" href="#dlnl-claim-slide-3"><strong>candidate domains</strong></a>, with energy materials as the first priority and information materials, actuating polymers, neuromorphic materials and recyclable thermosets as further candidates, are each a field where Dutch science already leads. Five years ago, designing for function was guesswork; with DiscoveryLabNL it becomes <a class="pillar-ref" href="#dlnl-claim-slide-4"><strong>verifiable, explainable closed loops</strong></a>.</p>
                     </div>
                     <div class="hero-nav-row">
                         <a class="hero-back" href="#dlnl-claim-slide-1" aria-label="Back: the window">&uarr; The window</a>
                         <a class="hero-continue-link" href="#dlnl-claim-slide-3" aria-label="Continue: what we deliver">Continue: what we deliver &darr;</a>
                     </div>
                 </div>
-                <!-- What we deliver (Five Frontiers + Horizon 2035) -->
+                <!-- What we deliver (candidate domains, energy materials first, + Horizon 2035) -->
                 <div class="hero-slide hero-slide-1 hero-slide-revolution" id="dlnl-claim-slide-3">
                     <h2 class="reveal">The Revolution We Enable</h2>
-                    <p class="hero-slide-label reveal rd-1" style="margin-bottom:1.6rem; max-width:64ch;">DiscoveryLabNL will establish breakthroughs on five key frontiers, with one architecture.</p>
+                    <p class="hero-slide-label reveal rd-1" style="margin-bottom:1.6rem; max-width:64ch;">One architecture, several candidate domains to shape with partners. Energy materials is the first priority.</p>
                     <div class="frontier-grid reveal-group">
+                        <div class="frontier-card priority">
+                            <div class="frontier-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="5" y="8" width="14" height="14" rx="1" stroke-width="1.4"/>
+                                    <path d="M 5 11 Q 9 10.5 12 11 T 19 11" opacity="0.4" stroke-width="0.9"/>
+                                    <line x1="9" y1="22" x2="9" y2="11.5" stroke-width="2"/>
+                                    <line x1="15" y1="22" x2="15" y2="11.5" stroke-width="1.4" opacity="0.55"/>
+                                    <circle cx="10.2" cy="18" r="0.95"/>
+                                    <circle cx="9.2" cy="15.5" r="0.75" opacity="0.85"/>
+                                    <circle cx="10.1" cy="13.3" r="0.55" opacity="0.65"/>
+                                    <line x1="12" y1="2" x2="12" y2="8" stroke="#6E7FBA" stroke-width="1.8"/>
+                                    <circle cx="12" cy="2.5" r="0.7" fill="#6E7FBA" stroke="none"/>
+                                </svg>
+                            </div>
+                            <p class="frontier-domain">First priority candidate</p>
+                            <h3 class="frontier-headline">Designer catalysts and energy materials</h3>
+                            <p class="frontier-vision">Catalysts and energy materials designed for target transformations, freeing Europe from critical raw material dependencies.</p>
+                            <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Smart electrodes more effective in hydrogen generation than current systems.</p>
+                        </div>
                         <div class="frontier-card">
                             <div class="frontier-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -2808,29 +2829,10 @@
                                     <circle cx="12" cy="1.5" r="0.7" fill="#6E7FBA" stroke="none"/>
                                 </svg>
                             </div>
-                            <p class="frontier-domain">Frontier A</p>
+                            <p class="frontier-domain">Candidate domain</p>
                             <h3 class="frontier-headline">Information materials</h3>
                             <p class="frontier-vision">Materials whose internal state stores and processes information at orders-of-magnitude lower energy than silicon-era computing.</p>
                             <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Information materials that can store data at a fraction of the energy costs now associated with data centres.</p>
-                        </div>
-                        <div class="frontier-card">
-                            <div class="frontier-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="5" y="8" width="14" height="14" rx="1" stroke-width="1.4"/>
-                                    <path d="M 5 11 Q 9 10.5 12 11 T 19 11" opacity="0.4" stroke-width="0.9"/>
-                                    <line x1="9" y1="22" x2="9" y2="11.5" stroke-width="2"/>
-                                    <line x1="15" y1="22" x2="15" y2="11.5" stroke-width="1.4" opacity="0.55"/>
-                                    <circle cx="10.2" cy="18" r="0.95"/>
-                                    <circle cx="9.2" cy="15.5" r="0.75" opacity="0.85"/>
-                                    <circle cx="10.1" cy="13.3" r="0.55" opacity="0.65"/>
-                                    <line x1="12" y1="2" x2="12" y2="8" stroke="#6E7FBA" stroke-width="1.8"/>
-                                    <circle cx="12" cy="2.5" r="0.7" fill="#6E7FBA" stroke="none"/>
-                                </svg>
-                            </div>
-                            <p class="frontier-domain">Frontier B</p>
-                            <h3 class="frontier-headline">Designer catalysts and energy materials</h3>
-                            <p class="frontier-vision">Catalysts and energy materials designed for target transformations, freeing Europe from critical raw material dependencies.</p>
-                            <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Smart electrodes more effective in hydrogen generation than current systems.</p>
                         </div>
                         <div class="frontier-card">
                             <div class="frontier-icon">
@@ -2843,7 +2845,7 @@
                                     <line x1="6.2" y1="4" x2="14.5" y2="10.5" stroke="#6E7FBA" stroke-dasharray="1 1.4" opacity="0.55" stroke-width="0.9"/>
                                 </svg>
                             </div>
-                            <p class="frontier-domain">Frontier C</p>
+                            <p class="frontier-domain">Candidate domain</p>
                             <h3 class="frontier-headline">Actuating polymers and soft systems</h3>
                             <p class="frontier-vision">Polymers and soft matter designed to sense, actuate, and reconfigure across length and time scales, with function emerging through molecular dynamics.</p>
                             <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Actuating materials applied in medical devices, including soft robotics for precision surgery.</p>
@@ -2871,7 +2873,7 @@
                                     <circle cx="22" cy="2.5" r="0.7" fill="#6E7FBA" stroke="none"/>
                                 </svg>
                             </div>
-                            <p class="frontier-domain">Frontier D</p>
+                            <p class="frontier-domain">Candidate domain</p>
                             <h3 class="frontier-headline">Neuromorphic materials</h3>
                             <p class="frontier-vision">Material systems that compute by their own physics &mdash; synaptic memory, in-materio learning, autonomous decision substrates beyond the von Neumann boundary.</p>
                             <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Neuromorphic materials that enable devices to operate autonomously.</p>
@@ -2889,7 +2891,7 @@
                                     <line x1="9.5" y1="12.7" x2="11.5" y2="16.7" stroke-dasharray="1 1.4" stroke-width="1.5"/>
                                 </svg>
                             </div>
-                            <p class="frontier-domain">Frontier E</p>
+                            <p class="frontier-domain">Candidate domain</p>
                             <h3 class="frontier-headline">Recyclable thermosets and circular materials</h3>
                             <p class="frontier-vision">High-performance polymers and composites engineered for circularity, breaking the historical trade-off between durability and recyclability.</p>
                             <p class="frontier-outcome-2035"><span class="outcome-eyebrow">By 2030&ndash;2035</span>Fully recyclable thermoset materials without loss of mechanical properties.</p>
@@ -2897,7 +2899,7 @@
                     </div>
                     <div class="frontier-horizon reveal">
                         <p class="horizon-eyebrow">Horizon 2035</p>
-                        <p>By 2035, DiscoveryLabNL is the Dutch interface for designing what materials do: the operational layer on which all five frontier communities run their <strong>autonomous, verifiable, explainable closed loops</strong>. In-line multimodal verification is standard practice, the AI Core's physics-grounded models are shared community infrastructure, and the Dutch materials-function genome is the foundational dataset of European materials R&amp;D. What was demonstrated in narrow form over the past decade, DiscoveryLabNL industrialises into the federated national platform on which the next decade of discovery is built.</p>
+                        <p>By 2035, DiscoveryLabNL is the Dutch interface for designing what materials do: the operational layer on which the energy-materials community, and in time the communities of the other candidate domains, run their <strong>autonomous, verifiable, explainable closed loops</strong>. In-line multimodal verification is standard practice, the AI Core's physics-grounded models are shared community infrastructure, and the Dutch materials-function genome is the foundational dataset of European materials R&amp;D. What was demonstrated in narrow form over the past decade, DiscoveryLabNL industrialises into the federated national platform on which the next decade of discovery is built.</p>
                     </div>
                     <div class="hero-nav-row">
                         <a class="hero-back" href="#dlnl-claim-slide-2" aria-label="Back: what we are">&uarr; What we are</a>
@@ -3010,7 +3012,7 @@
                     <p class="hero-slide-label reveal rd-1">The claim</p>
                     <p class="challenge-text reveal rd-2">This potential is widely recognised across the broader materials community, yet has also produced fragmentation: parallel, disconnected efforts that fall short of the systemic integration needed to realise AI's full scientific impact.</p>
                     <p class="challenge-text reveal rd-3">The Netherlands already holds nationally recognised SDL foundations: TU/e's ICMS contributes SDL platforms developed through the NWO Gravitation Programme <a class="pillar-ref" href="https://ipmresearchcenter.nl/" target="_blank" rel="noopener">Interactive Polymer Materials (IPM)</a> and the National Growth Fund programme <a class="pillar-ref" href="https://bigchemistry.nl/" target="_blank" rel="noopener">Big Chemistry</a>, alongside autonomous energy-materials work at institutes such as AMOLF and DIFFER, a proven base for this next step.</p>
-                    <p class="challenge-text reveal rd-4">DiscoveryLabNL is the <strong>augmented lab</strong>: one infrastructure, one scientific argument, five candidate demonstrators, and the Dutch interface for the global materials genome. Every FAIR multimodal verification lowers the cost of the next discovery. The alternative is fragmented, hollow labs that do not compound.</p>
+                    <p class="challenge-text reveal rd-4">DiscoveryLabNL is the <strong>augmented lab</strong>: one infrastructure, one scientific argument, candidate domains led by energy materials, and the Dutch interface for the global materials genome. Every FAIR multimodal verification lowers the cost of the next discovery. The alternative is fragmented, hollow labs that do not compound.</p>
                     <div class="hero-back">
                         <a href="#dlnl-claim-slide-4" aria-label="Back: how it works">&uarr; How it works</a>
                     </div>
@@ -4532,7 +4534,7 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
             <!-- 5. Positioning -->
             <section id="positioning">
                 <h2 class="reveal">Positioning</h2>
-                <p class="positioning-intro reveal">DiscoveryLabNL is coordinated by TU/e, with the support of its Executive Board, and is forming as an open national consortium of universities, research institutes and companies, starting with energy materials. TU/e's ICMS contributes established self-driving lab capacity, campus-wide materials expertise, and national characterisation and digital infrastructure connections, coordinated by Luc Brunsveld; scientific direction across TU/e is led by Jan van Hest.</p>
+                <p class="positioning-intro reveal">DiscoveryLabNL is coordinated by TU/e, with the support of its Executive Board, and is forming as an open national consortium of universities, research institutes and companies, with energy materials as the first priority domain. TU/e's ICMS contributes established self-driving lab capacity, campus-wide materials expertise, and national characterisation and digital infrastructure connections, coordinated by Luc Brunsveld; scientific direction across TU/e is led by Jan van Hest.</p>
                 <div class="positioning-grid reveal-group">
                     <div class="position-card position-dark">
                         <h3>Within TU/e</h3>
