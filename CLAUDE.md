@@ -10,12 +10,13 @@ styles, behaviour) is in `index.html`; images in `img/`, fonts beside it, GSAP 3
   aggressively; an unchanged-looking page is usually the cache, not the code.
 
 ## Structure
-- Sections in order: landing, challenge, pillars, domains, campus, positioning, roadmap, team, stakeholders, contact.
-- The stakeholder map is an SVG with a 1000x1000 viewBox centred at (500,500). Rings: Core r=90, Committed r=200,
-  In Dialogue r=310, Planned r=420. Node data lives in the JavaScript `stakeholders` object; the stats shown on the
-  page are derived from it, so change the object, not the rendered SVG.
-- The engagement data on this page (the `stakeholders` object) mirrors documents kept elsewhere. Change it only
-  when the owner asks, and say in the commit what changed.
+- Sections in order: landing, claim slides, world today, pillars, domains, consortium, landscape, positioning
+  (hidden by a feature-flag rule), roadmap, contact.
+- The consortium map is an SVG built from the JavaScript `consortium` object (campus, national and international
+  rings; every member has status `partner` or `open`). Industry partners are chips built from the `industry` array;
+  both open the same slide-in panel. Change the data, not the rendered SVG.
+- Partner data mirrors documents kept elsewhere. Change it only when the owner asks, and say in the commit what
+  changed.
 
 ## Animation rules
 - Reveals use an IntersectionObserver engine. Programmatic scrolls (rail, anchors, hash jumps) suppress reveals so
