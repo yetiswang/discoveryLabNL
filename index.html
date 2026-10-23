@@ -3309,17 +3309,6 @@
                     #consortium .csm-map .city-label-tlk { fill: var(--tue-red); font-style: italic; font-weight: 500; }
                     #consortium .csm-map .city-meta { fill: var(--csm-eyebrow); font-size: 22px; letter-spacing: 0.5px; font-family: 'Avenir Next LT Pro', 'Avenir Next', Avenir, sans-serif; }
                     #consortium .csm-map-cap { text-align: center; max-width: 420px; margin: 0.6rem auto 0; font-size: 13px; font-style: italic; color: var(--csm-eyebrow); line-height: 1.5; }
-                    #consortium .csm-industry { flex: 0 0 auto; margin-top: 1rem; text-align: center; }
-                    #consortium .csm-industry .csm-map-title { margin-bottom: 0.5rem; }
-                    #consortium .csm-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 0.5rem; }
-                    #consortium .csm-chip {
-                        font: inherit; font-size: 13px; font-weight: 600; color: var(--csm-ink);
-                        background: transparent; border: 1px solid var(--csm-rule); border-radius: 999px;
-                        padding: 0.3rem 0.8rem; cursor: pointer;
-                        transition: border-color 0.2s ease, color 0.2s ease;
-                    }
-                    #consortium .csm-chip:hover, #consortium .csm-chip:focus-visible { border-color: var(--tue-red); color: var(--tue-red); outline: none; }
-                    @media (max-width: 1180px) { #consortium .csm-industry { margin-top: 2.5rem; } }
                     /* Pillar colours — SDL, Characterisation, AI */
                     #consortium .pillar-sdl  { fill: #C8102E; }   /* TU/e Red — automation/robotics */
                     #consortium .pillar-char { fill: #C4A158; }   /* warm gold — optical/microscopy */
@@ -3868,12 +3857,6 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
 
                 </div>
 
-                <!-- Industry partners: one chip per company; a click opens the same panel as the ring chairs -->
-                <div class="csm-industry reveal">
-                    <p class="csm-map-title">Industry partners</p>
-                    <div class="csm-chips" id="csmIndustry"></div>
-                </div>
-
 
 
                 <script>
@@ -4074,29 +4057,6 @@ l-22 93 24 55 c14 32 29 93 35 142 13 110 13 121 0 155 -9 24 -16 27 -54 27
                     });
 
 
-
-                    // Industry partners: chips under the rings, same slide-in panel
-                    const industry = [
-                        { name: 'AkzoNobel', bring: 'Paints and performance coatings: formulation research and testing.' },
-                        { name: 'Atinary', pillars: ['ai'], bring: 'Orchestration software for self-driving labs, integrated with robotic and analytical hardware.' },
-                        { name: 'Bruker', pillars: ['char'], bring: 'NMR, X-ray and microscopy instruments working inside autonomous discovery loops.' },
-                        { name: 'Canon', bring: 'Printing technology and its materials.' },
-                        { name: 'Chemspeed', pillars: ['sdl'], bring: 'Automated synthesis and formulation platforms for self-driving labs.' },
-                        { name: 'Covestro', bring: 'High-performance polymers and raw materials for coatings.' },
-                        { name: 'Evonik', bring: 'Specialty chemicals and materials for coatings, additives and energy.' },
-                        { name: 'PAA', pillars: ['sdl'], bring: 'Laboratory automation: hybrid robotic work cells and smart carts.' },
-                        { name: 'Thermo Fisher Scientific', pillars: ['char'], bring: 'Electron microscopes, developed and built in Eindhoven.' },
-                        { name: 'VDL', bring: 'High-tech systems engineering and manufacturing.' },
-                    ];
-                    const chipRow = document.getElementById('csmIndustry');
-                    if (chipRow) industry.forEach(c => {
-                        const b = document.createElement('button');
-                        b.type = 'button';
-                        b.className = 'csm-chip';
-                        b.textContent = c.name;
-                        b.addEventListener('click', () => openCsmPanel({ status: 'partner', pillars: [], ...c }));
-                        chipRow.appendChild(b);
-                    });
 
                     function wrapText(text, maxChars) {
                         const words = text.split(' ');
