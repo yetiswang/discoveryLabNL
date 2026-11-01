@@ -1511,13 +1511,15 @@
             gap: 0.6rem;
             margin-bottom: 0.5rem;
         }
+        /* The SDL map's own mark (a red pin in the DiscoveryLabNL ring), inline so it never depends on the map site */
         .sdl-map-favicon {
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             display: block;
             flex-shrink: 0;
-            object-fit: contain;
+            color: var(--tue-dark);
         }
+        .sdl-map-pin { fill: var(--logo-red); }
         .sdl-map-block strong { color: var(--tue-red); font-weight: 700; }
         .sdl-map-block h3 {
             font-family: 'Avenir Next LT Pro', sans-serif;
@@ -2710,7 +2712,7 @@
 
                 <div class="sdl-map-block reveal">
                     <div class="sdl-map-header">
-                        <img class="sdl-map-favicon" src="https://sdl-map.discoverylabs.nl/sdl_favicon.png" alt="" loading="lazy" decoding="async">
+                        <svg class="sdl-map-favicon" viewBox="6 6 88 88" aria-hidden="true" focusable="false"><path d="M89.39,43.05 A40,40 0 1 1 63.68,12.41" fill="none" stroke="currentColor" stroke-width="7.2" stroke-linecap="round"/><circle cx="80.64" cy="24.29" r="8.5" fill="currentColor"/><path class="sdl-map-pin" d="M36.51,50.63 A15.5,15.5 0 1 1 63.49,50.63 L50,74.5 Z M44.5,43 a5.5,5.5 0 1 0 11,0 a5.5,5.5 0 1 0 -11,0 Z" fill-rule="evenodd"/></svg>
                         <p class="sdl-map-eyebrow">The global SDL landscape</p>
                     </div>
                     <p>Global initiatives with large-scale funding are fuelling the materials revolution. The Netherlands needs to wake up, join, and lead the <strong>verifiable discoveries</strong> that shape the next decade.</p>
